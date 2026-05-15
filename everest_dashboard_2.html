@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Everest · Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EC;--surface:#FDFCFA;--surface2:#EFECE5;--border:#DDD9CF;--border-soft:#E8E4DB;
+  --text-primary:#1C1917;--text-secondary:#78716C;--text-muted:#A8A29E;
+  --accent:#1C3B5A;
+  --c-bantotal:#1C3B5A;--c-bantotal-bg:#E8EFF6;
+  --c-modelos:#3D5A3E;--c-modelos-bg:#EAF0EA;
+  --c-fps:#6B3A2A;--c-fps-bg:#F5EDE9;
+  --c-soc:#3A2D6B;--c-soc-bg:#EEEAF5;
+  --c-gap:#5A3A1C;--c-gap-bg:#F5EDEA;
+  --c-ey:#1C5A45;--c-ey-bg:#E8F5EF;
+  --c-retail:#5A1C3B;--c-retail-bg:#F5E8EF;
+  --t-pendiente:#C0392B;--t-pendiente-bg:#FDECEA;
+  --t-seguimiento:#B7770D;--t-seguimiento-bg:#FEF8E7;
+  --t-decision:#1C3B5A;--t-decision-bg:#E8EFF6;
+  --t-info:#78716C;--t-info-bg:#EFECE5;
+  --t-pausado:#A8A29E;--t-pausado-bg:#F4F1EC;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;font-size:13px}
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.sidebar{background:var(--accent);padding:1.5rem 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar-brand{padding:0 1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:.5rem}
+.sidebar-ev{font-family:'DM Serif Display',serif;font-size:22px;color:#fff;letter-spacing:-.5px;line-height:1}
+.sidebar-sub{font-size:10px;color:rgba(255,255,255,.45);margin-top:4px;letter-spacing:.06em;text-transform:uppercase}
+.nav-section{padding:.375rem 1.25rem .25rem;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);font-weight:600;margin-top:.5rem}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 1.25rem;cursor:pointer;color:rgba(255,255,255,.6);font-size:12px;border-left:2px solid transparent;transition:all .15s}
+.nav-item:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.06)}
+.nav-item.active{color:#fff;border-left-color:#A8C5E0;background:rgba(255,255,255,.1);font-weight:500}
+.nav-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nav-count{margin-left:auto;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.4)}
+.nav-item.active .nav-count{color:rgba(255,255,255,.7)}
+.sidebar-footer{margin-top:auto;padding:1rem 1.25rem 0;border-top:1px solid rgba(255,255,255,.1)}
+.sidebar-date{font-size:10px;color:rgba(255,255,255,.35);line-height:1.6}
+.sync-row{display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,.4);margin-top:5px}
+.pulse{width:5px;height:5px;border-radius:50%;background:#5EEAD4;flex-shrink:0}
+.pulse.on{animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.main{padding:2rem 2.5rem;overflow-x:hidden}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem;gap:1rem}
+.page-title{font-family:'DM Serif Display',serif;font-size:26px;line-height:1.1}
+.page-sub{font-size:12px;color:var(--text-secondary);margin-top:4px}
+.topbar-actions{display:flex;gap:7px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.btn{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:7px 14px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-primary);cursor:pointer;white-space:nowrap;transition:all .12s;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{background:var(--surface2)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-dark{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-dark:hover{background:#162E48}
+.btn-green{background:#EAF5EF;color:#1C5A45;border-color:#B6DFC8}
+.btn-green:hover{background:#D5EDDF}
+.btn-warn{background:#FEF8E7;color:#B7770D;border-color:#F0DFA0}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.75rem}
+.metric{background:var(--surface);border:1px solid var(--border-soft);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .12s,transform .1s}
+.metric:hover{border-color:var(--border);transform:translateY(-1px)}
+.metric-lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;font-weight:500}
+.metric-val{font-family:'DM Serif Display',serif;font-size:32px;line-height:1}
+.metric-sub{font-size:10px;color:var(--text-muted);margin-top:4px}
+.m-pend .metric-val{color:var(--t-pendiente)}
+.m-seg  .metric-val{color:var(--t-seguimiento)}
+.m-dec  .metric-val{color:var(--t-decision)}
+.m-done .metric-val{color:#3D5A3E}
+.banner{display:none;align-items:center;gap:8px;font-size:11px;color:var(--text-secondary);background:var(--surface);border:1px solid var(--border-soft);border-radius:8px;padding:8px 12px;margin-bottom:1rem}
+.banner.err{background:#FDECEA;border-color:#F5B7B1;color:var(--t-pendiente)}
+.banner.ok{background:#EAF5EF;border-color:#B6DFC8;color:#1C5A45}
+.banner.show{display:flex}
+.list-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:12px;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:180px}
+.search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted)}
+.search-box{width:100%;font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 10px 7px 32px;border:1px solid var(--border-soft);border-radius:6px;background:var(--surface);color:var(--text-primary)}
+.search-box:focus{outline:none;border-color:var(--border)}
+.fsel{font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 10px;border:1px solid var(--border-soft);border-radius:6px;background:var(--surface);color:var(--text-secondary);cursor:pointer}
+.item-grid{display:flex;flex-direction:column;gap:6px}
+.icard{background:var(--surface);border:1px solid var(--border-soft);border-radius:10px;padding:12px 15px;cursor:pointer;transition:border-color .12s,box-shadow .12s;display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:start;position:relative}
+.icard:hover{border-color:var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.icard.t-pendiente{border-left:3px solid var(--t-pendiente)}
+.icard.t-seguimiento{border-left:3px solid var(--t-seguimiento)}
+.icard.t-decision{border-left:3px solid var(--t-decision)}
+.icard.t-info,.icard.t-pausado{border-left:3px solid var(--border)}
+.icard.is-done{opacity:.4;border-left-color:var(--border)!important}
+.src-tag{position:absolute;top:8px;right:8px;font-size:9px;font-family:'DM Mono',monospace;border-radius:4px;padding:1px 5px}
+.src-gmail{color:#4285f4;background:#EEF4FF}
+.src-jira{color:#0052CC;background:#E9F0FF}
+.icheck{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--surface);transition:all .1s;flex-shrink:0;margin-top:1px}
+.icheck:hover{border-color:var(--text-secondary)}
+.icheck.checked{background:#EAF0EA;border-color:#3D5A3E}
+.icard-body{min-width:0;padding-right:48px}
+.ititle{font-size:13px;font-weight:500;color:var(--text-primary);line-height:1.4;margin-bottom:6px}
+.ititle.done{text-decoration:line-through;color:var(--text-muted)}
+.imeta{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;white-space:nowrap}
+.inote{font-size:11px;color:var(--text-secondary);margin-top:6px;line-height:1.5;padding-top:6px;border-top:1px solid var(--border-soft)}
+.ireunion{font-size:10px;color:var(--text-muted);margin-top:4px;font-style:italic}
+.iright{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.idue{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);padding:2px 6px;border-radius:4px;background:var(--surface2);white-space:nowrap}
+.idue.ov{color:var(--t-pendiente);background:var(--t-pendiente-bg);font-weight:500}
+.idue.soon{color:var(--t-seguimiento);background:var(--t-seguimiento-bg);font-weight:500}
+.iassign{font-size:10px;color:var(--text-muted);text-align:right;max-width:130px;line-height:1.3}
+.sec-label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin:1.25rem 0 .5rem;display:flex;align-items:center;gap:8px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border-soft)}
+.group-hdr{display:flex;align-items:center;gap:10px;margin:1.5rem 0 .625rem;padding-bottom:.5rem;border-bottom:1px solid var(--border-soft)}
+.group-hdr:first-child{margin-top:0}
+.group-name{font-family:'DM Serif Display',serif;font-size:15px;font-weight:400}
+.group-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);background:var(--surface2);border-radius:10px;padding:1px 7px}
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--text-muted);font-size:13px}
+.empty-icon{font-size:28px;margin-bottom:.75rem}
+.done-info{font-size:11px;color:var(--text-muted);background:var(--surface2);border-radius:8px;padding:9px 13px;margin-bottom:1rem;border:1px solid var(--border-soft);line-height:1.6}
+.view{display:none}.view.active{display:block}
+.sync-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+.sync-meta{font-size:11px;color:var(--text-muted)}
+.modal-bd{display:none;position:fixed;inset:0;background:rgba(28,25,23,.4);z-index:400;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.modal-bd.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.75rem;width:560px;max-width:96%;max-height:90vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.15)}
+.modal-title{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:1.25rem}
+.frow{margin-bottom:12px}
+.flbl{font-size:10px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.finput,.fsel,.ftarea{width:100%;font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 11px;border:1px solid var(--border-soft);border-radius:7px;background:var(--bg);color:var(--text-primary)}
+.finput:focus,.fsel:focus,.ftarea:focus{outline:none;border-color:var(--accent);background:var(--surface)}
+.ftarea{min-height:72px;resize:vertical}
+.fgrid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fgrid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border-soft)}
+.btn-del{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--t-pendiente);padding:7px 12px;border-radius:6px;border:1px solid #FDECEA;background:none;cursor:pointer;margin-right:auto}
+.btn-del:hover{background:var(--t-pendiente-bg)}
+.spinner{width:11px;height:11px;border:2px solid rgba(0,0,0,.15);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:700px){.shell{grid-template-columns:1fr}.sidebar{display:none}.metrics{grid-template-columns:1fr 1fr}.fgrid2,.fgrid3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-ev">Everest</div>
+    <div class="sidebar-sub">Gestión Contable · BCRA</div>
+  </div>
+  <span class="nav-section">Vistas</span>
+  <a class="nav-item active" onclick="goView('pendientes',this)"><span class="nav-dot" style="background:#C0392B"></span>Mis pendientes<span class="nav-count" id="nc-p">0</span></a>
+  <a class="nav-item" onclick="goView('seguimiento',this)"><span class="nav-dot" style="background:#B7770D"></span>En seguimiento<span class="nav-count" id="nc-s">0</span></a>
+  <a class="nav-item" onclick="goView('decisiones',this)"><span class="nav-dot" style="background:#1C3B5A"></span>Decisiones abiertas<span class="nav-count" id="nc-d">0</span></a>
+  <span class="nav-section" style="margin-top:.75rem">Fuentes</span>
+  <a class="nav-item" onclick="goView('gmail',this)"><span class="nav-dot" style="background:#4285f4"></span>Gmail<span class="nav-count" id="nc-g">0</span></a>
+  <a class="nav-item" onclick="goView('jira',this)"><span class="nav-dot" style="background:#0052CC"></span>Jira · EVEREST<span class="nav-count" id="nc-j">0</span></a>
+  <span class="nav-section" style="margin-top:.75rem">Organización</span>
+  <a class="nav-item" onclick="goView('sistemas',this)"><span class="nav-dot" style="background:#A8A29E"></span>Por sistema<span class="nav-count" id="nc-sys">0</span></a>
+  <a class="nav-item" onclick="goView('completados',this)"><span class="nav-dot" style="background:#3D5A3E"></span>Completados<span class="nav-count" id="nc-done">0</span></a>
+  <div class="sidebar-footer">
+    <div class="sidebar-date" id="sdate"></div>
+    <div class="sync-row"><span class="pulse" id="spulse"></span><span id="stext">Listo</span></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title" id="ptitle">Mis pendientes</div>
+      <div class="page-sub" id="psub">To-dos asignados a Lu</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-green" id="btn-gsync" onclick="syncGmail()"><span id="gicon">↻</span> Gmail</button>
+      <button class="btn btn-green" id="btn-jsync" onclick="syncJira()"><span id="jicon">↻</span> Jira</button>
+      <button class="btn btn-warn" onclick="procesarReunion()">📋 Reunión</button>
+      <button class="btn btn-dark" onclick="openModal()">+ Nuevo</button>
+    </div>
+  </div>
+  <div id="banner" class="banner"></div>
+  <div class="metrics" id="mrow"></div>
+  <div id="view-pendientes"  class="view active"></div>
+  <div id="view-seguimiento" class="view"></div>
+  <div id="view-decisiones"  class="view"></div>
+  <div id="view-gmail"       class="view"></div>
+  <div id="view-jira"        class="view"></div>
+  <div id="view-sistemas"    class="view"></div>
+  <div id="view-completados" class="view"></div>
+</main>
+</div>
+
+<div class="modal-bd" id="mbd" onclick="closeBd(event)">
+  <div class="modal">
+    <div class="modal-title" id="mtitle">Nuevo ítem</div>
+    <div class="frow"><label class="flbl">Descripción</label><input class="finput" id="f-desc" placeholder="¿Qué hay que hacer o seguir?"></div>
+    <div class="fgrid2">
+      <div class="frow"><label class="flbl">Sistema</label><select class="fsel" id="f-label" onchange="onLbl()"></select></div>
+      <div class="frow"><label class="flbl">Sub-label</label><select class="fsel" id="f-sub"><option value="">—</option></select></div>
+    </div>
+    <div class="fgrid3">
+      <div class="frow"><label class="flbl">Tipo</label><select class="fsel" id="f-tipo"><option value="pendiente">Pendiente mío</option><option value="seguimiento">Seguimiento</option><option value="decision">Decisión abierta</option><option value="info">Informativo</option><option value="pausado">Pausado</option></select></div>
+      <div class="frow"><label class="flbl">Estado</label><select class="fsel" id="f-done"><option value="0">Activo</option><option value="1">Completado ✓</option></select></div>
+      <div class="frow"><label class="flbl">Fecha límite</label><input class="finput" type="date" id="f-due"></div>
+    </div>
+    <div class="fgrid2">
+      <div class="frow"><label class="flbl">Contraparte</label><input class="finput" id="f-who" placeholder="IT, Tax, FPS, EY..."></div>
+      <div class="frow"><label class="flbl">Reunión de origen</label><input class="finput" id="f-reunion"></div>
+    </div>
+    <div class="frow"><label class="flbl">Nota</label><textarea class="ftarea" id="f-note"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-del" id="bdel" style="display:none" onclick="delItem()">Eliminar</button>
+      <button class="btn" onclick="closeMod()">Cancelar</button>
+      <button class="btn btn-dark" onclick="saveItem()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ───────────────────────────────────────────────────────────────────
+const LU = 'lujan.usieto@mercadolibre.com';
+const CLOUD_ID = 'mercadolibre-everest.atlassian.net';
+const JIRA_BASE = 'https://mercadolibre-everest.atlassian.net/browse/';
+
+const LABELS = [
+  {id:'bantotal', label:'Bantotal',             color:'var(--c-bantotal)', bg:'var(--c-bantotal-bg)', subs:['Integración SAP','Módulos pendientes','COELSA','Conciliaciones bancarias','Pago de impuestos','Descubierto']},
+  {id:'modelos',  label:'Modelos Contables',    color:'var(--c-modelos)',  bg:'var(--c-modelos-bg)',  subs:['ON y VDF','Repos','Cauciones','Títulos Públicos','Plazos Fijos','Call','Depósitos Remunerados','Nostro Remuneradas','FX Spot','Descuento de Cupones','Compra de Cartera']},
+  {id:'fps',      label:'FPS + FinOps + Acc',   color:'var(--c-fps)',      bg:'var(--c-fps-bg)',      subs:['Conciliaciones Bancarias','AxI','Diferencia de Cotización','DE-PARA','Plan de cuentas']},
+  {id:'societario',label:'Societario',          color:'var(--c-soc)',      bg:'var(--c-soc-bg)',      subs:['Constitución','Capital','SAP acelerado']},
+  {id:'gap',      label:'GAP Normativo / PwC',  color:'var(--c-gap)',      bg:'var(--c-gap-bg)',      subs:[]},
+  {id:'ey',       label:'Auditoría / EY',        color:'var(--c-ey)',       bg:'var(--c-ey-bg)',       subs:[]},
+  {id:'retail',   label:'Banco Retail',          color:'var(--c-retail)',   bg:'var(--c-retail-bg)',   subs:[]},
+];
+
+const TIPO = {
+  pendiente:   {label:'Pendiente mío',   color:'var(--t-pendiente)',   bg:'var(--t-pendiente-bg)'},
+  seguimiento: {label:'Seguimiento',      color:'var(--t-seguimiento)', bg:'var(--t-seguimiento-bg)'},
+  decision:    {label:'Decisión abierta', color:'var(--t-decision)',    bg:'var(--t-decision-bg)'},
+  info:        {label:'Informativo',      color:'var(--t-info)',        bg:'var(--t-info-bg)'},
+  pausado:     {label:'Pausado',          color:'var(--t-pausado)',     bg:'var(--t-pausado-bg)'},
+};
+
+const VIEWS = {
+  pendientes:  {title:'Mis pendientes',      sub:'To-dos asignados a Lu'},
+  seguimiento: {title:'En seguimiento',      sub:'Esperando respuesta de otros'},
+  decisiones:  {title:'Decisiones abiertas', sub:'Decisiones sin resolver'},
+  gmail:       {title:'Gmail',               sub:'Threads relevantes — Lu respondió = completado automático'},
+  jira:        {title:'Jira · EVEREST',      sub:'Issues activos — Done en Jira = completado automático'},
+  sistemas:    {title:'Por sistema',         sub:'Vista agrupada por label'},
+  completados: {title:'Completados',         sub:'Manuales: vos los cerrás · Gmail/Jira: se cierran solos'},
+};
+
+// Gmail thread routing
+const ROUTES = [
+  {p:/bantotal|req\.|requerimiento|integraci[oó]n.?sap|coelsa/i,     label:'bantotal', sub:'Integración SAP',         tipo:'seguimiento'},
+  {p:/plazo.?fijo|plazos.?fijos|fpsl|cuentas.?puente/i,              label:'modelos',  sub:'Plazos Fijos',             tipo:'pendiente'},
+  {p:/\bon y vdf\b|obl.*negoc|tit.*privad/i,                         label:'modelos',  sub:'ON y VDF',                 tipo:'pendiente'},
+  {p:/repos?|cauciones?/i,                                            label:'modelos',  sub:'Repos',                   tipo:'pendiente'},
+  {p:/t[ií]tulos.?p[uú]blicos/i,                                     label:'modelos',  sub:'Títulos Públicos',         tipo:'pendiente'},
+  {p:/fx.?spot|forward|compra.?venta.?divisa/i,                      label:'modelos',  sub:'FX Spot',                  tipo:'pendiente'},
+  {p:/ajuste.?por.?inflaci[oó]n|\baxi\b|\bREI\b/i,                   label:'fps',      sub:'AxI',                      tipo:'seguimiento'},
+  {p:/diferencia.?de.?cotizaci[oó]n|revalu[oó]/i,                    label:'fps',      sub:'Diferencia de Cotización', tipo:'decision'},
+  {p:/conciliaci[oó]n.?bancaria|extracto.?banco/i,                   label:'fps',      sub:'Conciliaciones Bancarias', tipo:'decision'},
+  {p:/de-?para|plan.?de.?cuentas/i,                                  label:'fps',      sub:'DE-PARA',                  tipo:'seguimiento'},
+  {p:/frente.?contable|fps|finops|acc.?corp|simetrik|gobernanza/i,   label:'fps',      sub:'',                         tipo:'pendiente'},
+  {p:/societari|constituci[oó]n|integraci[oó]n.?capital/i,           label:'societario',sub:'',                        tipo:'seguimiento'},
+  {p:/pwc|gap.?normativo|mesa.?de.?trabajo/i,                        label:'gap',      sub:'',                         tipo:'pendiente'},
+  {p:/\bey\b|ernst|auditor|esquema.?contable|troyelli|g[oó]mez.?sandoval|v[aá]zquez|araoz/i, label:'ey', sub:'', tipo:'pendiente'},
+  {p:/banco.?retail|end.?game/i,                                     label:'retail',   sub:'',                         tipo:'info'},
+];
+
+// Jira status → done mapping
+const JIRA_DONE_STATUSES = ['done','cerrado','resuelto','closed','resolved','listo','completado'];
+const JIRA_TIPO_MAP = {
+  'Pendiente MELI': 'pendiente',
+  'Nuevo': 'pendiente',
+  'Comité': 'decision',
+  'Aprobada': 'seguimiento',
+  'En desarrollo': 'seguimiento',
+  'En prueba': 'seguimiento',
+  'Bloqueado': 'pendiente',
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let items = [], nid = 400, eid = null, sq = '', fl = '', lastGsync = null, lastJsync = null;
+
+const DEFAULTS = [
+  {id:1,  desc:'Seguimiento req. 76 — validar solución técnica en Jira', label:'bantotal', sub:'Integración SAP',         tipo:'seguimiento', due:null, who:'Dani Joya / Jaime Plata (EVEREST-76)', note:'Req. 76 cargado. Dani y Jaime tienen acceso.', reunion:'Integración SAP', done:false, source:'manual'},
+  {id:2,  desc:'Recordar al PMO organizar reunión (Conciliaciones, Pago impuestos, Descubierto)', label:'bantotal', sub:'Módulos pendientes', tipo:'pendiente', due:null, who:'PMO', note:'', reunion:null, done:false, source:'manual'},
+  {id:3,  desc:'Revisar info enviada por Charly sobre COELSA', label:'bantotal', sub:'COELSA', tipo:'pendiente', due:null, who:null, note:'', reunion:null, done:false, source:'manual'},
+  {id:4,  desc:'Revisión modelos contables — ON y VDF', label:'modelos', sub:'ON y VDF', tipo:'pendiente', due:'2026-05-08', who:null, note:'ETA 8 mayo.', reunion:null, done:false, source:'manual'},
+  {id:5,  desc:'Revisión modelos contables — Repos', label:'modelos', sub:'Repos', tipo:'pendiente', due:'2026-05-08', who:null, note:'ETA 8 mayo.', reunion:null, done:false, source:'manual'},
+  {id:6,  desc:'Revisión modelos contables — Cauciones', label:'modelos', sub:'Cauciones', tipo:'pendiente', due:'2026-05-08', who:null, note:'ETA 8 mayo.', reunion:null, done:false, source:'manual'},
+  {id:7,  desc:'Revisión modelos contables — Títulos Públicos', label:'modelos', sub:'Títulos Públicos', tipo:'pendiente', due:'2026-05-16', who:null, note:'ETA 16 mayo.', reunion:null, done:false, source:'manual'},
+  {id:8,  desc:'Confirmar FX Spot con Flor Cabrera + equipo FPS', label:'modelos', sub:'FX Spot', tipo:'pendiente', due:null, who:'Flor Cabrera (Bantotal) + FPS', note:'', reunion:null, done:false, source:'manual'},
+  {id:9,  desc:'Seguimiento Descuento de Cupones — esperando cambio de Acc Corp', label:'modelos', sub:'Descuento de Cupones', tipo:'seguimiento', due:null, who:'Acc Corp', note:'', reunion:null, done:false, source:'manual'},
+  {id:10, desc:'Compra de Cartera — postpuesto a septiembre', label:'modelos', sub:'Compra de Cartera', tipo:'pausado', due:'2026-09-01', who:null, note:'', reunion:null, done:false, source:'manual'},
+  {id:11, desc:'AxI — esperando definiciones Analía y Andrés (sin respuesta desde 19 abr)', label:'fps', sub:'AxI', tipo:'seguimiento', due:null, who:'Analía Cisneros / Andrés Sosa', note:'Reenvío 19 abr. +2 semanas sin respuesta. ALERTA.', reunion:'Revisión AxI', done:false, source:'manual'},
+  {id:12, desc:'Diferencia de Cotización — FPS debe validar asientos teóricos', label:'fps', sub:'Diferencia de Cotización', tipo:'decision', due:null, who:'FPS / Marta / Fran Thomas', note:'3 propuestas de solución de Marta.', reunion:null, done:false, source:'manual'},
+  {id:13, desc:'Conciliaciones Bancarias — SAP o Bantotal?', label:'fps', sub:'Conciliaciones Bancarias', tipo:'decision', due:null, who:'Martin Giofre / Christian Galdeano', note:'Sin diseño de registros SAP.', reunion:null, done:false, source:'manual'},
+  {id:14, desc:'DE-PARA — FinOps debe pedir apertura de cuentas nuevas', label:'fps', sub:'DE-PARA', tipo:'seguimiento', due:null, who:'FinOps', note:'', reunion:null, done:false, source:'manual'},
+  {id:15, desc:'Seguimiento constitución, capital y SAP acelerado', label:'societario', sub:'Constitución', tipo:'seguimiento', due:null, who:'Legal / Romina', note:'', reunion:null, done:false, source:'manual'},
+  {id:16, desc:'Mesas PwC — revisar estado y acciones pendientes de Lu', label:'gap', sub:'', tipo:'pendiente', due:null, who:'PwC', note:'', reunion:null, done:false, source:'manual'},
+  {id:17, desc:'Contestar mail de Julián N. Gómez Sandoval (EY) — URGENTE', label:'ey', sub:'', tipo:'pendiente', due:null, who:'Julian.Gomez@ar.ey.com', note:'', reunion:null, done:false, source:'manual'},
+  {id:18, desc:'Organizar call semanal con EY para revisar esquemas contables', label:'ey', sub:'', tipo:'pendiente', due:null, who:'Troyelli / Vázquez / Araoz', note:'', reunion:null, done:false, source:'manual'},
+  {id:19, desc:'Banco Retail — explorar minutas [Banco Arg] / End-game', label:'retail', sub:'', tipo:'info', due:null, who:null, note:'Fase exploratoria.', reunion:null, done:false, source:'manual'},
+  // completados manuales iniciales
+  {id:20, desc:'Depósitos Remunerados — revisados y enviados a FPS', label:'modelos', sub:'Depósitos Remunerados', tipo:'info', due:null, who:'FPS', note:'', reunion:null, done:true, source:'manual'},
+  {id:21, desc:'Plazo Fijo — modelo revisado y enviado a FPS', label:'modelos', sub:'Plazos Fijos', tipo:'info', due:null, who:'FPS', note:'', reunion:null, done:true, source:'manual'},
+  {id:22, desc:'Call — modelo revisado y enviado a FPS', label:'modelos', sub:'Call', tipo:'info', due:null, who:'FPS', note:'', reunion:null, done:true, source:'manual'},
+  {id:23, desc:'Nostro Remuneradas — modelo revisado y enviado a FPS', label:'modelos', sub:'Nostro Remuneradas', tipo:'info', due:null, who:'FPS', note:'', reunion:null, done:true, source:'manual'},
+  // JIRA issues reales (cargados en cold-start, se actualizan con sync)
+  {id:50, desc:'EVEREST-195 · Contabilidad - Parametrización del módulo', label:'bantotal', sub:'', tipo:'seguimiento', due:null, who:'Lu (asignado)', note:'OT en curso. Estado: Aprobada.', reunion:null, done:false, source:'jira', jiraKey:'EVEREST-195', jiraStatus:'Aprobada'},
+  {id:51, desc:'EVEREST-194 · Contabilidad - Plan de cuentas', label:'fps', sub:'Plan de cuentas', tipo:'seguimiento', due:null, who:'Lu (asignado)', note:'OT en curso. Estado: Aprobada.', reunion:null, done:false, source:'jira', jiraKey:'EVEREST-194', jiraStatus:'Aprobada'},
+  {id:52, desc:'EVEREST-197 · Contabilidad - Consulta de mayor de saldos', label:'bantotal', sub:'', tipo:'seguimiento', due:null, who:'Lu (asignado)', note:'OT en curso. Estado: Aprobada.', reunion:null, done:false, source:'jira', jiraKey:'EVEREST-197', jiraStatus:'Aprobada'},
+  {id:53, desc:'EVEREST-147 · Procesos Batch y Riesgos - implementación de procesos', label:'fps', sub:'', tipo:'seguimiento', due:null, who:'Lu (asignado)', note:'OT en curso. Estado: Aprobada.', reunion:null, done:false, source:'jira', jiraKey:'EVEREST-147', jiraStatus:'Aprobada'},
+  {id:54, desc:'EVEREST-114 · Enviar asientos contables de ajuste (incl. venta título Ori)', label:'modelos', sub:'Títulos Públicos', tipo:'pendiente', due:null, who:'Lu (asignado)', note:'Tipo: Pendiente MELI. Requiere acción de Lu.', reunion:null, done:false, source:'jira', jiraKey:'EVEREST-114', jiraStatus:'Pendiente MELI'},
+];
+
+// ── SCHEDULED TASK INJECTION — auto-actualizado por Claude (no editar a mano) ─
+// Última sync: 12/05/2026 21:15 hs ART
+const SCHEDULED_GSYNC = '12/05/2026, 21:15 hs';
+const SCHEDULED_GMAIL_ITEMS = [
+  {id:300,desc:'ECL - Provisiones NIF',label:'fps',sub:'',tipo:'seguimiento',due:null,who:'romina.buenaventura · martin.giofre',note:'Romina Buenaventura sumó a Martin Giofre al hilo (19:37 hs). Lu ya respondió a Ana Cisneros (ext_analcisn) sobre ECL / previsiones NIF. Hilo activo — seguir conversación con Martin.',reunion:null,done:false,source:'gmail',syncDate:'12 may 19:37'},
+  {id:301,desc:'Notas de reunión: "Banco AR — Revaluo y AxI"',label:'fps',sub:'AxI',tipo:'info',due:null,who:'gemini-notes (automático)',note:'Notas automáticas Gemini de la reunión Banco AR - Revaluo y AxI, 12 mayo 21:03 hs. Solo lectura.',reunion:'Banco AR - Revaluo y AxI',done:false,source:'gmail',syncDate:'12 may 21:03'},
+  {id:302,desc:'Notas de reunión: "Integración SAP / Bantotal"',label:'bantotal',sub:'Integración SAP',tipo:'info',due:null,who:'gemini-notes (automático)',note:'Notas automáticas Gemini de la reunión Integración SAP / Bantotal, 12 mayo 20:12 hs. Solo lectura.',reunion:'Integración SAP / Bantotal',done:false,source:'gmail',syncDate:'12 may 20:12'},
+];
+
+function load(){
+  try{
+    const s=localStorage.getItem('ev7_items'); items=s?JSON.parse(s):DEFAULTS.map(x=>({...x}));
+    const n=localStorage.getItem('ev7_nid'); if(n)nid=parseInt(n);
+    const gs=localStorage.getItem('ev7_gsync'); if(gs)lastGsync=gs;
+    const js=localStorage.getItem('ev7_jsync'); if(js)lastJsync=js;
+  }catch(e){items=DEFAULTS.map(x=>({...x}));}
+  // Inyección automática de Gmail desde scheduled task
+  if(SCHEDULED_GMAIL_ITEMS&&SCHEDULED_GMAIL_ITEMS.length){
+    const doneIds=new Set(items.filter(i=>i.source==='gmail'&&i.done).map(i=>i.id));
+    items=items.filter(i=>i.source!=='gmail');
+    SCHEDULED_GMAIL_ITEMS.forEach(ni=>items.push({...ni,done:doneIds.has(ni.id)}));
+    if(SCHEDULED_GSYNC)lastGsync=SCHEDULED_GSYNC;
+    save();
+  }
+}
+function save(){
+  try{
+    localStorage.setItem('ev7_items',JSON.stringify(items));
+    localStorage.setItem('ev7_nid',String(nid));
+    if(lastGsync)localStorage.setItem('ev7_gsync',lastGsync);
+    if(lastJsync)localStorage.setItem('ev7_jsync',lastJsync);
+  }catch(e){}
+}
+
+function lm(id){return LABELS.find(l=>l.id===id)||LABELS[0];}
+function tc(t){return TIPO[t]||TIPO.info;}
+function dc(due,done){if(done||!due)return '';const d=new Date(due),n=new Date();n.setHours(0,0,0,0);d.setHours(0,0,0,0);const diff=(d-n)/86400000;return diff<0?'ov':diff<=4?'soon':'';}
+function fd(s){if(!s)return '';const[y,m,d]=s.split('-');const ms=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];return `${parseInt(d)} ${ms[parseInt(m)-1]}`;}
+function filt(list){let r=list;if(sq)r=r.filter(i=>i.desc.toLowerCase().includes(sq)||(i.note||'').toLowerCase().includes(sq)||(i.who||'').toLowerCase().includes(sq));if(fl)r=r.filter(i=>i.label===fl);return r;}
+function routeGmail(subj,snip,from){const t=`${subj} ${snip} ${from}`.toLowerCase();for(const r of ROUTES)if(r.p.test(t))return{label:r.label,sub:r.sub,tipo:r.tipo};return{label:'fps',sub:'',tipo:'info'};}
+function isJiraDone(status){return JIRA_DONE_STATUSES.some(s=>status.toLowerCase().includes(s));}
+function jiraLabel(summary){const t=summary.toLowerCase();if(/contabilidad|plan.?cuentas|mayor.?saldos|asientos/.test(t))return'bantotal';if(/batch|riesgos/.test(t))return'fps';if(/integraci[oó]n|sap/.test(t))return'bantotal';return'bantotal';}
+
+// ── GMAIL SYNC ────────────────────────────────────────────────────────────────
+async function syncGmail(){
+  setSyncing('gmail',true);
+  showBanner('Buscando emails nuevos en Gmail…','');
+  try{
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:`Sos el asistente de Lujan Usieto (${LU}), referente contable del Proyecto Everest, banco argentino regulado por BCRA.
+Usá Gmail MCP para buscar threads relevantes de los últimos 30 días con estas queries:
+- "Bantotal SAP BCRA contabilidad banco Argentina newer_than:30d"
+- "AxI diferencia cotización FPS finops acc corp newer_than:30d"
+- "EY PwC auditoría frente contable newer_than:30d"
+
+Para cada thread devolvé SOLO un JSON array (sin markdown, sin texto):
+[{"threadId":"...","subject":"...","from":"...","date":"DD MMM","snippet":"...","luReplied":true/false}]
+luReplied=true si ${LU} aparece como sender en algún mensaje del thread.`,
+        messages:[{role:'user',content:'Busca los emails y devuelve el JSON.'}],
+        mcp_servers:[{type:'url',url:'https://gmailmcp.googleapis.com/mcp/v1',name:'gmail'}]
+      })
+    });
+    const data = await res.json();
+    const text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    const toolRes = (data.content||[]).filter(b=>b.type==='mcp_tool_result');
+    let threads=[];
+    try{const m=text.match(/\[[\s\S]*\]/);if(m)threads=JSON.parse(m[0]);}catch(e){}
+    if(!threads.length){
+      for(const tr of toolRes){try{const txt=tr.content?.[0]?.text||'';const m=txt.match(/\[[\s\S]*\]/);if(m){threads=JSON.parse(m[0]);break;}}catch(e){}}
+    }
+    if(threads.length){
+      items=items.filter(i=>i.source!=='gmail');
+      for(const t of threads){
+        const r=routeGmail(t.subject||'',t.snippet||'',t.from||'');
+        items.push({id:nid++,desc:t.subject||'Thread sin asunto',label:r.label,sub:r.sub,tipo:t.luReplied?'info':r.tipo,done:!!t.luReplied,due:null,who:t.from||null,note:t.snippet||null,reunion:null,source:'gmail',syncDate:t.date||null});
+      }
+      lastGsync=new Date().toLocaleString('es-AR');
+      save();
+      showBanner(`✓ ${threads.length} thread${threads.length!==1?'s':''} procesados · ${lastGsync}`,'ok');
+    }else{
+      showBanner('Sin emails nuevos relevantes en los últimos 30 días.','ok');
+    }
+  }catch(err){
+    showBanner('Error conectando con Gmail MCP. Verificá la conexión en Claude Desktop.','err');
+  }
+  setSyncing('gmail',false);
+  renderAll();
+}
+
+// ── JIRA SYNC ─────────────────────────────────────────────────────────────────
+async function syncJira(){
+  setSyncing('jira',true);
+  showBanner('Sincronizando issues de Jira…','');
+  try{
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:`Sos el asistente de Lujan Usieto (${LU}), referente contable del Proyecto Everest en Jira (${CLOUD_ID}).
+Buscá issues del proyecto EVEREST asignados a ${LU} o relacionados a contabilidad, plan de cuentas, AxI, SAP, regímenes informativos.
+Devolvé SOLO un JSON array (sin markdown):
+[{"key":"EVEREST-XXX","summary":"...","status":"...","isDone":true/false,"assigneeEmail":"...","updated":"DD MMM YYYY"}]
+isDone=true si el status es Done, Cerrado, Resuelto, Listo o equivalente.`,
+        messages:[{role:'user',content:'Busca los issues y devuelve el JSON.'}],
+        mcp_servers:[{type:'url',url:'https://mcp.atlassian.com/v1/mcp',name:'atlassian'}]
+      })
+    });
+    const data=await res.json();
+    const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    let issues=[];
+    try{const m=text.match(/\[[\s\S]*\]/);if(m)issues=JSON.parse(m[0]);}catch(e){}
+    if(issues.length){
+      items=items.filter(i=>i.source!=='jira');
+      for(const iss of issues){
+        const label=jiraLabel(iss.summary||'');
+        const tipo=JIRA_TIPO_MAP[iss.status]||'seguimiento';
+        const done=iss.isDone||isJiraDone(iss.status||'');
+        items.push({id:nid++,desc:`${iss.key} · ${iss.summary}`,label,sub:'',tipo:done?'info':tipo,done,due:null,who:iss.assigneeEmail||null,note:`Estado Jira: ${iss.status} · Actualizado: ${iss.updated||''}`,reunion:null,source:'jira',jiraKey:iss.key,jiraStatus:iss.status});
+      }
+      lastJsync=new Date().toLocaleString('es-AR');
+      save();
+      showBanner(`✓ ${issues.length} issue${issues.length!==1?'s':''} sincronizados · ${lastJsync}`,'ok');
+    }else{
+      // fallback: keep cold-start jira items, just refresh status indicator
+      showBanner('Usando datos de Jira en caché. Intentá de nuevo si los datos están desactualizados.','');
+    }
+  }catch(err){
+    showBanner('Error conectando con Jira MCP. Verificá la conexión en Claude Desktop.','err');
+  }
+  setSyncing('jira',false);
+  renderAll();
+}
+
+// ── UI HELPERS ────────────────────────────────────────────────────────────────
+function setSyncing(src,on){
+  const btn=document.getElementById(`btn-${src==='gmail'?'gsync':'jsync'}`);
+  const ico=document.getElementById(`${src==='gmail'?'g':'j'}icon`);
+  if(on){btn.disabled=true;ico.innerHTML='<span class="spinner"></span>';document.getElementById('spulse').classList.add('on');document.getElementById('stext').textContent='Sincronizando…';}
+  else{btn.disabled=false;ico.textContent='↻';document.getElementById('spulse').classList.remove('on');document.getElementById('stext').textContent=lastGsync||lastJsync?`Sync OK`:'Listo';}
+}
+function showBanner(msg,type){
+  const el=document.getElementById('banner');
+  el.textContent=msg;el.className=`banner show${type?' '+type:''}`;
+  if(type==='ok')setTimeout(()=>{el.className='banner';},5000);
+}
+
+// ── CARD ──────────────────────────────────────────────────────────────────────
+function card(item){
+  const l=lm(item.label),t=tc(item.tipo),d=dc(item.due,item.done);
+  const tC=item.done?'':` t-${item.tipo}`;
+  const dC=item.done?' is-done':'';
+  const srcTag=item.source==='gmail'?'<span class="src-tag src-gmail">Gmail</span>':item.source==='jira'?`<span class="src-tag src-jira"><a href="${JIRA_BASE}${item.jiraKey||''}" target="_blank" style="color:inherit;text-decoration:none">${item.jiraKey||'Jira'} ↗</a></span>`:'';
+  return `<div class="icard${tC}${dC}" onclick="openEdit(${item.id})">
+    ${srcTag}
+    <div class="icheck ${item.done?'checked':''}" onclick="tog(event,${item.id})">
+      ${item.done?`<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5" stroke="#3D5A3E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}
+    </div>
+    <div class="icard-body">
+      <div class="ititle${item.done?' done':''}">${item.desc}</div>
+      <div class="imeta">
+        <span class="tag" style="color:${l.color};background:${l.bg}">${l.label}</span>
+        ${item.sub?`<span class="tag" style="color:var(--text-secondary);background:var(--surface2)">${item.sub}</span>`:''}
+        <span class="tag" style="color:${t.color};background:${t.bg}">${t.label}</span>
+        ${item.syncDate?`<span class="tag" style="color:var(--text-muted);background:var(--surface2)">${item.syncDate}</span>`:''}
+      </div>
+      ${item.note?`<div class="inote">${item.note}</div>`:''}
+      ${item.reunion?`<div class="ireunion">📅 ${item.reunion}</div>`:''}
+    </div>
+    <div class="iright">
+      ${item.due?`<div class="idue ${d}">${fd(item.due)}</div>`:''}
+      ${item.who?`<div class="iassign">${item.who}</div>`:''}
+    </div>
+  </div>`;
+}
+
+function toolbar(showLbl=true){
+  return `<div class="list-hdr">
+    <div class="search-wrap">
+      <svg class="search-ico" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.4"/><line x1="8.5" y1="8.5" x2="12" y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input class="search-box" placeholder="Buscar…" oninput="onSQ(this.value)" value="${sq}">
+    </div>
+    ${showLbl?`<select class="fsel" onchange="onFL(this.value)"><option value="">Todos los sistemas</option>${LABELS.map(l=>`<option value="${l.id}" ${fl===l.id?'selected':''}>${l.label}</option>`).join('')}</select>`:''}
+  </div>`;
+}
+
+// ── RENDER VIEWS ──────────────────────────────────────────────────────────────
+function renderPendientes(){
+  const list=filt(items.filter(i=>!i.done&&i.tipo==='pendiente'));
+  const man=list.filter(i=>i.source==='manual');
+  const ext=list.filter(i=>i.source!=='manual');
+  let h=toolbar();
+  if(!list.length)h+='<div class="empty-state"><div class="empty-icon">✓</div>Sin pendientes activos</div>';
+  else{
+    if(man.length)h+=`<div class="item-grid">${man.map(card).join('')}</div>`;
+    if(ext.length)h+=`<div class="sec-label">Desde Gmail / Jira</div><div class="item-grid">${ext.map(card).join('')}</div>`;
+  }
+  document.getElementById('view-pendientes').innerHTML=h;
+}
+function renderSeguimiento(){
+  const list=filt(items.filter(i=>!i.done&&i.tipo==='seguimiento'));
+  const man=list.filter(i=>i.source==='manual');
+  const ext=list.filter(i=>i.source!=='manual');
+  let h=toolbar();
+  if(!list.length)h+='<div class="empty-state"><div class="empty-icon">👁</div>Sin ítems en seguimiento</div>';
+  else{
+    if(man.length)h+=`<div class="item-grid">${man.map(card).join('')}</div>`;
+    if(ext.length)h+=`<div class="sec-label">Desde Gmail / Jira</div><div class="item-grid">${ext.map(card).join('')}</div>`;
+  }
+  document.getElementById('view-seguimiento').innerHTML=h;
+}
+function renderDecisiones(){
+  const list=filt(items.filter(i=>!i.done&&i.tipo==='decision'));
+  document.getElementById('view-decisiones').innerHTML=toolbar()+(list.length?`<div class="item-grid">${list.map(card).join('')}</div>`:'<div class="empty-state"><div class="empty-icon">⚖</div>Sin decisiones abiertas</div>');
+}
+function renderGmail(){
+  const all=items.filter(i=>i.source==='gmail');
+  const act=all.filter(i=>!i.done),done=all.filter(i=>i.done);
+  let h=`<div class="sync-header"><span class="sync-meta">${lastGsync?`Última sync: ${lastGsync}`:'Sin sincronizar'} · Si Lu respondió → completado automático</span><button class="btn btn-green" onclick="syncGmail()">↻ Sincronizar</button></div>`;
+  if(!all.length)h+=`<div class="empty-state"><div class="empty-icon">📬</div>Hacé click en "Sincronizar" para importar threads de Gmail</div>`;
+  else{
+    if(act.length)h+=`<div class="sec-label">Activos (${act.length})</div><div class="item-grid">${act.map(card).join('')}</div>`;
+    if(done.length)h+=`<div class="sec-label" style="margin-top:1.25rem">Lu respondió — completados (${done.length})</div><div class="item-grid">${done.map(card).join('')}</div>`;
+  }
+  document.getElementById('view-gmail').innerHTML=h;
+  document.getElementById('nc-g').textContent=act.length||0;
+}
+function renderJira(){
+  const all=items.filter(i=>i.source==='jira');
+  const act=all.filter(i=>!i.done),done=all.filter(i=>i.done);
+  let h=`<div class="sync-header"><span class="sync-meta">${lastJsync?`Última sync: ${lastJsync}`:'Cold-start: datos del 12 may 2026'} · Status Done en Jira → completado automático</span><button class="btn btn-green" onclick="syncJira()">↻ Sincronizar</button></div>`;
+  if(!all.length)h+=`<div class="empty-state"><div class="empty-icon">📋</div>Sin issues Jira cargados. Hacé click en Sincronizar.</div>`;
+  else{
+    if(act.length)h+=`<div class="sec-label">Issues activos asignados a Lu (${act.length})</div><div class="item-grid">${act.map(card).join('')}</div>`;
+    if(done.length)h+=`<div class="sec-label" style="margin-top:1.25rem">Done en Jira — completados (${done.length})</div><div class="item-grid">${done.map(card).join('')}</div>`;
+  }
+  document.getElementById('view-jira').innerHTML=h;
+  document.getElementById('nc-j').textContent=act.length||0;
+}
+function renderSistemas(){
+  let h=toolbar(false);
+  LABELS.forEach(l=>{
+    const its=filt(items.filter(i=>!i.done&&i.label===l.id));
+    if(!its.length)return;
+    h+=`<div class="group-hdr"><span class="group-name" style="color:${l.color}">${l.label}</span><span class="group-count">${its.length}</span></div><div class="item-grid" style="margin-bottom:1rem">${its.map(card).join('')}</div>`;
+  });
+  if(!h.includes('item-grid'))h+='<div class="empty-state"><div class="empty-icon">📂</div>Sin ítems activos</div>';
+  document.getElementById('view-sistemas').innerHTML=h;
+}
+function renderCompletados(){
+  const list=filt(items.filter(i=>i.done));
+  const man=list.filter(i=>i.source==='manual');
+  const gm=list.filter(i=>i.source==='gmail');
+  const jr=list.filter(i=>i.source==='jira');
+  const tot=items.filter(i=>i.done).length;
+  let h=toolbar();
+  h+=`<div class="done-info">✓ ${tot} ítem${tot!==1?'s':''} completado${tot!==1?'s':''}<br><strong>Manuales:</strong> solo vos los cerrás · <strong>Gmail:</strong> Lu respondió = completado automático · <strong>Jira:</strong> status Done = completado automático</div>`;
+  if(!list.length)h+='<div class="empty-state"><div class="empty-icon">📭</div>No hay ítems completados todavía</div>';
+  else{
+    if(man.length)h+=`<div class="sec-label">Manuales</div><div class="item-grid">${man.map(card).join('')}</div>`;
+    if(gm.length)h+=`<div class="sec-label" style="margin-top:1rem">Gmail — Lu respondió</div><div class="item-grid">${gm.map(card).join('')}</div>`;
+    if(jr.length)h+=`<div class="sec-label" style="margin-top:1rem">Jira — Done</div><div class="item-grid">${jr.map(card).join('')}</div>`;
+  }
+  document.getElementById('view-completados').innerHTML=h;
+}
+function renderMetrics(){
+  const a=items.filter(i=>!i.done);
+  const p=a.filter(i=>i.tipo==='pendiente').length;
+  const s=a.filter(i=>i.tipo==='seguimiento').length;
+  const d=a.filter(i=>i.tipo==='decision').length;
+  const dn=items.filter(i=>i.done).length;
+  document.getElementById('mrow').innerHTML=[
+    {cls:'m-pend',lbl:'Mis pendientes',val:p,sub:'to-dos de Lu',v:'pendientes'},
+    {cls:'m-seg', lbl:'En seguimiento',val:s,sub:'esperando respuesta',v:'seguimiento'},
+    {cls:'m-dec', lbl:'Decisiones abiertas',val:d,sub:'sin resolver',v:'decisiones'},
+    {cls:'m-done',lbl:'Completados',val:dn,sub:'Gmail+Jira automático',v:'completados'},
+  ].map(r=>`<div class="metric ${r.cls}" onclick="goViewById('${r.v}')"><div class="metric-lbl">${r.lbl}</div><div class="metric-val">${r.val}</div><div class="metric-sub">${r.sub}</div></div>`).join('');
+  document.getElementById('nc-p').textContent=p;
+  document.getElementById('nc-s').textContent=s;
+  document.getElementById('nc-d').textContent=d;
+  document.getElementById('nc-done').textContent=dn;
+  document.getElementById('nc-sys').textContent=a.length;
+}
+function renderAll(){renderMetrics();renderPendientes();renderSeguimiento();renderDecisiones();renderGmail();renderJira();renderSistemas();renderCompletados();}
+
+function goView(v,el){
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  const m=VIEWS[v]||{};
+  document.getElementById('ptitle').textContent=m.title||v;
+  document.getElementById('psub').textContent=m.sub||'';
+}
+function goViewById(v){const el=document.querySelector(`.nav-item[onclick*="'${v}'"]`);goView(v,el);}
+function onSQ(v){sq=v.toLowerCase();renderAll();}
+function onFL(v){fl=v;renderAll();}
+function tog(e,id){e.stopPropagation();const i=items.find(x=>x.id===id);if(!i)return;i.done=!i.done;save();renderAll();}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function initLbls(){document.getElementById('f-label').innerHTML=LABELS.map(l=>`<option value="${l.id}">${l.label}</option>`).join('');}
+function onLbl(){const l=LABELS.find(x=>x.id===document.getElementById('f-label').value);const sel=document.getElementById('f-sub');sel.innerHTML='<option value="">—</option>'+(l&&l.subs.length?l.subs.map(s=>`<option value="${s}">${s}</option>`).join(''):'');}
+function fillMod(item){
+  document.getElementById('f-desc').value=item.desc||'';
+  document.getElementById('f-label').value=item.label||LABELS[0].id;
+  onLbl();
+  setTimeout(()=>{document.getElementById('f-sub').value=item.sub||'';},15);
+  document.getElementById('f-tipo').value=item.tipo||'pendiente';
+  document.getElementById('f-done').value=item.done?'1':'0';
+  document.getElementById('f-due').value=item.due||'';
+  document.getElementById('f-who').value=item.who||'';
+  document.getElementById('f-note').value=item.note||'';
+  document.getElementById('f-reunion').value=item.reunion||'';
+}
+function openModal(){eid=null;document.getElementById('mtitle').textContent='Nuevo ítem';document.getElementById('bdel').style.display='none';fillMod({label:LABELS[0].id});document.getElementById('mbd').classList.add('open');}
+function openEdit(id){const item=items.find(x=>x.id===id);if(!item)return;eid=id;document.getElementById('mtitle').textContent='Editar ítem';document.getElementById('bdel').style.display='block';fillMod(item);document.getElementById('mbd').classList.add('open');}
+function closeMod(){document.getElementById('mbd').classList.remove('open');}
+function closeBd(e){if(e.target===document.getElementById('mbd'))closeMod();}
+function saveItem(){
+  const desc=document.getElementById('f-desc').value.trim();if(!desc){document.getElementById('f-desc').focus();return;}
+  const existing=eid?items.find(i=>i.id===eid):null;
+  const item={id:eid||nid++,desc,label:document.getElementById('f-label').value,sub:document.getElementById('f-sub').value,tipo:document.getElementById('f-tipo').value,done:document.getElementById('f-done').value==='1',due:document.getElementById('f-due').value||null,who:document.getElementById('f-who').value.trim()||null,note:document.getElementById('f-note').value.trim()||null,reunion:document.getElementById('f-reunion').value.trim()||null,source:existing?existing.source||'manual':'manual',jiraKey:existing?.jiraKey,jiraStatus:existing?.jiraStatus};
+  if(eid){const idx=items.findIndex(i=>i.id===eid);if(idx>=0)items[idx]=item;}else items.push(item);
+  save();closeMod();renderAll();
+}
+function delItem(){if(!eid)return;if(!confirm('¿Eliminar?'))return;items=items.filter(i=>i.id!==eid);save();closeMod();renderAll();}
+function procesarReunion(){sendPrompt('Quiero procesar las notas de una reunión del Proyecto Everest para extraer mis pendientes. Te pego las notas ahora.');}
+
+function init(){
+  const d=new Date();
+  document.getElementById('sdate').innerHTML=d.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'})+'<br>'+d.getFullYear();
+  load();initLbls();renderAll();
+}
+init();
+</script>
+</body>
+</html>
