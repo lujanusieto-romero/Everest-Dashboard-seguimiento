@@ -98,6 +98,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-prim
 .inote{font-size:11px;color:var(--text-secondary);margin-top:6px;line-height:1.5;padding-top:6px;border-top:1px solid var(--border-soft)}
 .ireunion{font-size:10px;color:var(--text-muted);margin-top:4px;font-style:italic}
 .iright{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.src-gemini{color:#7C3AED;background:#F3EEFF}
+.imeetings{font-size:10.5px;margin-top:8px;padding-top:7px;border-top:1px solid var(--border-soft);display:flex;flex-direction:column;gap:3px}
+.imeet-row{color:var(--text-muted);line-height:1.5}
+.imeet-lbl{font-weight:600;color:var(--text-secondary)}
+.imeet-notes{color:var(--text-muted);font-style:italic;font-size:10px;line-height:1.4;margin-top:1px}
+.imeet-acts{margin-top:4px;display:flex;flex-direction:column;gap:2px}
+.imeet-act{font-size:10.5px;color:var(--t-pendiente);line-height:1.4;padding-left:14px;position:relative}
+.imeet-act::before{content:'✏';position:absolute;left:0;font-size:9px;top:1px}
 .idue{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);padding:2px 6px;border-radius:4px;background:var(--surface2);white-space:nowrap}
 .idue.ov{color:var(--t-pendiente);background:var(--t-pendiente-bg);font-weight:500}
 .idue.soon{color:var(--t-seguimiento);background:var(--t-seguimiento-bg);font-weight:500}
@@ -145,7 +153,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-prim
   <a class="nav-item" onclick="goView('seguimiento',this)"><span class="nav-dot" style="background:#B7770D"></span>En seguimiento<span class="nav-count" id="nc-s">0</span></a>
   <a class="nav-item" onclick="goView('decisiones',this)"><span class="nav-dot" style="background:#1C3B5A"></span>Decisiones abiertas<span class="nav-count" id="nc-d">0</span></a>
   <span class="nav-section" style="margin-top:.75rem">Fuentes</span>
-  <a class="nav-item" onclick="goView('gmail',this)"><span class="nav-dot" style="background:#4285f4"></span>Gmail<span class="nav-count" id="nc-g">0</span></a>
+  <a class="nav-item" onclick="goView('gmail',this)"><span class="nav-dot" style="background:#4285f4"></span>Gmail + Minutas<span class="nav-count" id="nc-g">0</span></a>
   <a class="nav-item" onclick="goView('jira',this)"><span class="nav-dot" style="background:#0052CC"></span>Jira · EVEREST<span class="nav-count" id="nc-j">0</span></a>
   <span class="nav-section" style="margin-top:.75rem">Organización</span>
   <a class="nav-item" onclick="goView('sistemas',this)"><span class="nav-dot" style="background:#A8A29E"></span>Por sistema<span class="nav-count" id="nc-sys">0</span></a>
@@ -235,7 +243,7 @@ const VIEWS = {
   pendientes:  {title:'Mis pendientes',      sub:'To-dos asignados a Lu'},
   seguimiento: {title:'En seguimiento',      sub:'Esperando respuesta de otros'},
   decisiones:  {title:'Decisiones abiertas', sub:'Decisiones sin resolver'},
-  gmail:       {title:'Gmail',               sub:'Threads relevantes — Lu respondió = completado automático'},
+  gmail:       {title:'Gmail + Minutas',      sub:'Threads Gmail · Accionables de minutas Gemini'},
   jira:        {title:'Jira · EVEREST',      sub:'Issues activos — Done en Jira = completado automático'},
   sistemas:    {title:'Por sistema',         sub:'Vista agrupada por label'},
   completados: {title:'Completados',         sub:'Manuales: vos los cerrás · Gmail/Jira: se cierran solos'},
@@ -337,6 +345,43 @@ const CALENDAR_EVENTS = [
   {title:'Banco Arg: Definición Facturación [Mesa Nucleo]',date:'2026-05-22',start:'17:00',end:'17:30',attendees:['lujan.usieto','jose.derose','romina.buenaventura','leonardo.troncone','martin.giofre'],label:'bantotal',sublabel:'',everest:true},
 ];
 
+// ── MEETING NOTES (minutas Gemini) ─────────────────────────────────────────
+const MEETING_NOTES = [
+  {title:'[Everest] - Bantotal & Coelsa',date:'2026-05-21',label:'bantotal',sub:'COELSA',
+   keyNotes:'Conexiones COELSA/Interbanking, SEDIP: gestión de admisión y transmisión.',
+   luActions:['Definir operativa contable SEDIP: analizar si implica creación automática de plazo fijo']},
+  {title:'Everest - Revisión de flujos y dependencias',date:'2026-05-20',label:'fps',sub:'',
+   keyNotes:'Revisión flujos contables para prehabilitación. Mapeo pago de impuestos.',
+   luActions:['Revisar y unificar flujos contables para prehabilitación','Integrar mapeo de procesos de pago de impuestos en archivo compartido']},
+  {title:'Cierre de gaps Accounting - Everest',date:'2026-05-19',label:'gap',sub:'',
+   keyNotes:'Cierre gap etapa 1. Inventario de procesos, manuales operativos, validaciones de modelos.',
+   luActions:['Enviar inventario de procesos al equipo de riesgos','Diagramar esquema integral de manuales operativos (contabilidad + controles)','Reunirse con Tere para destrabar validaciones de modelos contables','Crear hoja de cálculo para seguimiento de modelos contables']},
+  {title:'Revisar CeBe/Ceco Banco Arg',date:'2026-05-19',label:'bantotal',sub:'Módulos pendientes',
+   keyNotes:'Centros de beneficio/costo. Análisis productos bancarios etapa 1.',
+   luActions:['Reagendar sesión de seguimiento CeBe/Ceco próxima semana','Enviar archivo con productos de etapa 1']},
+  {title:'[Banco Arg] Valoración ME',date:'2026-05-19',label:'modelos',sub:'FX Spot',
+   keyNotes:'Cuarta moneda BCRA en SAP S4 Banking. No duplicar asientos revaluación. Modelo VME con Analía.',
+   luActions:[]},
+  {title:'Everest :: Mesa Building',date:'2026-05-20',label:'retail',sub:'',
+   keyNotes:'Pruebas sprint 1 antes del viernes. Dependencias: Interbanking, SAP, Bloomberg, Coelsa.',
+   luActions:[]},
+  {title:'Revision Esquemas Everest - EY',date:'2026-05-22',label:'ey',sub:'',
+   keyNotes:'Revisión semanal de esquemas contables con equipo EY (09:00 hs recurrente).',
+   luActions:[]},
+];
+
+const SCHEDULED_GEMINI_ITEMS = [
+  {id:360,desc:'SEDIP contable — definir operativa y si implica creación automática de plazo fijo',label:'bantotal',sub:'COELSA',tipo:'pendiente',due:null,who:'Charly / Bantotal',note:'Reunión 21 may: [Everest] - Bantotal & Coelsa. Analizar SEDIP: admisión y transmisión, ¿crea plazo fijo automático?',reunion:'[Everest] - Bantotal & Coelsa',done:false,source:'gemini',syncDate:'21 may'},
+  {id:361,desc:'Revisar y unificar flujos contables para prehabilitación',label:'fps',sub:'',tipo:'pendiente',due:null,who:'equipo FPS',note:'Reunión 20 may: Revisión de flujos y dependencias. Filtrar y unificar flujos para prehabilitación.',reunion:'Revisión de flujos y dependencias',done:false,source:'gemini',syncDate:'20 may'},
+  {id:362,desc:'Integrar mapeo de procesos de pago de impuestos en archivo compartido',label:'bantotal',sub:'Pago de impuestos',tipo:'pendiente',due:null,who:'equipo Bantotal',note:'Reunión 20 may: Revisión de flujos y dependencias.',reunion:'Revisión de flujos y dependencias',done:false,source:'gemini',syncDate:'20 may'},
+  {id:363,desc:'Compartir inventario de procesos con equipo de riesgos',label:'gap',sub:'',tipo:'pendiente',due:null,who:'equipo riesgos',note:'Reunión 19 may: Cierre de gaps Accounting. Enviar inventario al equipo de riesgos.',reunion:'Cierre de gaps Accounting - Everest',done:false,source:'gemini',syncDate:'19 may'},
+  {id:364,desc:'Diagramar esquema integral de manuales operativos (contabilidad + controles)',label:'gap',sub:'',tipo:'pendiente',due:null,who:'equipo contabilidad',note:'Reunión 19 may: Cierre de gaps Accounting. Esquema integral contabilidad y controles.',reunion:'Cierre de gaps Accounting - Everest',done:false,source:'gemini',syncDate:'19 may'},
+  {id:365,desc:'Reunirse con Tere para destrabar validaciones de modelos contables pendientes',label:'modelos',sub:'',tipo:'pendiente',due:'2026-05-27',who:'Tere (Felipe Baena)',note:'Reunión 19 may: Cierre de gaps Accounting. Validaciones de modelos bloqueadas — destrabar con Tere.',reunion:'Cierre de gaps Accounting - Everest',done:false,source:'gemini',syncDate:'19 may'},
+  {id:366,desc:'Crear hoja de cálculo para registrar y hacer seguimiento a modelos contables',label:'modelos',sub:'',tipo:'pendiente',due:null,who:null,note:'Reunión 19 may: Cierre de gaps Accounting. Registro y seguimiento de todos los modelos contables.',reunion:'Cierre de gaps Accounting - Everest',done:false,source:'gemini',syncDate:'19 may'},
+  {id:367,desc:'Reagendar sesión CeBe/Ceco — continuar análisis de productos bancarios',label:'bantotal',sub:'Módulos pendientes',tipo:'pendiente',due:'2026-05-29',who:'equipo Bantotal',note:'Reunión 19 may: Revisar CeBe/Ceco. Programar para próxima semana.',reunion:'Revisar CeBe/Ceco Banco Arg',done:false,source:'gemini',syncDate:'19 may'},
+  {id:368,desc:'Enviar archivo de productos de etapa 1 al equipo',label:'bantotal',sub:'Módulos pendientes',tipo:'pendiente',due:null,who:'equipo Bantotal',note:'Reunión 19 may: Revisar CeBe/Ceco. Compartir presentación de productos etapa 1.',reunion:'Revisar CeBe/Ceco Banco Arg',done:false,source:'gemini',syncDate:'19 may'},
+];
+
 function load(){
   try{
     const s=localStorage.getItem('ev7_items'); items=s?JSON.parse(s):DEFAULTS.map(x=>({...x}));
@@ -365,6 +410,16 @@ function load(){
       items.push({...ni,done});
     });
     if(SCHEDULED_JSYNC)lastJsync=SCHEDULED_JSYNC;
+    save();
+  }
+  // Inyección Gemini (minutas) — usa desc como clave estable para preservar tildados
+  if(SCHEDULED_GEMINI_ITEMS&&SCHEDULED_GEMINI_ITEMS.length){
+    const prevGemini=new Map(items.filter(i=>i.source==='gemini').map(i=>[i.desc,i]));
+    items=items.filter(i=>i.source!=='gemini');
+    SCHEDULED_GEMINI_ITEMS.forEach(ni=>{
+      const prev=prevGemini.get(ni.desc);
+      items.push({...ni,done:prev?prev.done:ni.done});
+    });
     save();
   }
 }
@@ -501,7 +556,42 @@ function card(item){
   const l=lm(item.label),t=tc(item.tipo),d=dc(item.due,item.done);
   const tC=item.done?'':` t-${item.tipo}`;
   const dC=item.done?' is-done':'';
-  const srcTag=item.source==='gmail'?'<span class="src-tag src-gmail">Gmail</span>':item.source==='jira'?`<span class="src-tag src-jira"><a href="${JIRA_BASE}${item.jiraKey||''}" target="_blank" style="color:inherit;text-decoration:none">${item.jiraKey||'Jira'} ↗</a></span>`:'';
+  const srcTag=item.source==='gmail'?'<span class="src-tag src-gmail">Gmail</span>':
+    item.source==='jira'?`<span class="src-tag src-jira"><a href="${JIRA_BASE}${item.jiraKey||''}" target="_blank" style="color:inherit;text-decoration:none">${item.jiraKey||'Jira'} ↗</a></span>`:
+    item.source==='gemini'?'<span class="src-tag src-gemini">Minutas</span>':'';
+
+  // Meeting context — encontrar nota relacionada
+  let meetingHtml='';
+  if(!item.done){
+    const relNotes=MEETING_NOTES.filter(m=>m.label===item.label)
+      .sort((a,b)=>b.date.localeCompare(a.date));
+    let primaryNote=null;
+    if(item.reunion) primaryNote=MEETING_NOTES.find(m=>m.title===item.reunion)||relNotes[0];
+    else if(item.sub) primaryNote=relNotes.find(m=>m.sub&&m.sub.toLowerCase().includes(item.sub.toLowerCase()))||relNotes[0];
+    else primaryNote=relNotes[0];
+    const todayStr=new Date().toISOString().slice(0,10);
+    const nextEvt=CALENDAR_EVENTS.filter(e=>e.everest&&e.label===item.label&&e.date>=todayStr)
+      .sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start))[0];
+    if(primaryNote||nextEvt){
+      const MS=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      meetingHtml='<div class="imeetings">';
+      if(primaryNote){
+        const [,pm,pd]=primaryNote.date.split('-');
+        meetingHtml+=`<div class="imeet-row"><span class="imeet-lbl">Última reunión:</span> ${parseInt(pd)} ${MS[parseInt(pm)-1]} — ${primaryNote.title}</div>`;
+        if(primaryNote.keyNotes)meetingHtml+=`<div class="imeet-notes">${primaryNote.keyNotes.length>95?primaryNote.keyNotes.slice(0,95)+'…':primaryNote.keyNotes}</div>`;
+        // Mostrar accionables solo para items NO gemini (los gemini YA son el accionable)
+        if(item.source!=='gemini'&&primaryNote.luActions&&primaryNote.luActions.length){
+          meetingHtml+=`<div class="imeet-acts">${primaryNote.luActions.slice(0,3).map(a=>`<div class="imeet-act">${a}</div>`).join('')}</div>`;
+        }
+      }
+      if(nextEvt){
+        const isToday=nextEvt.date===todayStr;
+        meetingHtml+=`<div class="imeet-row" style="margin-top:3px"><span class="imeet-lbl">Próxima:</span> ${isToday?`Hoy ${nextEvt.start}`:nextEvt.date===new Date(Date.now()+86400000).toISOString().slice(0,10)?`Mañana ${nextEvt.start}`:nextEvt.date+' '+nextEvt.start} — ${nextEvt.title}</div>`;
+      }
+      meetingHtml+='</div>';
+    }
+  }
+
   return `<div class="icard${tC}${dC}" onclick="openEdit(${item.id})">
     ${srcTag}
     <div class="icheck ${item.done?'checked':''}" onclick="tog(event,${item.id})">
@@ -516,7 +606,8 @@ function card(item){
         ${item.syncDate?`<span class="tag" style="color:var(--text-muted);background:var(--surface2)">${item.syncDate}</span>`:''}
       </div>
       ${item.note?`<div class="inote">${item.note}</div>`:''}
-      ${item.reunion?`<div class="ireunion">📅 ${item.reunion}</div>`:''}
+      ${item.reunion&&item.source!=='gemini'?`<div class="ireunion">📅 ${item.reunion}</div>`:''}
+      ${meetingHtml}
     </div>
     <div class="iright">
       ${item.due?`<div class="idue ${d}">${fd(item.due)}</div>`:''}
@@ -565,16 +656,21 @@ function renderDecisiones(){
   document.getElementById('view-decisiones').innerHTML=toolbar()+(list.length?`<div class="item-grid">${list.map(card).join('')}</div>`:'<div class="empty-state"><div class="empty-icon">⚖</div>Sin decisiones abiertas</div>');
 }
 function renderGmail(){
-  const all=items.filter(i=>i.source==='gmail');
-  const act=all.filter(i=>!i.done),done=all.filter(i=>i.done);
-  let h=`<div class="sync-header"><span class="sync-meta">${lastGsync?`Actualizado: ${lastGsync}`:'Sin datos'} · Si Lu respondió → completado automático</span></div>`;
-  if(!all.length)h+=`<div class="empty-state"><div class="empty-icon">📬</div>Sin threads de Gmail cargados</div>`;
+  const allGm=items.filter(i=>i.source==='gmail');
+  const allGe=items.filter(i=>i.source==='gemini');
+  const actGm=allGm.filter(i=>!i.done),doneGm=allGm.filter(i=>i.done);
+  const actGe=allGe.filter(i=>!i.done),doneGe=allGe.filter(i=>i.done);
+  const totalAct=actGm.length+actGe.length;
+  let h=`<div class="sync-header"><span class="sync-meta">${lastGsync?`Gmail: ${lastGsync}`:'Gmail: sin datos'} · Minutas Gemini cargadas automáticamente</span></div>`;
+  if(!allGm.length&&!allGe.length){h+=`<div class="empty-state"><div class="empty-icon">📬</div>Sin threads ni minutas cargados</div>`;}
   else{
-    if(act.length)h+=`<div class="sec-label">Activos (${act.length})</div><div class="item-grid">${act.map(card).join('')}</div>`;
-    if(done.length)h+=`<div class="sec-label" style="margin-top:1.25rem">Lu respondió — completados (${done.length})</div><div class="item-grid">${done.map(card).join('')}</div>`;
+    if(actGm.length)h+=`<div class="sec-label">Gmail — Threads activos (${actGm.length})</div><div class="item-grid">${actGm.map(card).join('')}</div>`;
+    if(actGe.length)h+=`<div class="sec-label" style="${actGm.length?'margin-top:1.25rem':''}">🟣 Minutas Gemini — Mis accionables (${actGe.length})</div><div class="item-grid">${actGe.map(card).join('')}</div>`;
+    const allDone=[...doneGm,...doneGe];
+    if(allDone.length)h+=`<div class="sec-label" style="margin-top:1.25rem">Completados (${allDone.length})</div><div class="item-grid">${allDone.map(card).join('')}</div>`;
   }
   document.getElementById('view-gmail').innerHTML=h;
-  document.getElementById('nc-g').textContent=act.length||0;
+  document.getElementById('nc-g').textContent=totalAct||0;
 }
 function renderJira(){
   const all=items.filter(i=>i.source==='jira');
@@ -602,14 +698,16 @@ function renderCompletados(){
   const list=filt(items.filter(i=>i.done));
   const man=list.filter(i=>i.source==='manual');
   const gm=list.filter(i=>i.source==='gmail');
+  const ge=list.filter(i=>i.source==='gemini');
   const jr=list.filter(i=>i.source==='jira');
   const tot=items.filter(i=>i.done).length;
   let h=toolbar();
-  h+=`<div class="done-info">✓ ${tot} ítem${tot!==1?'s':''} completado${tot!==1?'s':''}<br><strong>Manuales:</strong> solo vos los cerrás · <strong>Gmail:</strong> Lu respondió = completado automático · <strong>Jira:</strong> status Done = completado automático</div>`;
+  h+=`<div class="done-info">✓ ${tot} ítem${tot!==1?'s':''} completado${tot!==1?'s':''}<br><strong>Manuales:</strong> solo vos los cerrás · <strong>Gmail:</strong> Lu respondió = completado · <strong>Jira:</strong> Done = completado · <strong>Minutas:</strong> marcás vos</div>`;
   if(!list.length)h+='<div class="empty-state"><div class="empty-icon">📭</div>No hay ítems completados todavía</div>';
   else{
     if(man.length)h+=`<div class="sec-label">Manuales</div><div class="item-grid">${man.map(card).join('')}</div>`;
     if(gm.length)h+=`<div class="sec-label" style="margin-top:1rem">Gmail — Lu respondió</div><div class="item-grid">${gm.map(card).join('')}</div>`;
+    if(ge.length)h+=`<div class="sec-label" style="margin-top:1rem">Minutas Gemini — completados</div><div class="item-grid">${ge.map(card).join('')}</div>`;
     if(jr.length)h+=`<div class="sec-label" style="margin-top:1rem">Jira — Done</div><div class="item-grid">${jr.map(card).join('')}</div>`;
   }
   document.getElementById('view-completados').innerHTML=h;
