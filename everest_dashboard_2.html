@@ -150,6 +150,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-prim
   <span class="nav-section" style="margin-top:.75rem">Organización</span>
   <a class="nav-item" onclick="goView('sistemas',this)"><span class="nav-dot" style="background:#A8A29E"></span>Por sistema<span class="nav-count" id="nc-sys">0</span></a>
   <a class="nav-item" onclick="goView('completados',this)"><span class="nav-dot" style="background:#3D5A3E"></span>Completados<span class="nav-count" id="nc-done">0</span></a>
+  <span class="nav-section" style="margin-top:.75rem">Agenda</span>
+  <a class="nav-item" onclick="goView('agenda',this)"><span class="nav-dot" style="background:#B7770D"></span>Hoy &amp; mañana<span class="nav-count" id="nc-cal">0</span></a>
   <div class="sidebar-footer">
     <div class="sidebar-date" id="sdate"></div>
     <div class="sync-row"><span class="pulse" id="spulse"></span><span id="stext">Listo</span></div>
@@ -178,6 +180,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-prim
   <div id="view-jira"        class="view"></div>
   <div id="view-sistemas"    class="view"></div>
   <div id="view-completados" class="view"></div>
+  <div id="view-agenda"      class="view"></div>
 </main>
 </div>
 
@@ -239,6 +242,7 @@ const VIEWS = {
   jira:        {title:'Jira · EVEREST',      sub:'Issues activos — Done en Jira = completado automático'},
   sistemas:    {title:'Por sistema',         sub:'Vista agrupada por label'},
   completados: {title:'Completados',         sub:'Manuales: vos los cerrás · Gmail/Jira: se cierran solos'},
+  agenda:      {title:'Agenda Everest',      sub:'Reuniones de hoy y mañana relevantes para el proyecto'},
 };
 
 // Gmail thread routing
@@ -309,12 +313,31 @@ const DEFAULTS = [
 ];
 
 // ── SCHEDULED TASK INJECTION — auto-actualizado por Claude (no editar a mano) ─
-// Última sync: 12/05/2026 21:15 hs ART
-const SCHEDULED_GSYNC = '12/05/2026, 21:15 hs';
+// Última sync: 22/05/2026 09:00 hs ART
+const SCHEDULED_GSYNC = '22/05/2026, 09:00 hs';
 const SCHEDULED_GMAIL_ITEMS = [
-  {id:300,desc:'ECL - Provisiones NIF',label:'fps',sub:'',tipo:'seguimiento',due:null,who:'romina.buenaventura · martin.giofre',note:'Romina Buenaventura sumó a Martin Giofre al hilo (19:37 hs). Lu ya respondió a Ana Cisneros (ext_analcisn) sobre ECL / previsiones NIF. Hilo activo — seguir conversación con Martin.',reunion:null,done:false,source:'gmail',syncDate:'12 may 19:37'},
-  {id:301,desc:'Notas de reunión: "Banco AR — Revaluo y AxI"',label:'fps',sub:'AxI',tipo:'info',due:null,who:'gemini-notes (automático)',note:'Notas automáticas Gemini de la reunión Banco AR - Revaluo y AxI, 12 mayo 21:03 hs. Solo lectura.',reunion:'Banco AR - Revaluo y AxI',done:false,source:'gmail',syncDate:'12 may 21:03'},
-  {id:302,desc:'Notas de reunión: "Integración SAP / Bantotal"',label:'bantotal',sub:'Integración SAP',tipo:'info',due:null,who:'gemini-notes (automático)',note:'Notas automáticas Gemini de la reunión Integración SAP / Bantotal, 12 mayo 20:12 hs. Solo lectura.',reunion:'Integración SAP / Bantotal',done:false,source:'gmail',syncDate:'12 may 20:12'},
+  {id:310,desc:'VME - Ejemplo Valoración, Lineamientos Banking y Draft Inventario Proveedores',label:'modelos',sub:'',tipo:'pendiente',due:null,who:'Analía Cisneros (ext_analcisn)',note:'Documentación para revisar antes de la reunión del miércoles 27/05. Incluye: Ejemplo de Valoración, Lineamientos Banking y Draft Inventario de Proveedores. Lu es destinataria directa, sin respuesta aún.',reunion:'Reunión miércoles 27/05',done:false,source:'gmail',syncDate:'22 may 01:14'},
+  {id:311,desc:'Banco Argentina - Proceso AxI (discusión libro 0L / IFRS)',label:'fps',sub:'AxI',tipo:'seguimiento',due:null,who:'ext_analcisn · romina.buenaventura',note:'AxI en libro 0L (IFRS puro): MBA se agrega a sociedades arg. que ejecutan AxI en SAP S/4. Lu en CC — sin acción requerida, conversación resuelta entre Analía y Romi.',reunion:null,done:false,source:'gmail',syncDate:'20 may'},
+  {id:312,desc:'Notas reunión: "[Everest] - Bantotal & Coelsa", 21 may',label:'bantotal',sub:'COELSA',tipo:'info',due:null,who:'gemini-notes (automático)',note:'Notas automáticas Gemini de la reunión [Everest] - Bantotal & Coelsa del 21 mayo. Revisar posibles action items.',reunion:'[Everest] - Bantotal & Coelsa',done:false,source:'gmail',syncDate:'21 may'},
+];
+
+const SCHEDULED_JSYNC = '22/05/2026, 09:00 hs';
+const SCHEDULED_JIRA_ITEMS = [
+  {id:350,desc:'EVEREST-76 · Integraciones - Integración BT a SAP',label:'bantotal',sub:'Integración SAP',tipo:'decision',due:null,who:'ext_japlata (Jaime Plata)',note:'Estado Jira: Comité. Requiere decisión. Actualizado: 21 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-76',jiraStatus:'Comité'},
+  {id:351,desc:'EVEREST-194 · Contabilidad - Plan de cuentas',label:'fps',sub:'Plan de cuentas',tipo:'seguimiento',due:null,who:'ext_agbarbe',note:'Estado Jira: Aprobada. En curso. Actualizado: 21 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-194',jiraStatus:'Aprobada'},
+  {id:352,desc:'EVEREST-197 · Contabilidad - Consulta de mayor de saldos',label:'bantotal',sub:'',tipo:'seguimiento',due:null,who:'ext_agbarbe',note:'Estado Jira: Aprobada. En curso. Actualizado: 21 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-197',jiraStatus:'Aprobada'},
+  {id:353,desc:'EVEREST-307 · TT Definiciones de títulos / servicios necesarios',label:'modelos',sub:'Títulos Públicos',tipo:'pendiente',due:null,who:'sebastian.palopoli',note:'Estado Jira: Pendiente MELI. Requiere definición. Actualizado: 21 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-307',jiraStatus:'Pendiente MELI'},
+  {id:354,desc:'EVEREST-149 · TT- Implementación del módulo de títulos y dinero',label:'modelos',sub:'',tipo:'decision',due:null,who:'sebastian.palopoli',note:'Estado Jira: Comité. Requiere decisión. Actualizado: 21 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-149',jiraStatus:'Comité'},
+  {id:355,desc:'EVEREST-313 · Licencia Bancaria - Habilitación diálogo con otras entidades',label:'retail',sub:'',tipo:'pendiente',due:null,who:'(sin asignar)',note:'Estado Jira: Pendiente MELI. Sin asignado. Actualizado: 21 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-313',jiraStatus:'Pendiente MELI'},
+];
+
+const CALENDAR_EVENTS = [
+  {title:'Revision Esquemas Everest - EY',date:'2026-05-22',start:'09:00',end:'10:00',attendees:['lujan.usieto','romina.buenaventura','julian.gomez@ar.ey.com','leonardo.troyelli@ar.ey.com','pablo.vazquez@ar.ey.com'],label:'ey',sublabel:'',everest:true},
+  {title:'Seminario BCRA — Clase 5: Gestión de riesgos y supervisión',date:'2026-05-22',start:'10:00',end:'13:00',attendees:['lujan.usieto','romina.buenaventura','soledadpatricia.fernandez'],label:'gap',sublabel:'',everest:false},
+  {title:'[Building Everest] PwC Cierre de Gap Analysis (Etapa 1)',date:'2026-05-22',start:'15:00',end:'16:00',attendees:['lujan.usieto','nicolas.battaglia','ext_rodteres','martin.giofre','rosana.mazza@pwc.com'],label:'gap',sublabel:'',everest:true},
+  {title:'Entendimiento D3 + conexiones Coelsa/Interbanking',date:'2026-05-22',start:'16:00',end:'16:30',attendees:['lujan.usieto','christian.galdeano','leonardo.troncone'],label:'bantotal',sublabel:'COELSA',everest:true},
+  {title:'Weekly - Admin/FinOps',date:'2026-05-22',start:'16:30',end:'16:55',attendees:['lujan.usieto','leonardo.troncone'],label:'fps',sublabel:'',everest:true},
+  {title:'Banco Arg: Definición Facturación [Mesa Nucleo]',date:'2026-05-22',start:'17:00',end:'17:30',attendees:['lujan.usieto','jose.derose','romina.buenaventura','leonardo.troncone','martin.giofre'],label:'bantotal',sublabel:'',everest:true},
 ];
 
 function load(){
@@ -330,6 +353,14 @@ function load(){
     items=items.filter(i=>i.source!=='gmail');
     SCHEDULED_GMAIL_ITEMS.forEach(ni=>items.push({...ni,done:doneIds.has(ni.id)}));
     if(SCHEDULED_GSYNC)lastGsync=SCHEDULED_GSYNC;
+    save();
+  }
+  // Inyección automática de Jira desde scheduled task
+  if(SCHEDULED_JIRA_ITEMS&&SCHEDULED_JIRA_ITEMS.length){
+    const doneJiraIds=new Set(items.filter(i=>i.source==='jira'&&i.done).map(i=>i.jiraKey));
+    items=items.filter(i=>i.source!=='jira');
+    SCHEDULED_JIRA_ITEMS.forEach(ni=>{const d=doneJiraIds.has(ni.jiraKey);items.push({...ni,done:d||isJiraDone(ni.jiraStatus||'')});});
+    if(SCHEDULED_JSYNC)lastJsync=SCHEDULED_JSYNC;
     save();
   }
 }
@@ -597,7 +628,38 @@ function renderMetrics(){
   document.getElementById('nc-done').textContent=dn;
   document.getElementById('nc-sys').textContent=a.length;
 }
-function renderAll(){renderMetrics();renderPendientes();renderSeguimiento();renderDecisiones();renderGmail();renderJira();renderSistemas();renderCompletados();}
+function renderAgenda(){
+  const today=new Date().toISOString().slice(0,10);
+  const tomorrow=new Date(Date.now()+86400000).toISOString().slice(0,10);
+  const evToday=CALENDAR_EVENTS.filter(e=>e.date===today&&e.everest);
+  const evTomorrow=CALENDAR_EVENTS.filter(e=>e.date===tomorrow&&e.everest);
+  const evAll=CALENDAR_EVENTS.filter(e=>e.everest);
+  document.getElementById('nc-cal').textContent=evToday.length||0;
+  let h='<div style="max-width:680px">';
+  const renderEvt=ev=>{
+    const l=lm(ev.label);
+    const att=(ev.attendees||[]).slice(0,4).map(a=>{const n=a.split('@')[0].replace(/\./g,' ');return n;}).join(', ')+(ev.attendees.length>4?` +${ev.attendees.length-4}`:``);
+    return `<div style="background:var(--surface);border:1px solid var(--border-soft);border-left:3px solid ${l.color};border-radius:10px;padding:12px 15px;margin-bottom:6px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);min-width:80px">${ev.start}–${ev.end}</span>
+        <span style="font-weight:500;font-size:13px">${ev.title}</span>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+        <span class="tag" style="color:${l.color};background:${l.bg}">${l.label}</span>
+        ${ev.sublabel?`<span class="tag" style="color:var(--text-secondary);background:var(--surface2)">${ev.sublabel}</span>`:''}
+        <span style="font-size:10px;color:var(--text-muted);margin-left:4px">👥 ${att}</span>
+      </div>
+    </div>`;
+  };
+  if(evToday.length){h+=`<div class="sec-label">Hoy — reuniones Everest (${evToday.length})</div>${evToday.map(renderEvt).join('')}`;}
+  else{h+=`<div class="sec-label">Hoy</div><div class="empty-state" style="padding:1.5rem"><div class="empty-icon">📅</div>Sin reuniones Everest hoy</div>`;}
+  if(evTomorrow.length){h+=`<div class="sec-label" style="margin-top:1.25rem">Mañana — reuniones Everest (${evTomorrow.length})</div>${evTomorrow.map(renderEvt).join('')}`;}
+  else{h+=`<div class="sec-label" style="margin-top:1.25rem">Mañana</div><p style="font-size:12px;color:var(--text-muted);padding:.5rem 0">Sin reuniones Everest confirmadas para mañana.</p>`;}
+  if(!evToday.length&&!evTomorrow.length&&evAll.length){h+=`<div class="sec-label" style="margin-top:1.25rem">Próximas</div>${evAll.slice(0,3).map(renderEvt).join('')}`;}
+  h+='</div>';
+  document.getElementById('view-agenda').innerHTML=h;
+}
+function renderAll(){renderMetrics();renderPendientes();renderSeguimiento();renderDecisiones();renderGmail();renderJira();renderSistemas();renderCompletados();renderAgenda();}
 
 function goView(v,el){
   document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
