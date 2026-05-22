@@ -139,6 +139,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-prim
 .spinner{width:11px;height:11px;border:2px solid rgba(0,0,0,.15);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:700px){.shell{grid-template-columns:1fr}.sidebar{display:none}.metrics{grid-template-columns:1fr 1fr}.fgrid2,.fgrid3{grid-template-columns:1fr}}
+/* ── Modal meeting panel ── */
+.mpanel{background:#F8F6FF;border:1px solid #DDD5FF;border-radius:9px;padding:10px 13px;margin-top:8px}
+.mpanel-hdr{font-size:10px;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.mpanel-next{background:var(--t-seguimiento-bg);border:1px solid #F0DFA0;border-radius:6px;padding:6px 9px;margin-bottom:6px;font-size:11px;color:var(--t-seguimiento)}
+.mpanel-entry{border-top:1px solid #EDE8FF;padding:7px 0 4px}
+.mpanel-entry:first-of-type{border-top:none}
+.mpanel-title{font-size:11px;font-weight:600;color:var(--text-primary);margin-bottom:2px}
+.mpanel-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);margin-right:6px}
+.mpanel-notes{font-size:10.5px;color:var(--text-secondary);font-style:italic;margin-bottom:4px;line-height:1.45}
+.mpanel-acts{margin-bottom:5px}
+.mpanel-act{font-size:10.5px;color:var(--t-pendiente);line-height:1.4;padding-left:14px;position:relative;margin-bottom:1px}
+.mpanel-act::before{content:'✏';position:absolute;left:0;font-size:9px;top:1px}
+.mpanel-apply{font-size:10px;font-weight:500;padding:3px 10px;border-radius:4px;border:1px solid #C4B5FD;background:#EDE9FE;color:#6D28D9;cursor:pointer;transition:all .12s}
+.mpanel-apply:hover{background:#6D28D9;color:#fff;border-color:#6D28D9}
+.mpanel-empty{font-size:11px;color:var(--text-muted);text-align:center;padding:6px 0}
 </style>
 </head>
 <body>
@@ -195,7 +210,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-prim
     <div class="frow"><label class="flbl">Descripción</label><input class="finput" id="f-desc" placeholder="¿Qué hay que hacer o seguir?"></div>
     <div class="fgrid2">
       <div class="frow"><label class="flbl">Sistema</label><select class="fsel" id="f-label" onchange="onLbl()"></select></div>
-      <div class="frow"><label class="flbl">Sub-label</label><select class="fsel" id="f-sub"><option value="">—</option></select></div>
+      <div class="frow"><label class="flbl">Sub-label</label><select class="fsel" id="f-sub" onchange="updateMeetingPanel()"><option value="">—</option></select></div>
     </div>
     <div class="fgrid3">
       <div class="frow"><label class="flbl">Tipo</label><select class="fsel" id="f-tipo"><option value="pendiente">Pendiente mío</option><option value="seguimiento">Seguimiento</option><option value="decision">Decisión abierta</option><option value="info">Informativo</option><option value="pausado">Pausado</option></select></div>
@@ -207,6 +222,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-prim
       <div class="frow"><label class="flbl">Reunión de origen</label><input class="finput" id="f-reunion"></div>
     </div>
     <div class="frow"><label class="flbl">Nota</label><textarea class="ftarea" id="f-note"></textarea></div>
+    <div id="meet-panel" class="mpanel" style="display:none">
+      <div class="mpanel-hdr">🟣 Minutas relacionadas <span id="mpanel-badge" style="font-size:9px;background:#7C3AED;color:#fff;border-radius:10px;padding:1px 6px;font-weight:600"></span></div>
+      <div id="mpanel-content"></div>
+    </div>
     <div class="modal-actions">
       <button class="btn-del" id="bdel" style="display:none" onclick="delItem()">Eliminar</button>
       <button class="btn" onclick="closeMod()">Cancelar</button>
@@ -779,12 +798,20 @@ function tog(e,id){e.stopPropagation();const i=items.find(x=>x.id===id);if(!i)re
 
 // ── MODAL ─────────────────────────────────────────────────────────────────────
 function initLbls(){document.getElementById('f-label').innerHTML=LABELS.map(l=>`<option value="${l.id}">${l.label}</option>`).join('');}
-function onLbl(){const l=LABELS.find(x=>x.id===document.getElementById('f-label').value);const sel=document.getElementById('f-sub');sel.innerHTML='<option value="">—</option>'+(l&&l.subs.length?l.subs.map(s=>`<option value="${s}">${s}</option>`).join(''):'');}
+function onLbl(){
+  const l=LABELS.find(x=>x.id===document.getElementById('f-label').value);
+  const sel=document.getElementById('f-sub');
+  sel.innerHTML='<option value="">—</option>'+(l&&l.subs.length?l.subs.map(s=>`<option value="${s}">${s}</option>`).join(''):'');
+  updateMeetingPanel();
+}
 function fillMod(item){
   document.getElementById('f-desc').value=item.desc||'';
   document.getElementById('f-label').value=item.label||LABELS[0].id;
   onLbl();
-  setTimeout(()=>{document.getElementById('f-sub').value=item.sub||'';},15);
+  setTimeout(()=>{
+    document.getElementById('f-sub').value=item.sub||'';
+    updateMeetingPanel();
+  },20);
   document.getElementById('f-tipo').value=item.tipo||'pendiente';
   document.getElementById('f-done').value=item.done?'1':'0';
   document.getElementById('f-due').value=item.due||'';
@@ -792,14 +819,118 @@ function fillMod(item){
   document.getElementById('f-note').value=item.note||'';
   document.getElementById('f-reunion').value=item.reunion||'';
 }
-function openModal(){eid=null;document.getElementById('mtitle').textContent='Nuevo ítem';document.getElementById('bdel').style.display='none';fillMod({label:LABELS[0].id});document.getElementById('mbd').classList.add('open');}
-function openEdit(id){const item=items.find(x=>x.id===id);if(!item)return;eid=id;document.getElementById('mtitle').textContent='Editar ítem';document.getElementById('bdel').style.display='block';fillMod(item);document.getElementById('mbd').classList.add('open');}
+
+// ── MEETING PANEL (modal) ─────────────────────────────────────────────────────
+function updateMeetingPanel(){
+  const label=document.getElementById('f-label').value;
+  const sub=document.getElementById('f-sub').value;
+  const panel=document.getElementById('meet-panel');
+  const content=document.getElementById('mpanel-content');
+  const badge=document.getElementById('mpanel-badge');
+  // Find related notes
+  const relNotes=MEETING_NOTES.filter(m=>m.label===label).sort((a,b)=>b.date.localeCompare(a.date));
+  const subNotes=sub?relNotes.filter(m=>m.sub&&m.sub.toLowerCase().includes(sub.toLowerCase())):[];
+  const showNotes=(subNotes.length?subNotes:relNotes).slice(0,3);
+  // Next calendar event
+  const todayStr=new Date().toISOString().slice(0,10);
+  const tomorrowStr=new Date(Date.now()+86400000).toISOString().slice(0,10);
+  const nextEvt=CALENDAR_EVENTS.filter(e=>e.everest&&e.label===label&&e.date>=todayStr)
+    .sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start))[0];
+  if(!showNotes.length&&!nextEvt){panel.style.display='none';return;}
+  panel.style.display='block';
+  badge.textContent=showNotes.length+(nextEvt?'+1 hoy':'');
+  const MS=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  let h='';
+  if(nextEvt){
+    const isToday=nextEvt.date===todayStr;
+    h+=`<div class="mpanel-next">📅 <strong>Próxima:</strong> ${isToday?'Hoy':'Mañana'} ${nextEvt.start} — ${nextEvt.title}</div>`;
+  }
+  if(!showNotes.length){h+=`<div class="mpanel-empty">Sin minutas previas para este tema</div>`;content.innerHTML=h;return;}
+  showNotes.forEach(n=>{
+    const [,pm,pd]=n.date.split('-');
+    const actsHtml=n.luActions&&n.luActions.length
+      ?`<div class="mpanel-acts">${n.luActions.slice(0,3).map(a=>`<div class="mpanel-act">${a}</div>`).join('')}</div>`:'';
+    // Suggest contraparte based on who_map
+    const whoMap=JSON.parse(localStorage.getItem('ev_who_map')||'{}');
+    const suggestedWho=whoMap[label+'|'+sub]||whoMap[label+'|']||'';
+    h+=`<div class="mpanel-entry">
+      <div style="margin-bottom:3px"><span class="mpanel-date">${parseInt(pd)} ${MS[parseInt(pm)-1]}</span><span class="mpanel-title">${n.title}</span></div>
+      ${n.keyNotes?`<div class="mpanel-notes">${n.keyNotes}</div>`:''}
+      ${actsHtml}
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <button class="mpanel-apply" onclick="applyMeetContext('${n.title.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${n.date}')">Aplicar contexto al ítem</button>
+        ${suggestedWho&&!document.getElementById('f-who').value?`<button class="mpanel-apply" style="background:var(--surface2);color:var(--text-secondary);border-color:var(--border)" onclick="document.getElementById('f-who').value='${suggestedWho.replace(/'/g,"\\'")}';this.style.display='none'">👤 ${suggestedWho.split(' ')[0]}</button>`:''}
+      </div>
+    </div>`;
+  });
+  content.innerHTML=h;
+}
+
+function applyMeetContext(title,date){
+  const note=MEETING_NOTES.find(m=>m.title===title&&m.date===date);
+  if(!note)return;
+  // Set reunion
+  document.getElementById('f-reunion').value=title;
+  // Append to note (don't overwrite)
+  const MS=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const [,pm,pd]=date.split('-');
+  const dateStr=`${parseInt(pd)} ${MS[parseInt(pm)-1]}`;
+  const existing=document.getElementById('f-note').value.trim();
+  const parts=[`[Reunión ${dateStr}: ${title}]`];
+  if(note.keyNotes)parts.push(note.keyNotes);
+  if(note.luActions&&note.luActions.length)parts.push('Accionables: '+note.luActions.join('; '));
+  const newNote=parts.join('\n');
+  document.getElementById('f-note').value=existing?(existing+'\n---\n'+newNote):newNote;
+  // Suggest who from who_map
+  const label=document.getElementById('f-label').value;
+  const sub=document.getElementById('f-sub').value;
+  if(!document.getElementById('f-who').value){
+    const whoMap=JSON.parse(localStorage.getItem('ev_who_map')||'{}');
+    const suggested=whoMap[label+'|'+sub]||whoMap[label+'|']||'';
+    if(suggested)document.getElementById('f-who').value=suggested;
+  }
+  showBanner('✓ Contexto de minuta aplicado al ítem','ok');
+}
+
+function openModal(){
+  eid=null;
+  document.getElementById('mtitle').textContent='Nuevo ítem';
+  document.getElementById('bdel').style.display='none';
+  fillMod({label:LABELS[0].id});
+  document.getElementById('mbd').classList.add('open');
+}
+function openEdit(id){
+  const item=items.find(x=>x.id===id);if(!item)return;
+  eid=id;
+  document.getElementById('mtitle').textContent='Editar ítem';
+  document.getElementById('bdel').style.display='block';
+  fillMod(item);
+  document.getElementById('mbd').classList.add('open');
+}
 function closeMod(){document.getElementById('mbd').classList.remove('open');}
 function closeBd(e){if(e.target===document.getElementById('mbd'))closeMod();}
 function saveItem(){
   const desc=document.getElementById('f-desc').value.trim();if(!desc){document.getElementById('f-desc').focus();return;}
   const existing=eid?items.find(i=>i.id===eid):null;
-  const item={id:eid||nid++,desc,label:document.getElementById('f-label').value,sub:document.getElementById('f-sub').value,tipo:document.getElementById('f-tipo').value,done:document.getElementById('f-done').value==='1',due:document.getElementById('f-due').value||null,who:document.getElementById('f-who').value.trim()||null,note:document.getElementById('f-note').value.trim()||null,reunion:document.getElementById('f-reunion').value.trim()||null,source:existing?existing.source||'manual':'manual',jiraKey:existing?.jiraKey,jiraStatus:existing?.jiraStatus};
+  const label=document.getElementById('f-label').value;
+  const sub=document.getElementById('f-sub').value;
+  const who=document.getElementById('f-who').value.trim()||null;
+  let reunion=document.getElementById('f-reunion').value.trim()||null;
+  // Auto-set reunion if blank — infer from most recent matching note
+  if(!reunion){
+    const relNotes=MEETING_NOTES.filter(m=>m.label===label).sort((a,b)=>b.date.localeCompare(a.date));
+    const match=sub?relNotes.find(m=>m.sub&&m.sub.toLowerCase().includes(sub.toLowerCase()))||relNotes[0]:relNotes[0];
+    if(match)reunion=match.title;
+  }
+  // Learn contraparte: save who for this label+sub combo
+  if(who){
+    try{
+      const whoMap=JSON.parse(localStorage.getItem('ev_who_map')||'{}');
+      whoMap[label+'|'+sub]=who;
+      localStorage.setItem('ev_who_map',JSON.stringify(whoMap));
+    }catch(e){}
+  }
+  const item={id:eid||nid++,desc,label,sub,tipo:document.getElementById('f-tipo').value,done:document.getElementById('f-done').value==='1',due:document.getElementById('f-due').value||null,who,note:document.getElementById('f-note').value.trim()||null,reunion,source:existing?existing.source||'manual':'manual',jiraKey:existing?.jiraKey,jiraStatus:existing?.jiraStatus};
   if(eid){const idx=items.findIndex(i=>i.id===eid);if(idx>=0)items[idx]=item;}else items.push(item);
   save();closeMod();renderAll();
 }
