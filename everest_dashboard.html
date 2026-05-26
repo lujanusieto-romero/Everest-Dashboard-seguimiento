@@ -3,945 +3,491 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Everest · Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>🏔 Everest Dashboard</title>
 <style>
-:root{
-  --bg:#F4F1EC;--surface:#FDFCFA;--surface2:#EFECE5;--border:#DDD9CF;--border-soft:#E8E4DB;
-  --text-primary:#1C1917;--text-secondary:#78716C;--text-muted:#A8A29E;
-  --accent:#1C3B5A;
-  --c-bantotal:#1C3B5A;--c-bantotal-bg:#E8EFF6;
-  --c-modelos:#3D5A3E;--c-modelos-bg:#EAF0EA;
-  --c-fps:#6B3A2A;--c-fps-bg:#F5EDE9;
-  --c-soc:#3A2D6B;--c-soc-bg:#EEEAF5;
-  --c-gap:#5A3A1C;--c-gap-bg:#F5EDEA;
-  --c-ey:#1C5A45;--c-ey-bg:#E8F5EF;
-  --c-retail:#5A1C3B;--c-retail-bg:#F5E8EF;
-  --t-pendiente:#C0392B;--t-pendiente-bg:#FDECEA;
-  --t-seguimiento:#B7770D;--t-seguimiento-bg:#FEF8E7;
-  --t-decision:#1C3B5A;--t-decision-bg:#E8EFF6;
-  --t-info:#78716C;--t-info-bg:#EFECE5;
-  --t-pausado:#A8A29E;--t-pausado-bg:#F4F1EC;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;font-size:13px}
-.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
-.sidebar{background:var(--accent);padding:1.5rem 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
-.sidebar-brand{padding:0 1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:.5rem}
-.sidebar-ev{font-family:'DM Serif Display',serif;font-size:22px;color:#fff;letter-spacing:-.5px;line-height:1}
-.sidebar-sub{font-size:10px;color:rgba(255,255,255,.45);margin-top:4px;letter-spacing:.06em;text-transform:uppercase}
-.nav-section{padding:.375rem 1.25rem .25rem;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);font-weight:600;margin-top:.5rem}
-.nav-item{display:flex;align-items:center;gap:8px;padding:7px 1.25rem;cursor:pointer;color:rgba(255,255,255,.6);font-size:12px;border-left:2px solid transparent;transition:all .15s}
-.nav-item:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.06)}
-.nav-item.active{color:#fff;border-left-color:#A8C5E0;background:rgba(255,255,255,.1);font-weight:500}
-.nav-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.nav-count{margin-left:auto;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.4)}
-.nav-item.active .nav-count{color:rgba(255,255,255,.7)}
-.sidebar-footer{margin-top:auto;padding:1rem 1.25rem 0;border-top:1px solid rgba(255,255,255,.1)}
-.sidebar-date{font-size:10px;color:rgba(255,255,255,.35);line-height:1.6}
-.sync-row{display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,.4);margin-top:5px}
-.pulse{width:5px;height:5px;border-radius:50%;background:#5EEAD4;flex-shrink:0}
-.pulse.on{animation:blink 1.5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.main{padding:2rem 2.5rem;overflow-x:hidden}
-.topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem;gap:1rem}
-.page-title{font-family:'DM Serif Display',serif;font-size:26px;line-height:1.1}
-.page-sub{font-size:12px;color:var(--text-secondary);margin-top:4px}
-.topbar-actions{display:flex;gap:7px;align-items:center;flex-shrink:0;flex-wrap:wrap}
-.btn{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:7px 14px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-primary);cursor:pointer;white-space:nowrap;transition:all .12s;display:inline-flex;align-items:center;gap:5px}
-.btn:hover{background:var(--surface2)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.btn-dark{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn-dark:hover{background:#162E48}
-.btn-green{background:#EAF5EF;color:#1C5A45;border-color:#B6DFC8}
-.btn-green:hover{background:#D5EDDF}
-.btn-warn{background:#FEF8E7;color:#B7770D;border-color:#F0DFA0}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.75rem}
-.metric{background:var(--surface);border:1px solid var(--border-soft);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .12s,transform .1s}
-.metric:hover{border-color:var(--border);transform:translateY(-1px)}
-.metric-lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;font-weight:500}
-.metric-val{font-family:'DM Serif Display',serif;font-size:32px;line-height:1}
-.metric-sub{font-size:10px;color:var(--text-muted);margin-top:4px}
-.m-pend .metric-val{color:var(--t-pendiente)}
-.m-seg  .metric-val{color:var(--t-seguimiento)}
-.m-dec  .metric-val{color:var(--t-decision)}
-.m-done .metric-val{color:#3D5A3E}
-.banner{display:none;align-items:center;gap:8px;font-size:11px;color:var(--text-secondary);background:var(--surface);border:1px solid var(--border-soft);border-radius:8px;padding:8px 12px;margin-bottom:1rem}
-.banner.err{background:#FDECEA;border-color:#F5B7B1;color:var(--t-pendiente)}
-.banner.ok{background:#EAF5EF;border-color:#B6DFC8;color:#1C5A45}
-.banner.show{display:flex}
-.list-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:12px;flex-wrap:wrap}
-.search-wrap{position:relative;flex:1;min-width:180px}
-.search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-muted)}
-.search-box{width:100%;font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 10px 7px 32px;border:1px solid var(--border-soft);border-radius:6px;background:var(--surface);color:var(--text-primary)}
-.search-box:focus{outline:none;border-color:var(--border)}
-.fsel{font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 10px;border:1px solid var(--border-soft);border-radius:6px;background:var(--surface);color:var(--text-secondary);cursor:pointer}
-.item-grid{display:flex;flex-direction:column;gap:6px}
-.icard{background:var(--surface);border:1px solid var(--border-soft);border-radius:10px;padding:12px 15px;cursor:pointer;transition:border-color .12s,box-shadow .12s;display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:start;position:relative}
-.icard:hover{border-color:var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05)}
-.icard.t-pendiente{border-left:3px solid var(--t-pendiente)}
-.icard.t-seguimiento{border-left:3px solid var(--t-seguimiento)}
-.icard.t-decision{border-left:3px solid var(--t-decision)}
-.icard.t-info,.icard.t-pausado{border-left:3px solid var(--border)}
-.icard.is-done{opacity:.4;border-left-color:var(--border)!important}
-.src-tag{position:absolute;top:8px;right:8px;font-size:9px;font-family:'DM Mono',monospace;border-radius:4px;padding:1px 5px}
-.src-gmail{color:#4285f4;background:#EEF4FF}
-.src-jira{color:#0052CC;background:#E9F0FF}
-.icheck{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--surface);transition:all .1s;flex-shrink:0;margin-top:1px}
-.icheck:hover{border-color:var(--text-secondary)}
-.icheck.checked{background:#EAF0EA;border-color:#3D5A3E}
-.icard-body{min-width:0;padding-right:48px}
-.ititle{font-size:13px;font-weight:500;color:var(--text-primary);line-height:1.4;margin-bottom:6px}
-.ititle.done{text-decoration:line-through;color:var(--text-muted)}
-.imeta{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
-.tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;white-space:nowrap}
-.inote{font-size:11px;color:var(--text-secondary);margin-top:6px;line-height:1.5;padding-top:6px;border-top:1px solid var(--border-soft)}
-.ireunion{font-size:10px;color:var(--text-muted);margin-top:4px;font-style:italic}
-.iright{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
-.src-gemini{color:#7C3AED;background:#F3EEFF}
-.imeetings{font-size:10.5px;margin-top:8px;padding-top:7px;border-top:1px solid var(--border-soft);display:flex;flex-direction:column;gap:3px}
-.imeet-row{color:var(--text-muted);line-height:1.5}
-.imeet-lbl{font-weight:600;color:var(--text-secondary)}
-.imeet-notes{color:var(--text-muted);font-style:italic;font-size:10px;line-height:1.4;margin-top:1px}
-.imeet-acts{margin-top:4px;display:flex;flex-direction:column;gap:2px}
-.imeet-act{font-size:10.5px;color:var(--t-pendiente);line-height:1.4;padding-left:14px;position:relative}
-.imeet-act::before{content:'✏';position:absolute;left:0;font-size:9px;top:1px}
-.idue{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);padding:2px 6px;border-radius:4px;background:var(--surface2);white-space:nowrap}
-.idue.ov{color:var(--t-pendiente);background:var(--t-pendiente-bg);font-weight:500}
-.idue.soon{color:var(--t-seguimiento);background:var(--t-seguimiento-bg);font-weight:500}
-.iassign{font-size:10px;color:var(--text-muted);text-align:right;max-width:130px;line-height:1.3}
-.sec-label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin:1.25rem 0 .5rem;display:flex;align-items:center;gap:8px}
-.sec-label::after{content:'';flex:1;height:1px;background:var(--border-soft)}
-.group-hdr{display:flex;align-items:center;gap:10px;margin:1.5rem 0 .625rem;padding-bottom:.5rem;border-bottom:1px solid var(--border-soft)}
-.group-hdr:first-child{margin-top:0}
-.group-name{font-family:'DM Serif Display',serif;font-size:15px;font-weight:400}
-.group-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);background:var(--surface2);border-radius:10px;padding:1px 7px}
-.empty-state{text-align:center;padding:3rem 1rem;color:var(--text-muted);font-size:13px}
-.empty-icon{font-size:28px;margin-bottom:.75rem}
-.done-info{font-size:11px;color:var(--text-muted);background:var(--surface2);border-radius:8px;padding:9px 13px;margin-bottom:1rem;border:1px solid var(--border-soft);line-height:1.6}
-.view{display:none}.view.active{display:block}
-.sync-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
-.sync-meta{font-size:11px;color:var(--text-muted)}
-.modal-bd{display:none;position:fixed;inset:0;background:rgba(28,25,23,.4);z-index:400;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
-.modal-bd.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.75rem;width:560px;max-width:96%;max-height:90vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.15)}
-.modal-title{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:1.25rem}
-.frow{margin-bottom:12px}
-.flbl{font-size:10px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
-.finput,.fsel,.ftarea{width:100%;font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 11px;border:1px solid var(--border-soft);border-radius:7px;background:var(--bg);color:var(--text-primary)}
-.finput:focus,.fsel:focus,.ftarea:focus{outline:none;border-color:var(--accent);background:var(--surface)}
-.ftarea{min-height:72px;resize:vertical}
-.fgrid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.fgrid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border-soft)}
-.btn-del{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--t-pendiente);padding:7px 12px;border-radius:6px;border:1px solid #FDECEA;background:none;cursor:pointer;margin-right:auto}
-.btn-del:hover{background:var(--t-pendiente-bg)}
-.spinner{width:11px;height:11px;border:2px solid rgba(0,0,0,.15);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
-@keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:700px){.shell{grid-template-columns:1fr}.sidebar{display:none}.metrics{grid-template-columns:1fr 1fr}.fgrid2,.fgrid3{grid-template-columns:1fr}}
-/* ── Modal meeting panel ── */
-.mpanel{background:#F8F6FF;border:1px solid #DDD5FF;border-radius:9px;padding:10px 13px;margin-top:8px}
-.mpanel-hdr{font-size:10px;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;display:flex;align-items:center;gap:5px}
-.mpanel-next{background:var(--t-seguimiento-bg);border:1px solid #F0DFA0;border-radius:6px;padding:6px 9px;margin-bottom:6px;font-size:11px;color:var(--t-seguimiento)}
-.mpanel-entry{border-top:1px solid #EDE8FF;padding:7px 0 4px}
-.mpanel-entry:first-of-type{border-top:none}
-.mpanel-title{font-size:11px;font-weight:600;color:var(--text-primary);margin-bottom:2px}
-.mpanel-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);margin-right:6px}
-.mpanel-notes{font-size:10.5px;color:var(--text-secondary);font-style:italic;margin-bottom:4px;line-height:1.45}
-.mpanel-acts{margin-bottom:5px}
-.mpanel-act{font-size:10.5px;color:var(--t-pendiente);line-height:1.4;padding-left:14px;position:relative;margin-bottom:1px}
-.mpanel-act::before{content:'✏';position:absolute;left:0;font-size:9px;top:1px}
-.mpanel-apply{font-size:10px;font-weight:500;padding:3px 10px;border-radius:4px;border:1px solid #C4B5FD;background:#EDE9FE;color:#6D28D9;cursor:pointer;transition:all .12s}
-.mpanel-apply:hover{background:#6D28D9;color:#fff;border-color:#6D28D9}
-.mpanel-empty{font-size:11px;color:var(--text-muted);text-align:center;padding:6px 0}
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --surface2: #23263a;
+    --border: #2e3248; --text: #e2e8f0; --text2: #94a3b8;
+    --accent: #6366f1; --accent2: #818cf8;
+    --red: #ef4444; --yellow: #f59e0b; --green: #10b981; --blue: #3b82f6;
+    --bantotal: #8b5cf6; --modelos: #06b6d4; --fps: #f97316;
+    --societario: #ec4899; --gap: #84cc16; --auditoria: #f59e0b;
+    --retail: #14b8a6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%); padding: 20px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .header-left h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .header-left h1 span { opacity: 0.7; }
+  .header-meta { font-size: 12px; color: var(--text2); margin-top: 4px; }
+  .header-right { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 12px; cursor: pointer; text-decoration: none; transition: all 0.15s; }
+  .btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .sync-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 28px; display: flex; gap: 20px; font-size: 12px; color: var(--text2); flex-wrap: wrap; }
+  .sync-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 5px; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--surface); padding: 0 28px; overflow-x: auto; }
+  .tab { padding: 12px 18px; font-size: 13px; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; color: var(--text2); white-space: nowrap; transition: all 0.15s; user-select: none; }
+  .tab.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+  .tab .badge { display: inline-block; background: var(--accent); color: #fff; border-radius: 10px; padding: 1px 7px; font-size: 10px; margin-left: 6px; }
+  .content { padding: 24px 28px; max-width: 1200px; }
+  .pane { display: none; }
+  .pane.active { display: block; }
+  .section-title { font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; margin-top: 24px; }
+  .section-title:first-child { margin-top: 0; }
+  .items-grid { display: flex; flex-direction: column; gap: 8px; }
+  .item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; transition: border-color 0.15s; }
+  .item:hover { border-color: var(--accent); }
+  .item.done { opacity: 0.45; }
+  .item.done .item-title { text-decoration: line-through; }
+  .item-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .item-body { flex: 1; min-width: 0; }
+  .item-title { font-size: 14px; font-weight: 500; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-meta { font-size: 11px; color: var(--text2); margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .item-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: flex-start; }
+  .pill { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+  .pill-type-Pendiente { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+  .pill-type-Seguimiento { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+  .pill-type-Decisión { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
+  .pill-type-Done { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+  .pill-bantotal { background: rgba(139,92,246,0.15); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.25); }
+  .pill-modelos { background: rgba(6,182,212,0.15); color: #67e8f9; border: 1px solid rgba(6,182,212,0.25); }
+  .pill-fps { background: rgba(249,115,22,0.15); color: #fdba74; border: 1px solid rgba(249,115,22,0.25); }
+  .pill-societario { background: rgba(236,72,153,0.15); color: #f9a8d4; border: 1px solid rgba(236,72,153,0.25); }
+  .pill-gap { background: rgba(132,204,22,0.15); color: #bef264; border: 1px solid rgba(132,204,22,0.25); }
+  .pill-auditoria { background: rgba(245,158,11,0.15); color: #fde68a; border: 1px solid rgba(245,158,11,0.25); }
+  .pill-retail { background: rgba(20,184,166,0.15); color: #5eead4; border: 1px solid rgba(20,184,166,0.25); }
+  .badge-new { background: var(--red); color: #fff; border-radius: 4px; padding: 1px 5px; font-size: 10px; font-weight: 700; }
+  .cal-grid { display: flex; flex-direction: column; gap: 6px; }
+  .cal-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 11px 14px; display: flex; gap: 12px; align-items: flex-start; }
+  .cal-time { font-size: 13px; font-weight: 600; color: var(--accent2); min-width: 80px; flex-shrink: 0; }
+  .cal-body { flex: 1; min-width: 0; }
+  .cal-title { font-size: 13px; font-weight: 500; }
+  .cal-sub { font-size: 11px; color: var(--text2); margin-top: 3px; }
+  .cal-pills { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
+  .day-header { font-size: 13px; font-weight: 700; color: var(--accent2); padding: 10px 0 6px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+  .stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; flex: 1; min-width: 120px; }
+  .stat-number { font-size: 28px; font-weight: 700; }
+  .stat-label { font-size: 11px; color: var(--text2); margin-top: 3px; }
+  .stat-red .stat-number { color: var(--red); }
+  .stat-yellow .stat-number { color: var(--yellow); }
+  .stat-green .stat-number { color: var(--green); }
+  .stat-blue .stat-number { color: var(--blue); }
+  .empty { color: var(--text2); font-size: 13px; padding: 20px; text-align: center; background: var(--surface); border-radius: 8px; border: 1px dashed var(--border); }
+  .status-pill { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+  .status-comite { background: rgba(139,92,246,0.2); color: #c4b5fd; }
+  .status-en-analisis { background: rgba(245,158,11,0.2); color: #fbbf24; }
+  .status-aprobada { background: rgba(59,130,246,0.2); color: #93c5fd; }
+  .status-entregada { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+  .status-cerrado { background: rgba(100,116,139,0.2); color: #94a3b8; }
+  a { color: var(--accent2); text-decoration: none; }
+  a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
-<div class="shell">
-<aside class="sidebar">
-  <div class="sidebar-brand">
-    <div class="sidebar-ev">Everest</div>
-    <div class="sidebar-sub">Gestión Contable · BCRA</div>
-  </div>
-  <span class="nav-section">Vistas</span>
-  <a class="nav-item active" onclick="goView('pendientes',this)"><span class="nav-dot" style="background:#C0392B"></span>Mis pendientes<span class="nav-count" id="nc-p">0</span></a>
-  <a class="nav-item" onclick="goView('seguimiento',this)"><span class="nav-dot" style="background:#B7770D"></span>En seguimiento<span class="nav-count" id="nc-s">0</span></a>
-  <a class="nav-item" onclick="goView('decisiones',this)"><span class="nav-dot" style="background:#1C3B5A"></span>Decisiones abiertas<span class="nav-count" id="nc-d">0</span></a>
-  <span class="nav-section" style="margin-top:.75rem">Fuentes</span>
-  <a class="nav-item" onclick="goView('gmail',this)"><span class="nav-dot" style="background:#4285f4"></span>Gmail + Minutas<span class="nav-count" id="nc-g">0</span></a>
-  <a class="nav-item" onclick="goView('jira',this)"><span class="nav-dot" style="background:#0052CC"></span>Jira · EVEREST<span class="nav-count" id="nc-j">0</span></a>
-  <span class="nav-section" style="margin-top:.75rem">Organización</span>
-  <a class="nav-item" onclick="goView('sistemas',this)"><span class="nav-dot" style="background:#A8A29E"></span>Por sistema<span class="nav-count" id="nc-sys">0</span></a>
-  <a class="nav-item" onclick="goView('completados',this)"><span class="nav-dot" style="background:#3D5A3E"></span>Completados<span class="nav-count" id="nc-done">0</span></a>
-  <span class="nav-section" style="margin-top:.75rem">Agenda</span>
-  <a class="nav-item" onclick="goView('agenda',this)"><span class="nav-dot" style="background:#B7770D"></span>Hoy &amp; mañana<span class="nav-count" id="nc-cal">0</span></a>
-  <div class="sidebar-footer">
-    <div class="sidebar-date" id="sdate"></div>
-    <div class="sync-row"><span class="pulse" id="spulse"></span><span id="stext">Listo</span></div>
-  </div>
-</aside>
 
-<main class="main">
-  <div class="topbar">
-    <div>
-      <div class="page-title" id="ptitle">Mis pendientes</div>
-      <div class="page-sub" id="psub">To-dos asignados a Lu</div>
-    </div>
-    <div class="topbar-actions">
-      <button class="btn btn-dark" onclick="openModal()">+ Nuevo</button>
-    </div>
+<div class="header">
+  <div class="header-left">
+    <h1>🏔 Everest <span>· Dashboard</span></h1>
+    <div class="header-meta" id="headerMeta">Cargando...</div>
   </div>
-  <div id="banner" class="banner"></div>
-  <div class="metrics" id="mrow"></div>
-  <div id="view-pendientes"  class="view active"></div>
-  <div id="view-seguimiento" class="view"></div>
-  <div id="view-decisiones"  class="view"></div>
-  <div id="view-gmail"       class="view"></div>
-  <div id="view-jira"        class="view"></div>
-  <div id="view-sistemas"    class="view"></div>
-  <div id="view-completados" class="view"></div>
-  <div id="view-agenda"      class="view"></div>
-</main>
+  <div class="header-right">
+    <a href="https://mercadolibre-everest.atlassian.net/jira/software/projects/EVEREST/boards" target="_blank" class="btn">Jira ↗</a>
+    <a href="https://lujanusieto-romero.github.io/Everest-Dashboard-seguimiento/everest_dashboard.html" target="_blank" class="btn btn-primary">🌐 Ver online</a>
+  </div>
 </div>
 
-<div class="modal-bd" id="mbd" onclick="closeBd(event)">
-  <div class="modal">
-    <div class="modal-title" id="mtitle">Nuevo ítem</div>
-    <div class="frow"><label class="flbl">Descripción</label><input class="finput" id="f-desc" placeholder="¿Qué hay que hacer o seguir?"></div>
-    <div class="fgrid2">
-      <div class="frow"><label class="flbl">Sistema</label><select class="fsel" id="f-label" onchange="onLbl()"></select></div>
-      <div class="frow"><label class="flbl">Sub-label</label><select class="fsel" id="f-sub" onchange="updateMeetingPanel()"><option value="">—</option></select></div>
-    </div>
-    <div class="fgrid3">
-      <div class="frow"><label class="flbl">Tipo</label><select class="fsel" id="f-tipo"><option value="pendiente">Pendiente mío</option><option value="seguimiento">Seguimiento</option><option value="decision">Decisión abierta</option><option value="info">Informativo</option><option value="pausado">Pausado</option></select></div>
-      <div class="frow"><label class="flbl">Estado</label><select class="fsel" id="f-done"><option value="0">Activo</option><option value="1">Completado ✓</option></select></div>
-      <div class="frow"><label class="flbl">Fecha límite</label><input class="finput" type="date" id="f-due"></div>
-    </div>
-    <div class="fgrid2">
-      <div class="frow"><label class="flbl">Contraparte</label><input class="finput" id="f-who" placeholder="IT, Tax, FPS, EY..."></div>
-      <div class="frow"><label class="flbl">Reunión de origen</label><input class="finput" id="f-reunion"></div>
-    </div>
-    <div class="frow"><label class="flbl">Nota</label><textarea class="ftarea" id="f-note"></textarea></div>
-    <div id="meet-panel" class="mpanel" style="display:none">
-      <div class="mpanel-hdr">🟣 Minutas relacionadas <span id="mpanel-badge" style="font-size:9px;background:#7C3AED;color:#fff;border-radius:10px;padding:1px 6px;font-weight:600"></span></div>
-      <div id="mpanel-content"></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-del" id="bdel" style="display:none" onclick="delItem()">Eliminar</button>
-      <button class="btn" onclick="closeMod()">Cancelar</button>
-      <button class="btn btn-dark" onclick="saveItem()">Guardar</button>
-    </div>
-  </div>
+<div class="sync-bar">
+  <span><span class="sync-dot"></span>Gmail sync: <span id="gsyncTime">—</span></span>
+  <span><span class="sync-dot"></span>Jira sync: <span id="jsyncTime">—</span></span>
+  <span style="color:#94a3b8">Próximo sync: automático</span>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPane('resumen')">📊 Resumen</div>
+  <div class="tab" onclick="showPane('gmail')" id="tab-gmail">📧 Gmail <span class="badge" id="badge-gmail">0</span></div>
+  <div class="tab" onclick="showPane('jira')" id="tab-jira">🎯 Jira <span class="badge" id="badge-jira">0</span></div>
+  <div class="tab" onclick="showPane('calendar')">📅 Agenda <span class="badge" id="badge-cal">0</span></div>
+</div>
+
+<div class="content">
+
+<!-- RESUMEN -->
+<div class="pane active" id="pane-resumen">
+  <div class="stats-row" id="statsRow"></div>
+  <div id="resumenContent"></div>
+</div>
+
+<!-- GMAIL -->
+<div class="pane" id="pane-gmail">
+  <div class="items-grid" id="gmailList"></div>
+</div>
+
+<!-- JIRA -->
+<div class="pane" id="pane-jira">
+  <div class="items-grid" id="jiraList"></div>
+</div>
+
+<!-- CALENDAR -->
+<div class="pane" id="pane-calendar">
+  <div id="calList"></div>
+</div>
+
 </div>
 
 <script>
-// ── CONFIG ───────────────────────────────────────────────────────────────────
-const LU = 'lujan.usieto@mercadolibre.com';
-const CLOUD_ID = 'mercadolibre-everest.atlassian.net';
-const JIRA_BASE = 'https://mercadolibre-everest.atlassian.net/browse/';
+// ─── DATA ────────────────────────────────────────────────────────────────────
 
-const LABELS = [
-  {id:'bantotal', label:'Bantotal',             color:'var(--c-bantotal)', bg:'var(--c-bantotal-bg)', subs:['Integración SAP','Módulos pendientes','COELSA','Conciliaciones bancarias','Pago de impuestos','Descubierto']},
-  {id:'modelos',  label:'Modelos Contables',    color:'var(--c-modelos)',  bg:'var(--c-modelos-bg)',  subs:['ON y VDF','Repos','Cauciones','Títulos Públicos','Plazos Fijos','Call','Depósitos Remunerados','Nostro Remuneradas','FX Spot','Descuento de Cupones','Compra de Cartera']},
-  {id:'fps',      label:'FPS + FinOps + Acc',   color:'var(--c-fps)',      bg:'var(--c-fps-bg)',      subs:['Conciliaciones Bancarias','AxI','Diferencia de Cotización','DE-PARA','Plan de cuentas']},
-  {id:'societario',label:'Societario',          color:'var(--c-soc)',      bg:'var(--c-soc-bg)',      subs:['Constitución','Capital','SAP acelerado']},
-  {id:'gap',      label:'GAP Normativo / PwC',  color:'var(--c-gap)',      bg:'var(--c-gap-bg)',      subs:[]},
-  {id:'ey',       label:'Auditoría / EY',        color:'var(--c-ey)',       bg:'var(--c-ey-bg)',       subs:[]},
-  {id:'retail',   label:'Banco Retail',          color:'var(--c-retail)',   bg:'var(--c-retail-bg)',   subs:[]},
-];
+const SCHEDULED_GSYNC = "2026-05-26T12:35:00Z";
+const SCHEDULED_JSYNC = "2026-05-26T12:35:00Z";
 
-const TIPO = {
-  pendiente:   {label:'Pendiente mío',   color:'var(--t-pendiente)',   bg:'var(--t-pendiente-bg)'},
-  seguimiento: {label:'Seguimiento',      color:'var(--t-seguimiento)', bg:'var(--t-seguimiento-bg)'},
-  decision:    {label:'Decisión abierta', color:'var(--t-decision)',    bg:'var(--t-decision-bg)'},
-  info:        {label:'Informativo',      color:'var(--t-info)',        bg:'var(--t-info-bg)'},
-  pausado:     {label:'Pausado',          color:'var(--t-pausado)',     bg:'var(--t-pausado-bg)'},
-};
-
-const VIEWS = {
-  pendientes:  {title:'Mis pendientes',      sub:'To-dos asignados a Lu'},
-  seguimiento: {title:'En seguimiento',      sub:'Esperando respuesta de otros'},
-  decisiones:  {title:'Decisiones abiertas', sub:'Decisiones sin resolver'},
-  gmail:       {title:'Gmail + Minutas',      sub:'Threads Gmail · Accionables de minutas Gemini'},
-  jira:        {title:'Jira · EVEREST',      sub:'Issues activos — Done en Jira = completado automático'},
-  sistemas:    {title:'Por sistema',         sub:'Vista agrupada por label'},
-  completados: {title:'Completados',         sub:'Manuales: vos los cerrás · Gmail/Jira: se cierran solos'},
-  agenda:      {title:'Agenda Everest',      sub:'Reuniones de hoy y mañana relevantes para el proyecto'},
-};
-
-// Gmail thread routing
-const ROUTES = [
-  {p:/bantotal|req\.|requerimiento|integraci[oó]n.?sap|coelsa/i,     label:'bantotal', sub:'Integración SAP',         tipo:'seguimiento'},
-  {p:/plazo.?fijo|plazos.?fijos|fpsl|cuentas.?puente/i,              label:'modelos',  sub:'Plazos Fijos',             tipo:'pendiente'},
-  {p:/\bon y vdf\b|obl.*negoc|tit.*privad/i,                         label:'modelos',  sub:'ON y VDF',                 tipo:'pendiente'},
-  {p:/repos?|cauciones?/i,                                            label:'modelos',  sub:'Repos',                   tipo:'pendiente'},
-  {p:/t[ií]tulos.?p[uú]blicos/i,                                     label:'modelos',  sub:'Títulos Públicos',         tipo:'pendiente'},
-  {p:/fx.?spot|forward|compra.?venta.?divisa/i,                      label:'modelos',  sub:'FX Spot',                  tipo:'pendiente'},
-  {p:/ajuste.?por.?inflaci[oó]n|\baxi\b|\bREI\b/i,                   label:'fps',      sub:'AxI',                      tipo:'seguimiento'},
-  {p:/diferencia.?de.?cotizaci[oó]n|revalu[oó]/i,                    label:'fps',      sub:'Diferencia de Cotización', tipo:'decision'},
-  {p:/conciliaci[oó]n.?bancaria|extracto.?banco/i,                   label:'fps',      sub:'Conciliaciones Bancarias', tipo:'decision'},
-  {p:/de-?para|plan.?de.?cuentas/i,                                  label:'fps',      sub:'DE-PARA',                  tipo:'seguimiento'},
-  {p:/frente.?contable|fps|finops|acc.?corp|simetrik|gobernanza/i,   label:'fps',      sub:'',                         tipo:'pendiente'},
-  {p:/societari|constituci[oó]n|integraci[oó]n.?capital/i,           label:'societario',sub:'',                        tipo:'seguimiento'},
-  {p:/pwc|gap.?normativo|mesa.?de.?trabajo/i,                        label:'gap',      sub:'',                         tipo:'pendiente'},
-  {p:/\bey\b|ernst|auditor|esquema.?contable|troyelli|g[oó]mez.?sandoval|v[aá]zquez|araoz/i, label:'ey', sub:'', tipo:'pendiente'},
-  {p:/banco.?retail|end.?game/i,                                     label:'retail',   sub:'',                         tipo:'info'},
-];
-
-// Jira status → done mapping
-const JIRA_DONE_STATUSES = ['done','cerrado','resuelto','closed','resolved','listo','completado'];
-const JIRA_TIPO_MAP = {
-  'Pendiente MELI': 'pendiente',
-  'Nuevo': 'pendiente',
-  'Comité': 'decision',
-  'Aprobada': 'seguimiento',
-  'En desarrollo': 'seguimiento',
-  'En prueba': 'seguimiento',
-  'Bloqueado': 'pendiente',
-};
-
-// ── STATE ─────────────────────────────────────────────────────────────────────
-let items = [], nid = 400, eid = null, sq = '', fl = '', lastGsync = null, lastJsync = null;
-
-const DEFAULTS = [
-  {id:1,  desc:'Seguimiento req. 76 — validar solución técnica en Jira', label:'bantotal', sub:'Integración SAP',         tipo:'seguimiento', due:null, who:'Dani Joya / Jaime Plata (EVEREST-76)', note:'Req. 76 cargado. Dani y Jaime tienen acceso.', reunion:'Integración SAP', done:false, source:'manual'},
-  {id:2,  desc:'Recordar al PMO organizar reunión (Conciliaciones, Pago impuestos, Descubierto)', label:'bantotal', sub:'Módulos pendientes', tipo:'pendiente', due:null, who:'PMO', note:'', reunion:null, done:false, source:'manual'},
-  {id:3,  desc:'Revisar info enviada por Charly sobre COELSA', label:'bantotal', sub:'COELSA', tipo:'pendiente', due:null, who:null, note:'', reunion:null, done:false, source:'manual'},
-  {id:4,  desc:'Revisión modelos contables — ON y VDF', label:'modelos', sub:'ON y VDF', tipo:'pendiente', due:'2026-05-08', who:null, note:'ETA 8 mayo.', reunion:null, done:false, source:'manual'},
-  {id:5,  desc:'Revisión modelos contables — Repos', label:'modelos', sub:'Repos', tipo:'pendiente', due:'2026-05-08', who:null, note:'ETA 8 mayo.', reunion:null, done:false, source:'manual'},
-  {id:6,  desc:'Revisión modelos contables — Cauciones', label:'modelos', sub:'Cauciones', tipo:'pendiente', due:'2026-05-08', who:null, note:'ETA 8 mayo.', reunion:null, done:false, source:'manual'},
-  {id:7,  desc:'Revisión modelos contables — Títulos Públicos', label:'modelos', sub:'Títulos Públicos', tipo:'pendiente', due:'2026-05-16', who:null, note:'ETA 16 mayo.', reunion:null, done:false, source:'manual'},
-  {id:8,  desc:'Confirmar FX Spot con Flor Cabrera + equipo FPS', label:'modelos', sub:'FX Spot', tipo:'pendiente', due:null, who:'Flor Cabrera (Bantotal) + FPS', note:'', reunion:null, done:false, source:'manual'},
-  {id:9,  desc:'Seguimiento Descuento de Cupones — esperando cambio de Acc Corp', label:'modelos', sub:'Descuento de Cupones', tipo:'seguimiento', due:null, who:'Acc Corp', note:'', reunion:null, done:false, source:'manual'},
-  {id:10, desc:'Compra de Cartera — postpuesto a septiembre', label:'modelos', sub:'Compra de Cartera', tipo:'pausado', due:'2026-09-01', who:null, note:'', reunion:null, done:false, source:'manual'},
-  {id:11, desc:'AxI — esperando definiciones Analía y Andrés (sin respuesta desde 19 abr)', label:'fps', sub:'AxI', tipo:'seguimiento', due:null, who:'Analía Cisneros / Andrés Sosa', note:'Reenvío 19 abr. +2 semanas sin respuesta. ALERTA.', reunion:'Revisión AxI', done:false, source:'manual'},
-  {id:12, desc:'Diferencia de Cotización — FPS debe validar asientos teóricos', label:'fps', sub:'Diferencia de Cotización', tipo:'decision', due:null, who:'FPS / Marta / Fran Thomas', note:'3 propuestas de solución de Marta.', reunion:null, done:false, source:'manual'},
-  {id:13, desc:'Conciliaciones Bancarias — SAP o Bantotal?', label:'fps', sub:'Conciliaciones Bancarias', tipo:'decision', due:null, who:'Martin Giofre / Christian Galdeano', note:'Sin diseño de registros SAP.', reunion:null, done:false, source:'manual'},
-  {id:14, desc:'DE-PARA — FinOps debe pedir apertura de cuentas nuevas', label:'fps', sub:'DE-PARA', tipo:'seguimiento', due:null, who:'FinOps', note:'', reunion:null, done:false, source:'manual'},
-  {id:15, desc:'Seguimiento constitución, capital y SAP acelerado', label:'societario', sub:'Constitución', tipo:'seguimiento', due:null, who:'Legal / Romina', note:'', reunion:null, done:false, source:'manual'},
-  {id:16, desc:'Mesas PwC — revisar estado y acciones pendientes de Lu', label:'gap', sub:'', tipo:'pendiente', due:null, who:'PwC', note:'', reunion:null, done:false, source:'manual'},
-  {id:17, desc:'Contestar mail de Julián N. Gómez Sandoval (EY) — URGENTE', label:'ey', sub:'', tipo:'pendiente', due:null, who:'Julian.Gomez@ar.ey.com', note:'', reunion:null, done:false, source:'manual'},
-  {id:18, desc:'Organizar call semanal con EY para revisar esquemas contables', label:'ey', sub:'', tipo:'pendiente', due:null, who:'Troyelli / Vázquez / Araoz', note:'', reunion:null, done:false, source:'manual'},
-  {id:19, desc:'Banco Retail — explorar minutas [Banco Arg] / End-game', label:'retail', sub:'', tipo:'info', due:null, who:null, note:'Fase exploratoria.', reunion:null, done:false, source:'manual'},
-  // completados manuales iniciales
-  {id:20, desc:'Depósitos Remunerados — revisados y enviados a FPS', label:'modelos', sub:'Depósitos Remunerados', tipo:'info', due:null, who:'FPS', note:'', reunion:null, done:true, source:'manual'},
-  {id:21, desc:'Plazo Fijo — modelo revisado y enviado a FPS', label:'modelos', sub:'Plazos Fijos', tipo:'info', due:null, who:'FPS', note:'', reunion:null, done:true, source:'manual'},
-  {id:22, desc:'Call — modelo revisado y enviado a FPS', label:'modelos', sub:'Call', tipo:'info', due:null, who:'FPS', note:'', reunion:null, done:true, source:'manual'},
-  {id:23, desc:'Nostro Remuneradas — modelo revisado y enviado a FPS', label:'modelos', sub:'Nostro Remuneradas', tipo:'info', due:null, who:'FPS', note:'', reunion:null, done:true, source:'manual'},
-  // JIRA issues reales (cargados en cold-start, se actualizan con sync)
-  {id:50, desc:'EVEREST-195 · Contabilidad - Parametrización del módulo', label:'bantotal', sub:'', tipo:'seguimiento', due:null, who:'Lu (asignado)', note:'OT en curso. Estado: Aprobada.', reunion:null, done:false, source:'jira', jiraKey:'EVEREST-195', jiraStatus:'Aprobada'},
-  {id:51, desc:'EVEREST-194 · Contabilidad - Plan de cuentas', label:'fps', sub:'Plan de cuentas', tipo:'seguimiento', due:null, who:'Lu (asignado)', note:'OT en curso. Estado: Aprobada.', reunion:null, done:false, source:'jira', jiraKey:'EVEREST-194', jiraStatus:'Aprobada'},
-  {id:52, desc:'EVEREST-197 · Contabilidad - Consulta de mayor de saldos', label:'bantotal', sub:'', tipo:'seguimiento', due:null, who:'Lu (asignado)', note:'OT en curso. Estado: Aprobada.', reunion:null, done:false, source:'jira', jiraKey:'EVEREST-197', jiraStatus:'Aprobada'},
-  {id:53, desc:'EVEREST-147 · Procesos Batch y Riesgos - implementación de procesos', label:'fps', sub:'', tipo:'seguimiento', due:null, who:'Lu (asignado)', note:'OT en curso. Estado: Aprobada.', reunion:null, done:false, source:'jira', jiraKey:'EVEREST-147', jiraStatus:'Aprobada'},
-  {id:54, desc:'EVEREST-114 · Enviar asientos contables de ajuste (incl. venta título Ori)', label:'modelos', sub:'Títulos Públicos', tipo:'pendiente', due:null, who:'Lu (asignado)', note:'Tipo: Pendiente MELI. Requiere acción de Lu.', reunion:null, done:false, source:'jira', jiraKey:'EVEREST-114', jiraStatus:'Pendiente MELI'},
-];
-
-// ── SCHEDULED TASK INJECTION — auto-actualizado por Claude (no editar a mano) ─
-// Última sync: 22/05/2026 09:00 hs ART
-const SCHEDULED_GSYNC = '22/05/2026, 09:00 hs';
 const SCHEDULED_GMAIL_ITEMS = [
-  {id:310,desc:'VME - Ejemplo Valoración, Lineamientos Banking y Draft Inventario Proveedores',label:'modelos',sub:'',tipo:'pendiente',due:null,who:'Analía Cisneros (ext_analcisn)',note:'Documentación para revisar antes de la reunión del miércoles 27/05. Incluye: Ejemplo de Valoración, Lineamientos Banking y Draft Inventario de Proveedores. Lu es destinataria directa, sin respuesta aún.',reunion:'Reunión miércoles 27/05',done:false,source:'gmail',syncDate:'22 may 01:14'},
-  {id:311,desc:'Banco Argentina - Proceso AxI (discusión libro 0L / IFRS)',label:'fps',sub:'AxI',tipo:'seguimiento',due:null,who:'ext_analcisn · romina.buenaventura',note:'AxI en libro 0L (IFRS puro): MBA se agrega a sociedades arg. que ejecutan AxI en SAP S/4. Lu en CC — sin acción requerida, conversación resuelta entre Analía y Romi.',reunion:null,done:false,source:'gmail',syncDate:'20 may'},
-  {id:312,desc:'Notas reunión: "[Everest] - Bantotal & Coelsa", 21 may',label:'bantotal',sub:'COELSA',tipo:'info',due:null,who:'gemini-notes (automático)',note:'Notas automáticas Gemini de la reunión [Everest] - Bantotal & Coelsa del 21 mayo. Revisar posibles action items.',reunion:'[Everest] - Bantotal & Coelsa',done:false,source:'gmail',syncDate:'21 may'},
+  {
+    id: "19e4fd00534047ce",
+    source: "gmail",
+    subject: "Re: Revision Descuento de documentos",
+    snippet: "Hola Lu, buen día. Entiendo que estos puntos ya los estuvieron viendo en off con Lucre durante el diseño y revisión de modelo pero podemos iterar en la meet. Voy adelantando el feedback...",
+    sender: "maximiliano.tulipani@mercadolibre.com",
+    date: "2026-05-26T12:00:00Z",
+    label: "Modelos Contables",
+    subLabel: "Descuento de Documentos",
+    type: "Pendiente",
+    done: false,
+    nuevo: true,
+    participants: ["maximiliano.tulipani", "jose.perezvivas", "lucrecia.radio", "jose.derose"]
+  }
 ];
 
-const SCHEDULED_JSYNC = '22/05/2026, 09:00 hs';
 const SCHEDULED_JIRA_ITEMS = [
-  {id:350,desc:'EVEREST-76 · Integraciones - Integración BT a SAP',label:'bantotal',sub:'Integración SAP',tipo:'decision',due:null,who:'ext_japlata (Jaime Plata)',note:'Estado Jira: Comité. Requiere decisión. Actualizado: 21 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-76',jiraStatus:'Comité'},
-  {id:351,desc:'EVEREST-194 · Contabilidad - Plan de cuentas',label:'fps',sub:'Plan de cuentas',tipo:'seguimiento',due:null,who:'ext_agbarbe',note:'Estado Jira: Aprobada. En curso. Actualizado: 21 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-194',jiraStatus:'Aprobada'},
-  {id:352,desc:'EVEREST-197 · Contabilidad - Consulta de mayor de saldos',label:'bantotal',sub:'',tipo:'seguimiento',due:null,who:'ext_agbarbe',note:'Estado Jira: Aprobada. En curso. Actualizado: 21 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-197',jiraStatus:'Aprobada'},
-  {id:353,desc:'EVEREST-307 · TT Definiciones de títulos / servicios necesarios',label:'modelos',sub:'Títulos Públicos',tipo:'pendiente',due:null,who:'sebastian.palopoli',note:'Estado Jira: Pendiente MELI. Requiere definición. Actualizado: 21 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-307',jiraStatus:'Pendiente MELI'},
-  {id:354,desc:'EVEREST-149 · TT- Implementación del módulo de títulos y dinero',label:'modelos',sub:'',tipo:'decision',due:null,who:'sebastian.palopoli',note:'Estado Jira: Comité. Requiere decisión. Actualizado: 21 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-149',jiraStatus:'Comité'},
-  {id:355,desc:'EVEREST-313 · Licencia Bancaria - Habilitación diálogo con otras entidades',label:'retail',sub:'',tipo:'pendiente',due:null,who:'(sin asignar)',note:'Estado Jira: Pendiente MELI. Sin asignado. Actualizado: 21 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-313',jiraStatus:'Pendiente MELI'},
+  {
+    id: "EVEREST-76",
+    source: "jira",
+    summary: "Integraciones - Integración BT a SAP",
+    status: "Comité",
+    assignee: "Jaime Plata",
+    updated: "2026-05-25T16:57:11Z",
+    label: "Bantotal",
+    subLabel: "Integraciones",
+    type: "Decisión",
+    done: false,
+    nuevo: true,
+    url: "https://mercadolibre-everest.atlassian.net/browse/EVEREST-76"
+  },
+  {
+    id: "EVEREST-329",
+    source: "jira",
+    summary: "Integraciones - Integración BT a SAP - Sprint 1",
+    status: "ENTREGADA AL CLIENTE",
+    assignee: "Felipe Baena",
+    updated: "2026-05-25T16:28:44Z",
+    label: "Bantotal",
+    subLabel: "Integraciones",
+    type: "Seguimiento",
+    done: false,
+    nuevo: true,
+    url: "https://mercadolibre-everest.atlassian.net/browse/EVEREST-329"
+  },
+  {
+    id: "EVEREST-88",
+    source: "jira",
+    summary: "Echeqs - Backoffice gestión de echeq",
+    status: "Aprobada",
+    assignee: "Felipe Baena",
+    updated: "2026-05-25T15:57:25Z",
+    label: "Bantotal",
+    subLabel: "Echeqs",
+    type: "Seguimiento",
+    done: false,
+    nuevo: true,
+    url: "https://mercadolibre-everest.atlassian.net/browse/EVEREST-88"
+  },
+  {
+    id: "EVEREST-320",
+    source: "jira",
+    summary: "Gestionar ventana homologacion contra las camaras",
+    status: "En análisis",
+    assignee: "Sin asignar",
+    updated: "2026-05-25T15:57:00Z",
+    label: "Bantotal",
+    subLabel: "COELSA",
+    type: "Seguimiento",
+    done: false,
+    nuevo: true,
+    url: "https://mercadolibre-everest.atlassian.net/browse/EVEREST-320"
+  },
+  {
+    id: "EVEREST-316",
+    source: "jira",
+    summary: "Conexion contra entes de terceros COELSA, IB, A3",
+    status: "En análisis",
+    assignee: "Carlos Fidel Tonguino Rosero",
+    updated: "2026-05-25T15:43:50Z",
+    label: "Bantotal",
+    subLabel: "COELSA",
+    type: "Seguimiento",
+    done: false,
+    nuevo: true,
+    url: "https://mercadolibre-everest.atlassian.net/browse/EVEREST-316"
+  },
+  {
+    id: "EVEREST-314",
+    source: "jira",
+    summary: "INTERBANKING - Entendimiento funcionalidad interbanking",
+    status: "En análisis",
+    assignee: "Carlos Fidel Tonguino Rosero",
+    updated: "2026-05-25T13:48:05Z",
+    label: "Bantotal",
+    subLabel: "Interbanking",
+    type: "Seguimiento",
+    done: false,
+    nuevo: true,
+    url: "https://mercadolibre-everest.atlassian.net/browse/EVEREST-314"
+  }
 ];
 
 const CALENDAR_EVENTS = [
-  {title:'Revision Esquemas Everest - EY',date:'2026-05-22',start:'09:00',end:'10:00',attendees:['lujan.usieto','romina.buenaventura','julian.gomez@ar.ey.com','leonardo.troyelli@ar.ey.com','pablo.vazquez@ar.ey.com'],label:'ey',sublabel:'',everest:true},
-  {title:'Seminario BCRA — Clase 5: Gestión de riesgos y supervisión',date:'2026-05-22',start:'10:00',end:'13:00',attendees:['lujan.usieto','romina.buenaventura','soledadpatricia.fernandez'],label:'gap',sublabel:'',everest:false},
-  {title:'[Building Everest] PwC Cierre de Gap Analysis (Etapa 1)',date:'2026-05-22',start:'15:00',end:'16:00',attendees:['lujan.usieto','nicolas.battaglia','ext_rodteres','martin.giofre','rosana.mazza@pwc.com'],label:'gap',sublabel:'',everest:true},
-  {title:'Entendimiento D3 + conexiones Coelsa/Interbanking',date:'2026-05-22',start:'16:00',end:'16:30',attendees:['lujan.usieto','christian.galdeano','leonardo.troncone'],label:'bantotal',sublabel:'COELSA',everest:true},
-  {title:'Weekly - Admin/FinOps',date:'2026-05-22',start:'16:30',end:'16:55',attendees:['lujan.usieto','leonardo.troncone'],label:'fps',sublabel:'',everest:true},
-  {title:'Banco Arg: Definición Facturación [Mesa Nucleo]',date:'2026-05-22',start:'17:00',end:'17:30',attendees:['lujan.usieto','jose.derose','romina.buenaventura','leonardo.troncone','martin.giofre'],label:'bantotal',sublabel:'',everest:true},
+  // HOY 26/05
+  { id:"ev1", day:"hoy", start:"10:00", end:"10:45", title:"Integracion Bantotal/SAP", label:"Bantotal", organizer:"Felipe Baena", key_attendees:["ext_japlata","ext_dajoya","fsantucho@bantotal.com","gbomrad@bantotal.com","abarbe@bantotal.com"], everest:true, meet:"https://meet.google.com/cuh-avun-zso" },
+  { id:"ev2", day:"hoy", start:"11:00", end:"11:30", title:"Revisar CeBe/Ceco Banco Arg", label:"FPS + FinOps + Acc Corp", organizer:"Lu (organizadora)", key_attendees:["cecilia.pinal@mercadolibre.com"], everest:true, meet:"https://meet.google.com/rva-hxqb-fbq" },
+  { id:"ev3", day:"hoy", start:"11:30", end:"12:15", title:"Cierre de gaps Accounting - Everest", label:"Modelos Contables", organizer:"Santiago Riosmada", key_attendees:["santiago.riosmada","felipe.baena","sebastian.palopoli"], everest:true, meet:"https://meet.google.com/vwi-uxft-yfn" },
+  { id:"ev4", day:"hoy", start:"12:00", end:"13:00", title:"Integración SAP", label:"Bantotal", organizer:"Felipe Baena", key_attendees:["ext_japlata","ext_dajoya","fcabrera@bantotal.com","gbomrad@bantotal.com","martin.giofre"], everest:true, meet:"https://meet.google.com/rbs-rpsh-pdu" },
+  { id:"ev5", day:"hoy", start:"12:30", end:"13:00", title:"RNA - Proceso", label:"Bantotal", organizer:"ext_analcisn", key_attendees:["ext_analcisn","ext_mapartar"], everest:true, meet:"https://meet.google.com/ipo-ctvy-why" },
+  { id:"ev6", day:"hoy", start:"14:00", end:"14:45", title:"Banco MLA - Flujos operativos Títulos", label:"Banco Retail", organizer:"Santiago Riosmada", key_attendees:["santiago.riosmada","felipe.baena","sebastian.palopoli"], everest:true, meet:"https://meet.google.com/yto-vemy-rdt" },
+  { id:"ev7", day:"hoy", start:"14:30", end:"15:00", title:"[Weekly] Alineación de avances Bantotal:MP", label:"Bantotal", organizer:"Nicolas Battaglia", key_attendees:["nicolas.battaglia","santiago.riosmada","damian.albanesi","fcabrera@bantotal.com","gbomrad@bantotal.com"], everest:true, meet:"https://meet.google.com/zqh-msas-yus" },
+  { id:"ev8", day:"hoy", start:"15:00", end:"15:45", title:"[Banco Arg] Frente Contable | FPS + Acc + TAX + FinOps", label:"FPS + FinOps + Acc Corp", organizer:"ext_rodteres", key_attendees:["ext_rodteres","ext_mapartar","christian.galdeano","martin.giofre","maximiliano.tulipani"], everest:true, meet:"https://meet.google.com/cbq-yyvj-msq" },
+  { id:"ev9", day:"hoy", start:"16:00", end:"16:30", title:"Revision Extractos Banco Arg", label:"Modelos Contables", organizer:"ext_frthomas", key_attendees:["ext_frthomas","ext_analcisn","ext_mapartar","ext_andvivas","christian.galdeano"], everest:true, meet:"https://meet.google.com/kwe-soaq-uzi" },
+  { id:"ev10", day:"hoy", start:"16:30", end:"17:00", title:"ECL - Provisiones NIF", label:"GAP Normativo/PwC", organizer:"ext_frthomas", key_attendees:["ext_frthomas","ext_analcisn","ext_andvivas","jose.derose","ext_lukovace"], everest:true, meet:"https://meet.google.com/uve-toku-jft" },
+  // MAÑANA 27/05
+  { id:"ev11", day:"mañana", start:"09:30", end:"10:15", title:"Revision Titulos", label:"Banco Retail", organizer:"Lu (organizadora)", key_attendees:["asilvera@bantotal.com"], everest:true, meet:"https://meet.google.com/tnh-spxt-fcp" },
+  { id:"ev12", day:"mañana", start:"10:15", end:"11:00", title:"Mapeo de tareas post-licencia", label:"Bantotal", organizer:"Santiago Riosmada", key_attendees:["santiago.riosmada","felipe.baena","fiorella.tabuyo","sebastian.palopoli","jose.derose"], everest:true, meet:"https://meet.google.com/bcq-xsyq-gtf" },
+  { id:"ev13", day:"mañana", start:"11:00", end:"11:45", title:"Building Everest :: Mesa implementación AML", label:"FPS + FinOps + Acc Corp", organizer:"Felipe Baena", key_attendees:["nicolas.battaglia","santiago.riosmada","damian.albanesi","carlos.tonguino","jose.derose"], everest:true, meet:"https://meet.google.com/ffg-nffh-mtz" },
+  { id:"ev14", day:"mañana", start:"12:00", end:"13:00", title:"[Banco Arg] Valoración ME", label:"Modelos Contables", organizer:"ext_frthomas", key_attendees:["ext_frthomas","ext_analcisn","ext_andvivas","ext_mapartar","christian.galdeano","carlos.tonguino"], everest:true, meet:"https://meet.google.com/qvh-mrir-ipu" },
+  { id:"ev15", day:"mañana", start:"14:00", end:"15:00", title:"Everest | Revisión Impuestos SAP", label:"FPS + FinOps + Acc Corp", organizer:"Lu (organizadora)", key_attendees:["ext_analcisn","ext_japlata","ext_dajoya","ext_rodteres","jose.derose","martin.giofre","ext_andvivas","ext_mapartar"], everest:true, meet:"https://meet.google.com/szt-acbe-cnh" },
+  { id:"ev16", day:"mañana", start:"15:00", end:"15:45", title:"Banco MLA - Flujos operativos Títulos", label:"Banco Retail", organizer:"Santiago Riosmada", key_attendees:["santiago.riosmada","felipe.baena","sebastian.palopoli"], everest:true, meet:"https://meet.google.com/dvx-dvvr-dnv" },
+  { id:"ev17", day:"mañana", start:"16:00", end:"16:45", title:"[Mesa núcleo] Pendientes Building Everest", label:"Bantotal", organizer:"Nicolas Battaglia", key_attendees:["nicolas.battaglia","santiago.riosmada","damian.albanesi","felipe.baena","carlos.tonguino","jose.derose"], everest:true, meet:"https://meet.google.com/sbq-mrsu-vvg" }
 ];
 
-// ── MEETING NOTES (minutas Gemini) ─────────────────────────────────────────
-const MEETING_NOTES = [
-  {title:'[Everest] - Bantotal & Coelsa',date:'2026-05-21',label:'bantotal',sub:'COELSA',
-   keyNotes:'Conexiones COELSA/Interbanking, SEDIP: gestión de admisión y transmisión.',
-   luActions:['Definir operativa contable SEDIP: analizar si implica creación automática de plazo fijo']},
-  {title:'Everest - Revisión de flujos y dependencias',date:'2026-05-20',label:'fps',sub:'',
-   keyNotes:'Revisión flujos contables para prehabilitación. Mapeo pago de impuestos.',
-   luActions:['Revisar y unificar flujos contables para prehabilitación','Integrar mapeo de procesos de pago de impuestos en archivo compartido']},
-  {title:'Cierre de gaps Accounting - Everest',date:'2026-05-19',label:'gap',sub:'',
-   keyNotes:'Cierre gap etapa 1. Inventario de procesos, manuales operativos, validaciones de modelos.',
-   luActions:['Enviar inventario de procesos al equipo de riesgos','Diagramar esquema integral de manuales operativos (contabilidad + controles)','Reunirse con Tere para destrabar validaciones de modelos contables','Crear hoja de cálculo para seguimiento de modelos contables']},
-  {title:'Revisar CeBe/Ceco Banco Arg',date:'2026-05-19',label:'bantotal',sub:'Módulos pendientes',
-   keyNotes:'Centros de beneficio/costo. Análisis productos bancarios etapa 1.',
-   luActions:['Reagendar sesión de seguimiento CeBe/Ceco próxima semana','Enviar archivo con productos de etapa 1']},
-  {title:'[Banco Arg] Valoración ME',date:'2026-05-19',label:'modelos',sub:'FX Spot',
-   keyNotes:'Cuarta moneda BCRA en SAP S4 Banking. No duplicar asientos revaluación. Modelo VME con Analía.',
-   luActions:[]},
-  {title:'Everest :: Mesa Building',date:'2026-05-20',label:'retail',sub:'',
-   keyNotes:'Pruebas sprint 1 antes del viernes. Dependencias: Interbanking, SAP, Bloomberg, Coelsa.',
-   luActions:[]},
-  {title:'Revision Esquemas Everest - EY',date:'2026-05-22',label:'ey',sub:'',
-   keyNotes:'Revisión semanal de esquemas contables con equipo EY (09:00 hs recurrente).',
-   luActions:[]},
-];
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
 
-const SCHEDULED_GEMINI_ITEMS = [
-  {id:360,desc:'SEDIP contable — definir operativa y si implica creación automática de plazo fijo',label:'bantotal',sub:'COELSA',tipo:'pendiente',due:null,who:'Charly / Bantotal',note:'Reunión 21 may: [Everest] - Bantotal & Coelsa. Analizar SEDIP: admisión y transmisión, ¿crea plazo fijo automático?',reunion:'[Everest] - Bantotal & Coelsa',done:false,source:'gemini',syncDate:'21 may'},
-  {id:361,desc:'Revisar y unificar flujos contables para prehabilitación',label:'fps',sub:'',tipo:'pendiente',due:null,who:'equipo FPS',note:'Reunión 20 may: Revisión de flujos y dependencias. Filtrar y unificar flujos para prehabilitación.',reunion:'Revisión de flujos y dependencias',done:false,source:'gemini',syncDate:'20 may'},
-  {id:362,desc:'Integrar mapeo de procesos de pago de impuestos en archivo compartido',label:'bantotal',sub:'Pago de impuestos',tipo:'pendiente',due:null,who:'equipo Bantotal',note:'Reunión 20 may: Revisión de flujos y dependencias.',reunion:'Revisión de flujos y dependencias',done:false,source:'gemini',syncDate:'20 may'},
-  {id:363,desc:'Compartir inventario de procesos con equipo de riesgos',label:'gap',sub:'',tipo:'pendiente',due:null,who:'equipo riesgos',note:'Reunión 19 may: Cierre de gaps Accounting. Enviar inventario al equipo de riesgos.',reunion:'Cierre de gaps Accounting - Everest',done:false,source:'gemini',syncDate:'19 may'},
-  {id:364,desc:'Diagramar esquema integral de manuales operativos (contabilidad + controles)',label:'gap',sub:'',tipo:'pendiente',due:null,who:'equipo contabilidad',note:'Reunión 19 may: Cierre de gaps Accounting. Esquema integral contabilidad y controles.',reunion:'Cierre de gaps Accounting - Everest',done:false,source:'gemini',syncDate:'19 may'},
-  {id:365,desc:'Reunirse con Tere para destrabar validaciones de modelos contables pendientes',label:'modelos',sub:'',tipo:'pendiente',due:'2026-05-27',who:'Tere (Felipe Baena)',note:'Reunión 19 may: Cierre de gaps Accounting. Validaciones de modelos bloqueadas — destrabar con Tere.',reunion:'Cierre de gaps Accounting - Everest',done:false,source:'gemini',syncDate:'19 may'},
-  {id:366,desc:'Crear hoja de cálculo para registrar y hacer seguimiento a modelos contables',label:'modelos',sub:'',tipo:'pendiente',due:null,who:null,note:'Reunión 19 may: Cierre de gaps Accounting. Registro y seguimiento de todos los modelos contables.',reunion:'Cierre de gaps Accounting - Everest',done:false,source:'gemini',syncDate:'19 may'},
-  {id:367,desc:'Reagendar sesión CeBe/Ceco — continuar análisis de productos bancarios',label:'bantotal',sub:'Módulos pendientes',tipo:'pendiente',due:'2026-05-29',who:'equipo Bantotal',note:'Reunión 19 may: Revisar CeBe/Ceco. Programar para próxima semana.',reunion:'Revisar CeBe/Ceco Banco Arg',done:false,source:'gemini',syncDate:'19 may'},
-  {id:368,desc:'Enviar archivo de productos de etapa 1 al equipo',label:'bantotal',sub:'Módulos pendientes',tipo:'pendiente',due:null,who:'equipo Bantotal',note:'Reunión 19 may: Revisar CeBe/Ceco. Compartir presentación de productos etapa 1.',reunion:'Revisar CeBe/Ceco Banco Arg',done:false,source:'gemini',syncDate:'19 may'},
-];
-
-function load(){
-  try{
-    const s=localStorage.getItem('ev7_items'); items=s?JSON.parse(s):DEFAULTS.map(x=>({...x}));
-    const n=localStorage.getItem('ev7_nid'); if(n)nid=parseInt(n);
-    const gs=localStorage.getItem('ev7_gsync'); if(gs)lastGsync=gs;
-    const js=localStorage.getItem('ev7_jsync'); if(js)lastJsync=js;
-  }catch(e){items=DEFAULTS.map(x=>({...x}));}
-  // Inyección automática de Gmail — usa desc como clave estable para preservar tildados
-  if(SCHEDULED_GMAIL_ITEMS&&SCHEDULED_GMAIL_ITEMS.length){
-    const prevGmail=new Map(items.filter(i=>i.source==='gmail').map(i=>[i.desc,i]));
-    items=items.filter(i=>i.source!=='gmail');
-    SCHEDULED_GMAIL_ITEMS.forEach(ni=>{
-      const prev=prevGmail.get(ni.desc);
-      items.push({...ni,done:prev?prev.done:ni.done});
-    });
-    if(SCHEDULED_GSYNC)lastGsync=SCHEDULED_GSYNC;
-    save();
-  }
-  // Inyección automática de Jira — usa jiraKey como clave estable para preservar tildados
-  if(SCHEDULED_JIRA_ITEMS&&SCHEDULED_JIRA_ITEMS.length){
-    const prevJira=new Map(items.filter(i=>i.source==='jira').map(i=>[i.jiraKey,i]));
-    items=items.filter(i=>i.source!=='jira');
-    SCHEDULED_JIRA_ITEMS.forEach(ni=>{
-      const prev=prevJira.get(ni.jiraKey);
-      const done=prev?prev.done:isJiraDone(ni.jiraStatus||'');
-      items.push({...ni,done});
-    });
-    if(SCHEDULED_JSYNC)lastJsync=SCHEDULED_JSYNC;
-    save();
-  }
-  // Inyección Gemini (minutas) — usa desc como clave estable para preservar tildados
-  if(SCHEDULED_GEMINI_ITEMS&&SCHEDULED_GEMINI_ITEMS.length){
-    const prevGemini=new Map(items.filter(i=>i.source==='gemini').map(i=>[i.desc,i]));
-    items=items.filter(i=>i.source!=='gemini');
-    SCHEDULED_GEMINI_ITEMS.forEach(ni=>{
-      const prev=prevGemini.get(ni.desc);
-      items.push({...ni,done:prev?prev.done:ni.done});
-    });
-    save();
-  }
-}
-function save(){
-  try{
-    localStorage.setItem('ev7_items',JSON.stringify(items));
-    localStorage.setItem('ev7_nid',String(nid));
-    if(lastGsync)localStorage.setItem('ev7_gsync',lastGsync);
-    if(lastJsync)localStorage.setItem('ev7_jsync',lastJsync);
-  }catch(e){}
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
 }
 
-function lm(id){return LABELS.find(l=>l.id===id)||LABELS[0];}
-function tc(t){return TIPO[t]||TIPO.info;}
-function dc(due,done){if(done||!due)return '';const d=new Date(due),n=new Date();n.setHours(0,0,0,0);d.setHours(0,0,0,0);const diff=(d-n)/86400000;return diff<0?'ov':diff<=4?'soon':'';}
-function fd(s){if(!s)return '';const[y,m,d]=s.split('-');const ms=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];return `${parseInt(d)} ${ms[parseInt(m)-1]}`;}
-function filt(list){let r=list;if(sq)r=r.filter(i=>i.desc.toLowerCase().includes(sq)||(i.note||'').toLowerCase().includes(sq)||(i.who||'').toLowerCase().includes(sq));if(fl)r=r.filter(i=>i.label===fl);return r;}
-function routeGmail(subj,snip,from){const t=`${subj} ${snip} ${from}`.toLowerCase();for(const r of ROUTES)if(r.p.test(t))return{label:r.label,sub:r.sub,tipo:r.tipo};return{label:'fps',sub:'',tipo:'info'};}
-function isJiraDone(status){return JIRA_DONE_STATUSES.some(s=>status.toLowerCase().includes(s));}
-function jiraLabel(summary){const t=summary.toLowerCase();if(/contabilidad|plan.?cuentas|mayor.?saldos|asientos/.test(t))return'bantotal';if(/batch|riesgos/.test(t))return'fps';if(/integraci[oó]n|sap/.test(t))return'bantotal';return'bantotal';}
-
-// ── GMAIL SYNC ────────────────────────────────────────────────────────────────
-async function syncGmail(){
-  setSyncing('gmail',true);
-  showBanner('Buscando emails nuevos en Gmail…','');
-  try{
-    const res = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:`Sos el asistente de Lujan Usieto (${LU}), referente contable del Proyecto Everest, banco argentino regulado por BCRA.
-Usá Gmail MCP para buscar threads relevantes de los últimos 30 días con estas queries:
-- "Bantotal SAP BCRA contabilidad banco Argentina newer_than:30d"
-- "AxI diferencia cotización FPS finops acc corp newer_than:30d"
-- "EY PwC auditoría frente contable newer_than:30d"
-
-Para cada thread devolvé SOLO un JSON array (sin markdown, sin texto):
-[{"threadId":"...","subject":"...","from":"...","date":"DD MMM","snippet":"...","luReplied":true/false}]
-luReplied=true si ${LU} aparece como sender en algún mensaje del thread.`,
-        messages:[{role:'user',content:'Busca los emails y devuelve el JSON.'}],
-        mcp_servers:[{type:'url',url:'https://gmailmcp.googleapis.com/mcp/v1',name:'gmail'}]
-      })
-    });
-    const data = await res.json();
-    const text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-    const toolRes = (data.content||[]).filter(b=>b.type==='mcp_tool_result');
-    let threads=[];
-    try{const m=text.match(/\[[\s\S]*\]/);if(m)threads=JSON.parse(m[0]);}catch(e){}
-    if(!threads.length){
-      for(const tr of toolRes){try{const txt=tr.content?.[0]?.text||'';const m=txt.match(/\[[\s\S]*\]/);if(m){threads=JSON.parse(m[0]);break;}}catch(e){}}
-    }
-    if(threads.length){
-      items=items.filter(i=>i.source!=='gmail');
-      for(const t of threads){
-        const r=routeGmail(t.subject||'',t.snippet||'',t.from||'');
-        items.push({id:nid++,desc:t.subject||'Thread sin asunto',label:r.label,sub:r.sub,tipo:t.luReplied?'info':r.tipo,done:!!t.luReplied,due:null,who:t.from||null,note:t.snippet||null,reunion:null,source:'gmail',syncDate:t.date||null});
-      }
-      lastGsync=new Date().toLocaleString('es-AR');
-      save();
-      showBanner(`✓ ${threads.length} thread${threads.length!==1?'s':''} procesados · ${lastGsync}`,'ok');
-    }else{
-      showBanner('Sin emails nuevos relevantes en los últimos 30 días.','ok');
-    }
-  }catch(err){
-    showBanner('Error conectando con Gmail MCP. Verificá la conexión en Claude Desktop.','err');
-  }
-  setSyncing('gmail',false);
-  renderAll();
-}
-
-// ── JIRA SYNC ─────────────────────────────────────────────────────────────────
-async function syncJira(){
-  setSyncing('jira',true);
-  showBanner('Sincronizando issues de Jira…','');
-  try{
-    const res = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:`Sos el asistente de Lujan Usieto (${LU}), referente contable del Proyecto Everest en Jira (${CLOUD_ID}).
-Buscá issues del proyecto EVEREST asignados a ${LU} o relacionados a contabilidad, plan de cuentas, AxI, SAP, regímenes informativos.
-Devolvé SOLO un JSON array (sin markdown):
-[{"key":"EVEREST-XXX","summary":"...","status":"...","isDone":true/false,"assigneeEmail":"...","updated":"DD MMM YYYY"}]
-isDone=true si el status es Done, Cerrado, Resuelto, Listo o equivalente.`,
-        messages:[{role:'user',content:'Busca los issues y devuelve el JSON.'}],
-        mcp_servers:[{type:'url',url:'https://mcp.atlassian.com/v1/mcp',name:'atlassian'}]
-      })
-    });
-    const data=await res.json();
-    const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-    let issues=[];
-    try{const m=text.match(/\[[\s\S]*\]/);if(m)issues=JSON.parse(m[0]);}catch(e){}
-    if(issues.length){
-      items=items.filter(i=>i.source!=='jira');
-      for(const iss of issues){
-        const label=jiraLabel(iss.summary||'');
-        const tipo=JIRA_TIPO_MAP[iss.status]||'seguimiento';
-        const done=iss.isDone||isJiraDone(iss.status||'');
-        items.push({id:nid++,desc:`${iss.key} · ${iss.summary}`,label,sub:'',tipo:done?'info':tipo,done,due:null,who:iss.assigneeEmail||null,note:`Estado Jira: ${iss.status} · Actualizado: ${iss.updated||''}`,reunion:null,source:'jira',jiraKey:iss.key,jiraStatus:iss.status});
-      }
-      lastJsync=new Date().toLocaleString('es-AR');
-      save();
-      showBanner(`✓ ${issues.length} issue${issues.length!==1?'s':''} sincronizados · ${lastJsync}`,'ok');
-    }else{
-      // fallback: keep cold-start jira items, just refresh status indicator
-      showBanner('Usando datos de Jira en caché. Intentá de nuevo si los datos están desactualizados.','');
-    }
-  }catch(err){
-    showBanner('Error conectando con Jira MCP. Verificá la conexión en Claude Desktop.','err');
-  }
-  setSyncing('jira',false);
-  renderAll();
-}
-
-// ── UI HELPERS ────────────────────────────────────────────────────────────────
-function setSyncing(src,on){
-  const btn=document.getElementById(`btn-${src==='gmail'?'gsync':'jsync'}`);
-  const ico=document.getElementById(`${src==='gmail'?'g':'j'}icon`);
-  if(on){btn.disabled=true;ico.innerHTML='<span class="spinner"></span>';document.getElementById('spulse').classList.add('on');document.getElementById('stext').textContent='Sincronizando…';}
-  else{btn.disabled=false;ico.textContent='↻';document.getElementById('spulse').classList.remove('on');document.getElementById('stext').textContent=lastGsync||lastJsync?`Sync OK`:'Listo';}
-}
-function showBanner(msg,type){
-  const el=document.getElementById('banner');
-  el.textContent=msg;el.className=`banner show${type?' '+type:''}`;
-  if(type==='ok')setTimeout(()=>{el.className='banner';},5000);
-}
-
-// ── CARD ──────────────────────────────────────────────────────────────────────
-function card(item){
-  const l=lm(item.label),t=tc(item.tipo),d=dc(item.due,item.done);
-  const tC=item.done?'':` t-${item.tipo}`;
-  const dC=item.done?' is-done':'';
-  const srcTag=item.source==='gmail'?'<span class="src-tag src-gmail">Gmail</span>':
-    item.source==='jira'?`<span class="src-tag src-jira"><a href="${JIRA_BASE}${item.jiraKey||''}" target="_blank" style="color:inherit;text-decoration:none">${item.jiraKey||'Jira'} ↗</a></span>`:
-    item.source==='gemini'?'<span class="src-tag src-gemini">Minutas</span>':'';
-
-  // Meeting context — encontrar nota relacionada
-  let meetingHtml='';
-  if(!item.done){
-    const relNotes=MEETING_NOTES.filter(m=>m.label===item.label)
-      .sort((a,b)=>b.date.localeCompare(a.date));
-    let primaryNote=null;
-    if(item.reunion) primaryNote=MEETING_NOTES.find(m=>m.title===item.reunion)||relNotes[0];
-    else if(item.sub) primaryNote=relNotes.find(m=>m.sub&&m.sub.toLowerCase().includes(item.sub.toLowerCase()))||relNotes[0];
-    else primaryNote=relNotes[0];
-    const todayStr=new Date().toISOString().slice(0,10);
-    const nextEvt=CALENDAR_EVENTS.filter(e=>e.everest&&e.label===item.label&&e.date>=todayStr)
-      .sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start))[0];
-    if(primaryNote||nextEvt){
-      const MS=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-      meetingHtml='<div class="imeetings">';
-      if(primaryNote){
-        const [,pm,pd]=primaryNote.date.split('-');
-        meetingHtml+=`<div class="imeet-row"><span class="imeet-lbl">Última reunión:</span> ${parseInt(pd)} ${MS[parseInt(pm)-1]} — ${primaryNote.title}</div>`;
-        if(primaryNote.keyNotes)meetingHtml+=`<div class="imeet-notes">${primaryNote.keyNotes.length>95?primaryNote.keyNotes.slice(0,95)+'…':primaryNote.keyNotes}</div>`;
-        // Mostrar accionables solo para items NO gemini (los gemini YA son el accionable)
-        if(item.source!=='gemini'&&primaryNote.luActions&&primaryNote.luActions.length){
-          meetingHtml+=`<div class="imeet-acts">${primaryNote.luActions.slice(0,3).map(a=>`<div class="imeet-act">${a}</div>`).join('')}</div>`;
-        }
-      }
-      if(nextEvt){
-        const isToday=nextEvt.date===todayStr;
-        meetingHtml+=`<div class="imeet-row" style="margin-top:3px"><span class="imeet-lbl">Próxima:</span> ${isToday?`Hoy ${nextEvt.start}`:nextEvt.date===new Date(Date.now()+86400000).toISOString().slice(0,10)?`Mañana ${nextEvt.start}`:nextEvt.date+' '+nextEvt.start} — ${nextEvt.title}</div>`;
-      }
-      meetingHtml+='</div>';
-    }
-  }
-
-  return `<div class="icard${tC}${dC}" onclick="openEdit(${item.id})">
-    ${srcTag}
-    <div class="icheck ${item.done?'checked':''}" onclick="tog(event,${item.id})">
-      ${item.done?`<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5" stroke="#3D5A3E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}
-    </div>
-    <div class="icard-body">
-      <div class="ititle${item.done?' done':''}">${item.desc}</div>
-      <div class="imeta">
-        <span class="tag" style="color:${l.color};background:${l.bg}">${l.label}</span>
-        ${item.sub?`<span class="tag" style="color:var(--text-secondary);background:var(--surface2)">${item.sub}</span>`:''}
-        <span class="tag" style="color:${t.color};background:${t.bg}">${t.label}</span>
-        ${item.syncDate?`<span class="tag" style="color:var(--text-muted);background:var(--surface2)">${item.syncDate}</span>`:''}
-      </div>
-      ${item.note?`<div class="inote">${item.note}</div>`:''}
-      ${item.reunion&&item.source!=='gemini'?`<div class="ireunion">📅 ${item.reunion}</div>`:''}
-      ${meetingHtml}
-    </div>
-    <div class="iright">
-      ${item.due?`<div class="idue ${d}">${fd(item.due)}</div>`:''}
-      ${item.who?`<div class="iassign">${item.who}</div>`:''}
-    </div>
-  </div>`;
-}
-
-function toolbar(showLbl=true){
-  return `<div class="list-hdr">
-    <div class="search-wrap">
-      <svg class="search-ico" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.4"/><line x1="8.5" y1="8.5" x2="12" y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-      <input class="search-box" placeholder="Buscar…" oninput="onSQ(this.value)" value="${sq}">
-    </div>
-    ${showLbl?`<select class="fsel" onchange="onFL(this.value)"><option value="">Todos los sistemas</option>${LABELS.map(l=>`<option value="${l.id}" ${fl===l.id?'selected':''}>${l.label}</option>`).join('')}</select>`:''}
-  </div>`;
-}
-
-// ── RENDER VIEWS ──────────────────────────────────────────────────────────────
-function renderPendientes(){
-  const list=filt(items.filter(i=>!i.done&&i.tipo==='pendiente'));
-  const man=list.filter(i=>i.source==='manual');
-  const ext=list.filter(i=>i.source!=='manual');
-  let h=toolbar();
-  if(!list.length)h+='<div class="empty-state"><div class="empty-icon">✓</div>Sin pendientes activos</div>';
-  else{
-    if(man.length)h+=`<div class="item-grid">${man.map(card).join('')}</div>`;
-    if(ext.length)h+=`<div class="sec-label">Desde Gmail / Jira</div><div class="item-grid">${ext.map(card).join('')}</div>`;
-  }
-  document.getElementById('view-pendientes').innerHTML=h;
-}
-function renderSeguimiento(){
-  const list=filt(items.filter(i=>!i.done&&i.tipo==='seguimiento'));
-  const man=list.filter(i=>i.source==='manual');
-  const ext=list.filter(i=>i.source!=='manual');
-  let h=toolbar();
-  if(!list.length)h+='<div class="empty-state"><div class="empty-icon">👁</div>Sin ítems en seguimiento</div>';
-  else{
-    if(man.length)h+=`<div class="item-grid">${man.map(card).join('')}</div>`;
-    if(ext.length)h+=`<div class="sec-label">Desde Gmail / Jira</div><div class="item-grid">${ext.map(card).join('')}</div>`;
-  }
-  document.getElementById('view-seguimiento').innerHTML=h;
-}
-function renderDecisiones(){
-  const list=filt(items.filter(i=>!i.done&&i.tipo==='decision'));
-  document.getElementById('view-decisiones').innerHTML=toolbar()+(list.length?`<div class="item-grid">${list.map(card).join('')}</div>`:'<div class="empty-state"><div class="empty-icon">⚖</div>Sin decisiones abiertas</div>');
-}
-function renderGmail(){
-  const allGm=items.filter(i=>i.source==='gmail');
-  const allGe=items.filter(i=>i.source==='gemini');
-  const actGm=allGm.filter(i=>!i.done),doneGm=allGm.filter(i=>i.done);
-  const actGe=allGe.filter(i=>!i.done),doneGe=allGe.filter(i=>i.done);
-  const totalAct=actGm.length+actGe.length;
-  let h=`<div class="sync-header"><span class="sync-meta">${lastGsync?`Gmail: ${lastGsync}`:'Gmail: sin datos'} · Minutas Gemini cargadas automáticamente</span></div>`;
-  if(!allGm.length&&!allGe.length){h+=`<div class="empty-state"><div class="empty-icon">📬</div>Sin threads ni minutas cargados</div>`;}
-  else{
-    if(actGm.length)h+=`<div class="sec-label">Gmail — Threads activos (${actGm.length})</div><div class="item-grid">${actGm.map(card).join('')}</div>`;
-    if(actGe.length)h+=`<div class="sec-label" style="${actGm.length?'margin-top:1.25rem':''}">🟣 Minutas Gemini — Mis accionables (${actGe.length})</div><div class="item-grid">${actGe.map(card).join('')}</div>`;
-    const allDone=[...doneGm,...doneGe];
-    if(allDone.length)h+=`<div class="sec-label" style="margin-top:1.25rem">Completados (${allDone.length})</div><div class="item-grid">${allDone.map(card).join('')}</div>`;
-  }
-  document.getElementById('view-gmail').innerHTML=h;
-  document.getElementById('nc-g').textContent=totalAct||0;
-}
-function renderJira(){
-  const all=items.filter(i=>i.source==='jira');
-  const act=all.filter(i=>!i.done),done=all.filter(i=>i.done);
-  let h=`<div class="sync-header"><span class="sync-meta">${lastJsync?`Actualizado: ${lastJsync}`:'Sin datos'} · Status Done en Jira → completado automático</span></div>`;
-  if(!all.length)h+=`<div class="empty-state"><div class="empty-icon">📋</div>Sin issues Jira cargados</div>`;
-  else{
-    if(act.length)h+=`<div class="sec-label">Issues activos asignados a Lu (${act.length})</div><div class="item-grid">${act.map(card).join('')}</div>`;
-    if(done.length)h+=`<div class="sec-label" style="margin-top:1.25rem">Done en Jira — completados (${done.length})</div><div class="item-grid">${done.map(card).join('')}</div>`;
-  }
-  document.getElementById('view-jira').innerHTML=h;
-  document.getElementById('nc-j').textContent=act.length||0;
-}
-function renderSistemas(){
-  let h=toolbar(false);
-  LABELS.forEach(l=>{
-    const its=filt(items.filter(i=>!i.done&&i.label===l.id));
-    if(!its.length)return;
-    h+=`<div class="group-hdr"><span class="group-name" style="color:${l.color}">${l.label}</span><span class="group-count">${its.length}</span></div><div class="item-grid" style="margin-bottom:1rem">${its.map(card).join('')}</div>`;
-  });
-  if(!h.includes('item-grid'))h+='<div class="empty-state"><div class="empty-icon">📂</div>Sin ítems activos</div>';
-  document.getElementById('view-sistemas').innerHTML=h;
-}
-function renderCompletados(){
-  const list=filt(items.filter(i=>i.done));
-  const man=list.filter(i=>i.source==='manual');
-  const gm=list.filter(i=>i.source==='gmail');
-  const ge=list.filter(i=>i.source==='gemini');
-  const jr=list.filter(i=>i.source==='jira');
-  const tot=items.filter(i=>i.done).length;
-  let h=toolbar();
-  h+=`<div class="done-info">✓ ${tot} ítem${tot!==1?'s':''} completado${tot!==1?'s':''}<br><strong>Manuales:</strong> solo vos los cerrás · <strong>Gmail:</strong> Lu respondió = completado · <strong>Jira:</strong> Done = completado · <strong>Minutas:</strong> marcás vos</div>`;
-  if(!list.length)h+='<div class="empty-state"><div class="empty-icon">📭</div>No hay ítems completados todavía</div>';
-  else{
-    if(man.length)h+=`<div class="sec-label">Manuales</div><div class="item-grid">${man.map(card).join('')}</div>`;
-    if(gm.length)h+=`<div class="sec-label" style="margin-top:1rem">Gmail — Lu respondió</div><div class="item-grid">${gm.map(card).join('')}</div>`;
-    if(ge.length)h+=`<div class="sec-label" style="margin-top:1rem">Minutas Gemini — completados</div><div class="item-grid">${ge.map(card).join('')}</div>`;
-    if(jr.length)h+=`<div class="sec-label" style="margin-top:1rem">Jira — Done</div><div class="item-grid">${jr.map(card).join('')}</div>`;
-  }
-  document.getElementById('view-completados').innerHTML=h;
-}
-function renderMetrics(){
-  const a=items.filter(i=>!i.done);
-  const p=a.filter(i=>i.tipo==='pendiente').length;
-  const s=a.filter(i=>i.tipo==='seguimiento').length;
-  const d=a.filter(i=>i.tipo==='decision').length;
-  const dn=items.filter(i=>i.done).length;
-  document.getElementById('mrow').innerHTML=[
-    {cls:'m-pend',lbl:'Mis pendientes',val:p,sub:'to-dos de Lu',v:'pendientes'},
-    {cls:'m-seg', lbl:'En seguimiento',val:s,sub:'esperando respuesta',v:'seguimiento'},
-    {cls:'m-dec', lbl:'Decisiones abiertas',val:d,sub:'sin resolver',v:'decisiones'},
-    {cls:'m-done',lbl:'Completados',val:dn,sub:'Gmail+Jira automático',v:'completados'},
-  ].map(r=>`<div class="metric ${r.cls}" onclick="goViewById('${r.v}')"><div class="metric-lbl">${r.lbl}</div><div class="metric-val">${r.val}</div><div class="metric-sub">${r.sub}</div></div>`).join('');
-  document.getElementById('nc-p').textContent=p;
-  document.getElementById('nc-s').textContent=s;
-  document.getElementById('nc-d').textContent=d;
-  document.getElementById('nc-done').textContent=dn;
-  document.getElementById('nc-sys').textContent=a.length;
-}
-function renderAgenda(){
-  const today=new Date().toISOString().slice(0,10);
-  const tomorrow=new Date(Date.now()+86400000).toISOString().slice(0,10);
-  const evToday=CALENDAR_EVENTS.filter(e=>e.date===today&&e.everest);
-  const evTomorrow=CALENDAR_EVENTS.filter(e=>e.date===tomorrow&&e.everest);
-  const evAll=CALENDAR_EVENTS.filter(e=>e.everest);
-  document.getElementById('nc-cal').textContent=evToday.length||0;
-  let h='<div style="max-width:680px">';
-  const renderEvt=ev=>{
-    const l=lm(ev.label);
-    const att=(ev.attendees||[]).slice(0,4).map(a=>{const n=a.split('@')[0].replace(/\./g,' ');return n;}).join(', ')+(ev.attendees.length>4?` +${ev.attendees.length-4}`:``);
-    return `<div style="background:var(--surface);border:1px solid var(--border-soft);border-left:3px solid ${l.color};border-radius:10px;padding:12px 15px;margin-bottom:6px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);min-width:80px">${ev.start}–${ev.end}</span>
-        <span style="font-weight:500;font-size:13px">${ev.title}</span>
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
-        <span class="tag" style="color:${l.color};background:${l.bg}">${l.label}</span>
-        ${ev.sublabel?`<span class="tag" style="color:var(--text-secondary);background:var(--surface2)">${ev.sublabel}</span>`:''}
-        <span style="font-size:10px;color:var(--text-muted);margin-left:4px">👥 ${att}</span>
-      </div>
-    </div>`;
+function labelClass(label) {
+  const m = {
+    'Bantotal':'bantotal','Modelos Contables':'modelos','FPS + FinOps + Acc Corp':'fps',
+    'Societario':'societario','GAP Normativo/PwC':'gap','Auditoría/EY':'auditoria','Banco Retail':'retail'
   };
-  if(evToday.length){h+=`<div class="sec-label">Hoy — reuniones Everest (${evToday.length})</div>${evToday.map(renderEvt).join('')}`;}
-  else{h+=`<div class="sec-label">Hoy</div><div class="empty-state" style="padding:1.5rem"><div class="empty-icon">📅</div>Sin reuniones Everest hoy</div>`;}
-  if(evTomorrow.length){h+=`<div class="sec-label" style="margin-top:1.25rem">Mañana — reuniones Everest (${evTomorrow.length})</div>${evTomorrow.map(renderEvt).join('')}`;}
-  else{h+=`<div class="sec-label" style="margin-top:1.25rem">Mañana</div><p style="font-size:12px;color:var(--text-muted);padding:.5rem 0">Sin reuniones Everest confirmadas para mañana.</p>`;}
-  if(!evToday.length&&!evTomorrow.length&&evAll.length){h+=`<div class="sec-label" style="margin-top:1.25rem">Próximas</div>${evAll.slice(0,3).map(renderEvt).join('')}`;}
-  h+='</div>';
-  document.getElementById('view-agenda').innerHTML=h;
-}
-function renderAll(){renderMetrics();renderPendientes();renderSeguimiento();renderDecisiones();renderGmail();renderJira();renderSistemas();renderCompletados();renderAgenda();}
-
-function goView(v,el){
-  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
-  if(el)el.classList.add('active');
-  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
-  document.getElementById('view-'+v).classList.add('active');
-  const m=VIEWS[v]||{};
-  document.getElementById('ptitle').textContent=m.title||v;
-  document.getElementById('psub').textContent=m.sub||'';
-}
-function goViewById(v){const el=document.querySelector(`.nav-item[onclick*="'${v}'"]`);goView(v,el);}
-function onSQ(v){sq=v.toLowerCase();renderAll();}
-function onFL(v){fl=v;renderAll();}
-function tog(e,id){e.stopPropagation();const i=items.find(x=>x.id===id);if(!i)return;i.done=!i.done;save();renderAll();}
-
-// ── MODAL ─────────────────────────────────────────────────────────────────────
-function initLbls(){document.getElementById('f-label').innerHTML=LABELS.map(l=>`<option value="${l.id}">${l.label}</option>`).join('');}
-function onLbl(){
-  const l=LABELS.find(x=>x.id===document.getElementById('f-label').value);
-  const sel=document.getElementById('f-sub');
-  sel.innerHTML='<option value="">—</option>'+(l&&l.subs.length?l.subs.map(s=>`<option value="${s}">${s}</option>`).join(''):'');
-  updateMeetingPanel();
-}
-function fillMod(item){
-  document.getElementById('f-desc').value=item.desc||'';
-  document.getElementById('f-label').value=item.label||LABELS[0].id;
-  onLbl();
-  setTimeout(()=>{
-    document.getElementById('f-sub').value=item.sub||'';
-    updateMeetingPanel();
-  },20);
-  document.getElementById('f-tipo').value=item.tipo||'pendiente';
-  document.getElementById('f-done').value=item.done?'1':'0';
-  document.getElementById('f-due').value=item.due||'';
-  document.getElementById('f-who').value=item.who||'';
-  document.getElementById('f-note').value=item.note||'';
-  document.getElementById('f-reunion').value=item.reunion||'';
+  return m[label] || 'bantotal';
 }
 
-// ── MEETING PANEL (modal) ─────────────────────────────────────────────────────
-function updateMeetingPanel(){
-  const label=document.getElementById('f-label').value;
-  const sub=document.getElementById('f-sub').value;
-  const panel=document.getElementById('meet-panel');
-  const content=document.getElementById('mpanel-content');
-  const badge=document.getElementById('mpanel-badge');
-  // Find related notes
-  const relNotes=MEETING_NOTES.filter(m=>m.label===label).sort((a,b)=>b.date.localeCompare(a.date));
-  const subNotes=sub?relNotes.filter(m=>m.sub&&m.sub.toLowerCase().includes(sub.toLowerCase())):[];
-  const showNotes=(subNotes.length?subNotes:relNotes).slice(0,3);
-  // Next calendar event
-  const todayStr=new Date().toISOString().slice(0,10);
-  const tomorrowStr=new Date(Date.now()+86400000).toISOString().slice(0,10);
-  const nextEvt=CALENDAR_EVENTS.filter(e=>e.everest&&e.label===label&&e.date>=todayStr)
-    .sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start))[0];
-  if(!showNotes.length&&!nextEvt){panel.style.display='none';return;}
-  panel.style.display='block';
-  badge.textContent=showNotes.length+(nextEvt?'+1 hoy':'');
-  const MS=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-  let h='';
-  if(nextEvt){
-    const isToday=nextEvt.date===todayStr;
-    h+=`<div class="mpanel-next">📅 <strong>Próxima:</strong> ${isToday?'Hoy':'Mañana'} ${nextEvt.start} — ${nextEvt.title}</div>`;
+function statusClass(s) {
+  if (!s) return '';
+  const l = s.toLowerCase();
+  if (l.includes('comité') || l.includes('comite')) return 'status-comite';
+  if (l.includes('análisis') || l.includes('analisis')) return 'status-en-analisis';
+  if (l.includes('aprobada')) return 'status-aprobada';
+  if (l.includes('entregada')) return 'status-entregada';
+  if (l.includes('cerrado') || l.includes('done')) return 'status-cerrado';
+  return 'status-en-analisis';
+}
+
+function showPane(id) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('pane-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+
+function renderGmail() {
+  const list = document.getElementById('gmailList');
+  const items = SCHEDULED_GMAIL_ITEMS;
+  document.getElementById('badge-gmail').textContent = items.filter(i=>!i.done).length;
+  if (!items.length) { list.innerHTML = '<div class="empty">Sin novedades de Gmail en las últimas 24h</div>'; return; }
+
+  const grouped = {};
+  items.forEach(i => { (grouped[i.label] = grouped[i.label]||[]).push(i); });
+
+  let html = '';
+  for (const [label, grp] of Object.entries(grouped)) {
+    html += `<div class="section-title">${label}</div><div class="items-grid">`;
+    grp.forEach(item => {
+      html += `
+        <div class="item ${item.done?'done':''}">
+          <div class="item-icon">${item.done?'✅':'📧'}</div>
+          <div class="item-body">
+            <div class="item-title">${item.subject} ${item.nuevo?'<span class="badge-new">NUEVO</span>':''}</div>
+            <div class="item-meta">
+              <span>De: ${item.sender}</span>
+              <span>${fmtDate(item.date)}</span>
+              <span class="pill pill-type-${item.type}">${item.type}</span>
+              <span class="pill pill-${labelClass(item.label)}">${item.subLabel||item.label}</span>
+            </div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:6px;line-height:1.5">${item.snippet}</div>
+          </div>
+        </div>`;
+    });
+    html += '</div>';
   }
-  if(!showNotes.length){h+=`<div class="mpanel-empty">Sin minutas previas para este tema</div>`;content.innerHTML=h;return;}
-  showNotes.forEach(n=>{
-    const [,pm,pd]=n.date.split('-');
-    const actsHtml=n.luActions&&n.luActions.length
-      ?`<div class="mpanel-acts">${n.luActions.slice(0,3).map(a=>`<div class="mpanel-act">${a}</div>`).join('')}</div>`:'';
-    // Suggest contraparte based on who_map
-    const whoMap=JSON.parse(localStorage.getItem('ev_who_map')||'{}');
-    const suggestedWho=whoMap[label+'|'+sub]||whoMap[label+'|']||'';
-    h+=`<div class="mpanel-entry">
-      <div style="margin-bottom:3px"><span class="mpanel-date">${parseInt(pd)} ${MS[parseInt(pm)-1]}</span><span class="mpanel-title">${n.title}</span></div>
-      ${n.keyNotes?`<div class="mpanel-notes">${n.keyNotes}</div>`:''}
-      ${actsHtml}
-      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-        <button class="mpanel-apply" onclick="applyMeetContext('${n.title.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${n.date}')">Aplicar contexto al ítem</button>
-        ${suggestedWho&&!document.getElementById('f-who').value?`<button class="mpanel-apply" style="background:var(--surface2);color:var(--text-secondary);border-color:var(--border)" onclick="document.getElementById('f-who').value='${suggestedWho.replace(/'/g,"\\'")}';this.style.display='none'">👤 ${suggestedWho.split(' ')[0]}</button>`:''}
-      </div>
-    </div>`;
-  });
-  content.innerHTML=h;
+  list.innerHTML = html;
 }
 
-function applyMeetContext(title,date){
-  const note=MEETING_NOTES.find(m=>m.title===title&&m.date===date);
-  if(!note)return;
-  // Set reunion
-  document.getElementById('f-reunion').value=title;
-  // Append to note (don't overwrite)
-  const MS=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-  const [,pm,pd]=date.split('-');
-  const dateStr=`${parseInt(pd)} ${MS[parseInt(pm)-1]}`;
-  const existing=document.getElementById('f-note').value.trim();
-  const parts=[`[Reunión ${dateStr}: ${title}]`];
-  if(note.keyNotes)parts.push(note.keyNotes);
-  if(note.luActions&&note.luActions.length)parts.push('Accionables: '+note.luActions.join('; '));
-  const newNote=parts.join('\n');
-  document.getElementById('f-note').value=existing?(existing+'\n---\n'+newNote):newNote;
-  // Suggest who from who_map
-  const label=document.getElementById('f-label').value;
-  const sub=document.getElementById('f-sub').value;
-  if(!document.getElementById('f-who').value){
-    const whoMap=JSON.parse(localStorage.getItem('ev_who_map')||'{}');
-    const suggested=whoMap[label+'|'+sub]||whoMap[label+'|']||'';
-    if(suggested)document.getElementById('f-who').value=suggested;
+function renderJira() {
+  const list = document.getElementById('jiraList');
+  const items = SCHEDULED_JIRA_ITEMS;
+  const open = items.filter(i=>!i.done);
+  document.getElementById('badge-jira').textContent = open.length;
+  if (!items.length) { list.innerHTML = '<div class="empty">Sin issues Jira activos</div>'; return; }
+
+  const grouped = {};
+  items.forEach(i => { (grouped[i.label] = grouped[i.label]||[]).push(i); });
+
+  let html = '';
+  for (const [label, grp] of Object.entries(grouped)) {
+    html += `<div class="section-title">${label}</div><div class="items-grid">`;
+    grp.forEach(item => {
+      html += `
+        <div class="item ${item.done?'done':''}">
+          <div class="item-icon">${item.done?'✅':'🎯'}</div>
+          <div class="item-body">
+            <div class="item-title">
+              <a href="${item.url}" target="_blank">${item.id}</a> — ${item.summary}
+              ${item.nuevo?'<span class="badge-new">NUEVO</span>':''}
+            </div>
+            <div class="item-meta">
+              <span class="status-pill ${statusClass(item.status)}">${item.status}</span>
+              <span>👤 ${item.assignee}</span>
+              <span>⏱ ${fmtDate(item.updated)}</span>
+              <span class="pill pill-type-${item.type}">${item.type}</span>
+              <span class="pill pill-${labelClass(item.label)}">${item.subLabel||item.label}</span>
+            </div>
+          </div>
+        </div>`;
+    });
+    html += '</div>';
   }
-  showBanner('✓ Contexto de minuta aplicado al ítem','ok');
+  list.innerHTML = html;
 }
 
-function openModal(){
-  eid=null;
-  document.getElementById('mtitle').textContent='Nuevo ítem';
-  document.getElementById('bdel').style.display='none';
-  fillMod({label:LABELS[0].id});
-  document.getElementById('mbd').classList.add('open');
-}
-function openEdit(id){
-  const item=items.find(x=>x.id===id);if(!item)return;
-  eid=id;
-  document.getElementById('mtitle').textContent='Editar ítem';
-  document.getElementById('bdel').style.display='block';
-  fillMod(item);
-  document.getElementById('mbd').classList.add('open');
-}
-function closeMod(){document.getElementById('mbd').classList.remove('open');}
-function closeBd(e){if(e.target===document.getElementById('mbd'))closeMod();}
-function saveItem(){
-  const desc=document.getElementById('f-desc').value.trim();if(!desc){document.getElementById('f-desc').focus();return;}
-  const existing=eid?items.find(i=>i.id===eid):null;
-  const label=document.getElementById('f-label').value;
-  const sub=document.getElementById('f-sub').value;
-  const who=document.getElementById('f-who').value.trim()||null;
-  let reunion=document.getElementById('f-reunion').value.trim()||null;
-  // Auto-set reunion if blank — infer from most recent matching note
-  if(!reunion){
-    const relNotes=MEETING_NOTES.filter(m=>m.label===label).sort((a,b)=>b.date.localeCompare(a.date));
-    const match=sub?relNotes.find(m=>m.sub&&m.sub.toLowerCase().includes(sub.toLowerCase()))||relNotes[0]:relNotes[0];
-    if(match)reunion=match.title;
-  }
-  // Learn contraparte: save who for this label+sub combo
-  if(who){
-    try{
-      const whoMap=JSON.parse(localStorage.getItem('ev_who_map')||'{}');
-      whoMap[label+'|'+sub]=who;
-      localStorage.setItem('ev_who_map',JSON.stringify(whoMap));
-    }catch(e){}
-  }
-  const item={id:eid||nid++,desc,label,sub,tipo:document.getElementById('f-tipo').value,done:document.getElementById('f-done').value==='1',due:document.getElementById('f-due').value||null,who,note:document.getElementById('f-note').value.trim()||null,reunion,source:existing?existing.source||'manual':'manual',jiraKey:existing?.jiraKey,jiraStatus:existing?.jiraStatus};
-  if(eid){const idx=items.findIndex(i=>i.id===eid);if(idx>=0)items[idx]=item;}else items.push(item);
-  save();closeMod();renderAll();
-}
-function delItem(){if(!eid)return;if(!confirm('¿Eliminar?'))return;items=items.filter(i=>i.id!==eid);save();closeMod();renderAll();}
-function procesarReunion(){sendPrompt('Quiero procesar las notas de una reunión del Proyecto Everest para extraer mis pendientes. Te pego las notas ahora.');}
+function renderCalendar() {
+  const calDiv = document.getElementById('calList');
+  const hoy = CALENDAR_EVENTS.filter(e=>e.everest && e.day==='hoy');
+  const manana = CALENDAR_EVENTS.filter(e=>e.everest && e.day==='mañana');
+  document.getElementById('badge-cal').textContent = hoy.length + manana.length;
 
-function init(){
-  const d=new Date();
-  document.getElementById('sdate').innerHTML=d.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'})+'<br>'+d.getFullYear();
-  load();initLbls();renderAll();
+  function renderDay(events, label) {
+    let h = `<div class="day-header">📅 ${label} — ${events.length} reunión${events.length!==1?'es':''} Everest</div><div class="cal-grid">`;
+    events.forEach(ev => {
+      const lc = labelClass(ev.label);
+      h += `
+        <div class="cal-item">
+          <div class="cal-time">${ev.start}<br><span style="font-size:10px;color:#64748b">${ev.end}</span></div>
+          <div class="cal-body">
+            <div class="cal-title"><a href="${ev.meet}" target="_blank">${ev.title} ↗</a></div>
+            <div class="cal-sub">Organiza: ${ev.organizer}</div>
+            <div class="cal-pills">
+              <span class="pill pill-${lc}">${ev.label}</span>
+              ${ev.key_attendees.slice(0,3).map(a=>`<span style="font-size:10px;color:#64748b;padding:2px 4px">${a.split('@')[0].replace('ext_','')}</span>`).join('')}
+            </div>
+          </div>
+        </div>`;
+    });
+    h += '</div>';
+    return h;
+  }
+
+  let html = '';
+  if (hoy.length) html += renderDay(hoy, 'Hoy Martes 26/05');
+  if (manana.length) html += '<br>' + renderDay(manana, 'Mañana Miércoles 27/05');
+  calDiv.innerHTML = html || '<div class="empty">Sin reuniones Everest</div>';
 }
+
+function renderResumen() {
+  const pendientes = [...SCHEDULED_GMAIL_ITEMS.filter(i=>i.type==='Pendiente'&&!i.done),
+                      ...SCHEDULED_JIRA_ITEMS.filter(i=>i.type==='Pendiente'&&!i.done)];
+  const seguimiento = [...SCHEDULED_GMAIL_ITEMS.filter(i=>i.type==='Seguimiento'&&!i.done),
+                       ...SCHEDULED_JIRA_ITEMS.filter(i=>i.type==='Seguimiento'&&!i.done)];
+  const decisiones = [...SCHEDULED_GMAIL_ITEMS.filter(i=>i.type==='Decisión'&&!i.done),
+                      ...SCHEDULED_JIRA_ITEMS.filter(i=>i.type==='Decisión'&&!i.done)];
+  const hoyMtgs = CALENDAR_EVENTS.filter(e=>e.everest&&e.day==='hoy');
+
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card stat-red"><div class="stat-number">${pendientes.length}</div><div class="stat-label">🔴 Requieren acción</div></div>
+    <div class="stat-card stat-yellow"><div class="stat-number">${seguimiento.length}</div><div class="stat-label">🟡 En seguimiento</div></div>
+    <div class="stat-card stat-blue"><div class="stat-number">${decisiones.length}</div><div class="stat-label">🔵 Decisiones abiertas</div></div>
+    <div class="stat-card stat-green"><div class="stat-number">${hoyMtgs.length}</div><div class="stat-label">📅 Reuniones hoy</div></div>
+  `;
+
+  let html = '';
+
+  if (pendientes.length) {
+    html += `<div class="section-title">🔴 Requiere acción de Lu</div><div class="items-grid">`;
+    pendientes.forEach(item => {
+      const title = item.subject || item.summary;
+      const meta = item.sender || `${item.id} · ${item.status}`;
+      html += `<div class="item"><div class="item-icon">🔴</div><div class="item-body">
+        <div class="item-title">${title} <span class="badge-new">NUEVO</span></div>
+        <div class="item-meta"><span>${meta}</span><span class="pill pill-type-Pendiente">Pendiente</span><span class="pill pill-${labelClass(item.label)}">${item.label}</span></div>
+      </div></div>`;
+    });
+    html += '</div>';
+  }
+
+  if (decisiones.length) {
+    html += `<div class="section-title">🔵 Decisiones abiertas</div><div class="items-grid">`;
+    decisiones.forEach(item => {
+      const title = item.subject || item.summary;
+      html += `<div class="item"><div class="item-icon">🔵</div><div class="item-body">
+        <div class="item-title">${title} <span class="badge-new">NUEVO</span></div>
+        <div class="item-meta"><span>${item.id||item.sender||''}</span><span class="status-pill ${statusClass(item.status)}">${item.status||''}</span><span class="pill pill-type-Decisión">Decisión</span><span class="pill pill-${labelClass(item.label)}">${item.label}</span></div>
+      </div></div>`;
+    });
+    html += '</div>';
+  }
+
+  if (seguimiento.length) {
+    html += `<div class="section-title">🟡 Seguimiento activo (${seguimiento.length} ítems)</div><div class="items-grid">`;
+    seguimiento.forEach(item => {
+      const title = item.subject || item.summary;
+      html += `<div class="item"><div class="item-icon">🟡</div><div class="item-body">
+        <div class="item-title">${title}</div>
+        <div class="item-meta">${item.id?`<span class="status-pill ${statusClass(item.status)}">${item.status}</span>`:''}${item.assignee?`<span>👤 ${item.assignee}</span>`:''}<span class="pill pill-${labelClass(item.label)}">${item.subLabel||item.label}</span></div>
+      </div></div>`;
+    });
+    html += '</div>';
+  }
+
+  if (hoyMtgs.length) {
+    html += `<div class="section-title">📅 Agenda Everest hoy</div><div class="cal-grid">`;
+    hoyMtgs.forEach(ev => {
+      html += `<div class="cal-item">
+        <div class="cal-time">${ev.start}</div>
+        <div class="cal-body"><div class="cal-title"><a href="${ev.meet}" target="_blank">${ev.title} ↗</a></div>
+        <div class="cal-sub">Organiza: ${ev.organizer}</div>
+        <div class="cal-pills"><span class="pill pill-${labelClass(ev.label)}">${ev.label}</span></div></div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  document.getElementById('resumenContent').innerHTML = html;
+}
+
+function init() {
+  document.getElementById('gsyncTime').textContent = fmtDate(SCHEDULED_GSYNC);
+  document.getElementById('jsyncTime').textContent = fmtDate(SCHEDULED_JSYNC);
+  document.getElementById('headerMeta').textContent = `Último sync: ${fmtDate(SCHEDULED_GSYNC)} · Proyecto Banco Argentina`;
+  renderResumen();
+  renderGmail();
+  renderJira();
+  renderCalendar();
+}
+
 init();
 </script>
 </body>
