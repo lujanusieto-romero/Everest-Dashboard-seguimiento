@@ -338,12 +338,14 @@ const DEFAULTS = [
 
 // ── SCHEDULED TASK INJECTION — auto-actualizado por Claude (no editar a mano) ─
 // Última sync: 26/05/2026 09:35 hs ART
-const SCHEDULED_GSYNC = '26/05/2026, 09:35 hs';
+const SCHEDULED_GSYNC = '28/05/2026, 12:00 hs';
 const SCHEDULED_GMAIL_ITEMS = [
   {id:410,desc:'Revisión Descuento de documentos — respuesta pendiente de Lu a Maxi Tulipani',label:'modelos',sub:'Descuento de Documentos',tipo:'pendiente',due:null,who:'maximiliano.tulipani@mercadolibre.com',note:'Maxi respondió hoy 09:00 ART con feedback sobre los modelos. Lu todavía no respondió. Revisar antes de la reunión reprogramada.',reunion:null,done:false,source:'gmail',syncDate:'26 may 09:35'},
+
+  {id:411,desc:'RE: Integración - Autoliquidación débitos y créditos (IDYC Bantotal)',label:'bantotal',sub:'Autoliquidación IDYC',tipo:'seguimiento',due:null,who:'mpons@bantotal.com / jose.derose',note:'mpons@bantotal.com propone IDYC propio en rubro 331148005 (relación 1-a-1), simplificando integración SAP. Jose De Rose alinea posición. Lu CC. Requiere validación contable.',reunion:null,done:false,source:'gmail',syncDate:'28 may 12:00',nuevo:true},
 ];
 
-const SCHEDULED_JSYNC = '26/05/2026, 09:35 hs';
+const SCHEDULED_JSYNC = '28/05/2026, 12:00 hs';
 const SCHEDULED_JIRA_ITEMS = [
   {id:450,desc:'EVEREST-76 · Integraciones - Integración BT a SAP',label:'bantotal',sub:'Integración SAP',tipo:'decision',due:null,who:'ext_japlata (Jaime Plata)',note:'Estado Jira: Comité. Requiere decisión. Sprint 1 ya entregado al cliente. Actualizado: 25 may.',reunion:'Integración SAP',done:false,source:'jira',jiraKey:'EVEREST-76',jiraStatus:'Comité'},
   {id:451,desc:'EVEREST-329 · Integraciones BT a SAP — Sprint 1',label:'bantotal',sub:'Integración SAP',tipo:'seguimiento',due:null,who:'Felipe Baena',note:'Estado Jira: ENTREGADA AL CLIENTE. Actualizado: 25 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-329',jiraStatus:'ENTREGADA AL CLIENTE'},
@@ -351,6 +353,11 @@ const SCHEDULED_JIRA_ITEMS = [
   {id:453,desc:'EVEREST-320 · Gestionar ventana homologacion contra las camaras',label:'bantotal',sub:'COELSA',tipo:'seguimiento',due:null,who:'(sin asignar)',note:'Estado Jira: En análisis. Actualizado: 25 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-320',jiraStatus:'En análisis'},
   {id:454,desc:'EVEREST-316 · Conexion contra entes de terceros COELSA, IB, A3',label:'bantotal',sub:'COELSA',tipo:'seguimiento',due:null,who:'Carlos Fidel Tonguino Rosero',note:'Estado Jira: En análisis. Actualizado: 25 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-316',jiraStatus:'En análisis'},
   {id:455,desc:'EVEREST-314 · INTERBANKING - Entendimiento funcionalidad interbanking',label:'bantotal',sub:'Interbanking',tipo:'seguimiento',due:null,who:'Carlos Fidel Tonguino Rosero',note:'Estado Jira: En análisis. Actualizado: 25 may.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-314',jiraStatus:'En análisis'},
+
+  {id:460,desc:'EVEREST-174 · Banco Sponsor',label:'bantotal',sub:'Banco Sponsor',tipo:'seguimiento',due:null,who:'Bomrad Gaston',note:'Estado Jira: En construcción. Actualizado: 27 may. Reunión hoy 14:00 BKARG - Banco Sponsor.',reunion:'BKARG - Banco Sponsor',done:false,source:'jira',jiraKey:'EVEREST-174',jiraStatus:'En construcción',nuevo:true},
+  {id:461,desc:'EVEREST-297 · Creacion ambiente regulatorios - MELI',label:'gap',sub:'Regulatorio BCRA',tipo:'pendiente',due:null,who:'Federico Santucho',note:'Estado Jira: Pendiente MELI. Actualizado: 27 may. Requiere acción de parte MELI.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-297',jiraStatus:'Pendiente MELI',nuevo:true},
+  {id:462,desc:'EVEREST-338 · Nuevos reportes BCRA: Posición Global Neta Moneda Extranjera',label:'gap',sub:'Regímenes BCRA',tipo:'seguimiento',due:null,who:'ext_mapons (Bantotal)',note:'Estado Jira: Pendiente DLYA. Actualizado: 27 may. Nuevo régimen BCRA PGN ME a implementar.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-338',jiraStatus:'Pendiente DLYA',nuevo:true},
+  {id:463,desc:'EVEREST-331 a 336 · Integraciones BT a SAP — 6 interfaces nuevas',label:'bantotal',sub:'Integración SAP',tipo:'pendiente',due:null,who:'(sin asignar)',note:'6 issues Pendiente MELI creados el 26/05: Interfaz DPF, Préstamos, Cuenta, BTEventos, Devengos, Totales Contables. Todos sin asignar.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-331',jiraStatus:'Pendiente MELI',nuevo:true},
 ];
 
 const CALENDAR_EVENTS = [
@@ -371,6 +378,21 @@ const CALENDAR_EVENTS = [
   {title:'Everest | Revisión Impuestos SAP',date:'2026-05-27',start:'14:00',end:'15:00',attendees:['lujan.usieto','ext_analcisn','ext_japlata','ext_dajoya','jose.derose'],label:'fps',sublabel:'',everest:true},
   {title:'Banco MLA - Flujos operativos Títulos',date:'2026-05-27',start:'15:00',end:'15:45',attendees:['lujan.usieto','santiago.riosmada','felipe.baena','sebastian.palopoli'],label:'retail',sublabel:'',everest:true},
   {title:'[Mesa núcleo] Pendientes Building Everest',date:'2026-05-27',start:'16:00',end:'16:45',attendees:['lujan.usieto','nicolas.battaglia','santiago.riosmada','damian.albanesi','felipe.baena'],label:'bantotal',sublabel:'',everest:true},
+
+  {title:'Banco status',date:'2026-05-28',start:'09:30',end:'10:30',attendees:['lujan.usieto','romina.buenaventura','jose.derose','matias.paganini'],label:'bantotal',sublabel:'Steerco',everest:true,nuevo:true},
+  {title:'Sync Modelo Contables - MBA',date:'2026-05-28',start:'10:30',end:'10:55',attendees:['lujan.usieto','leonardo.troncone','christian.galdeano','jose.derose'],label:'modelos',sublabel:'Modelos Contables',everest:true,nuevo:true},
+  {title:'Banco MLA - Flujos operativos Títulos',date:'2026-05-28',start:'11:00',end:'11:45',attendees:['lujan.usieto','santiago.riosmada','felipe.baena','sebastian.palopoli'],label:'retail',sublabel:'Títulos',everest:true,nuevo:true},
+  {title:'BKARG - Banco Sponsor',date:'2026-05-28',start:'14:00',end:'14:30',attendees:['lujan.usieto','sofia.sachinelli'],label:'bantotal',sublabel:'Banco Sponsor',everest:true,nuevo:true},
+  {title:'Retomar Analisis Everest',date:'2026-05-28',start:'14:30',end:'15:00',attendees:['lujan.usieto','luciavictoria.lopez'],label:'bantotal',sublabel:'',everest:true,nuevo:true},
+  {title:'Eventos Societarios Mes de Cierre',date:'2026-05-28',start:'15:00',end:'15:45',attendees:['lujan.usieto','matias.galvan','agostina.griselli'],label:'societario',sublabel:'Societario',everest:true,nuevo:true},
+  {title:'Contrato Dscto Cupones',date:'2026-05-28',start:'16:00',end:'16:30',attendees:['lujan.usieto','santiago.riosmada','agustina.gallo','mariadelrosario.lopez'],label:'retail',sublabel:'Descuento Cupones',everest:true,nuevo:true},
+  {title:'Revisar CeBe/Ceco Banco Arg',date:'2026-05-28',start:'16:30',end:'17:00',attendees:['lujan.usieto','nicolas.battaglia','cecilia.pinal'],label:'bantotal',sublabel:'Módulos pendientes',everest:true,nuevo:true},
+  {title:'Weekly Admin/FinOps',date:'2026-05-28',start:'16:30',end:'16:55',attendees:['lujan.usieto','leonardo.troncone'],label:'fps',sublabel:'',everest:true,nuevo:true},
+  {title:'Impuestos déb/créd',date:'2026-05-28',start:'17:00',end:'17:30',attendees:['lujan.usieto','ext_analcisn','ext_mapartar','jose.derose'],label:'fps',sublabel:'IDYC',everest:true,nuevo:true},
+  {title:'Banco MLA - Flujos operativos Títulos',date:'2026-05-29',start:'09:15',end:'10:00',attendees:['lujan.usieto','santiago.riosmada','felipe.baena','sebastian.palopoli'],label:'retail',sublabel:'Títulos',everest:true,nuevo:true},
+  {title:'Seminario BCRA - Clase 6: TI y Seguridad',date:'2026-05-29',start:'10:00',end:'13:00',attendees:['lujan.usieto','romina.buenaventura','soledadpatricia.fernandez'],label:'gap',sublabel:'Regulatorio BCRA',everest:true,nuevo:true},
+  {title:'Staff Meeting Romi',date:'2026-05-29',start:'10:30',end:'11:15',attendees:['lujan.usieto','romina.buenaventura'],label:'bantotal',sublabel:'',everest:true,nuevo:true},
+  {title:'Interco - Banking Proyects MBA',date:'2026-05-29',start:'14:30',end:'14:55',attendees:['lujan.usieto','leonardo.troncone','christian.galdeano','sacha.savichevich'],label:'bantotal',sublabel:'',everest:true,nuevo:true},
 ];
 
 const MEETING_NOTES = [
