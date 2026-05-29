@@ -219,7 +219,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-prim
     </div>
     <div class="fgrid2">
       <div class="frow"><label class="flbl">Contraparte</label><input class="finput" id="f-who" placeholder="IT, Tax, FPS, EY..."></div>
-      <div class="frow"><label class="flbl">Reunión de origen</label><input class="finput" id="f-reunion"></div>
+      <div class="frow"><label class="flbl">Reunión de origen</label><input class="finput" id="f-reunion" list="reunion-opts" placeholder="Nombre de la reunión…" autocomplete="off"></div>
     </div>
     <div class="frow"><label class="flbl">Nota</label><textarea class="ftarea" id="f-note"></textarea></div>
     <div id="meet-panel" class="mpanel" style="display:none">
@@ -361,63 +361,13 @@ const SCHEDULED_JIRA_ITEMS = [
 ];
 
 const CALENDAR_EVENTS = [
-  {title:'Integracion Bantotal/SAP',date:'2026-05-26',start:'10:00',end:'10:45',attendees:['lujan.usieto','felipe.baena','fsantucho@bantotal.com','ext_japlata','ext_dajoya'],label:'bantotal',sublabel:'Integración SAP',everest:true},
-  {title:'Revisar CeBe/Ceco Banco Arg',date:'2026-05-26',start:'11:00',end:'11:30',attendees:['lujan.usieto','cecilia.pinal'],label:'bantotal',sublabel:'Módulos pendientes',everest:true},
-  {title:'Cierre de gaps Accounting - Everest',date:'2026-05-26',start:'11:30',end:'12:15',attendees:['lujan.usieto','santiago.riosmada','felipe.baena','sebastian.palopoli'],label:'gap',sublabel:'',everest:true},
-  {title:'Integración SAP',date:'2026-05-26',start:'12:00',end:'13:00',attendees:['lujan.usieto','felipe.baena','ext_japlata','ext_dajoya','martin.giofre'],label:'bantotal',sublabel:'Integración SAP',everest:true},
-  {title:'RNA - Proceso',date:'2026-05-26',start:'12:30',end:'13:00',attendees:['lujan.usieto','ext_analcisn','ext_mapartar'],label:'bantotal',sublabel:'',everest:true},
-  {title:'Banco MLA - Flujos operativos Títulos',date:'2026-05-26',start:'14:00',end:'14:45',attendees:['lujan.usieto','santiago.riosmada','felipe.baena','sebastian.palopoli'],label:'retail',sublabel:'',everest:true},
-  {title:'[Weekly] Alineación de avances Bantotal:MP',date:'2026-05-26',start:'14:30',end:'15:00',attendees:['lujan.usieto','nicolas.battaglia','santiago.riosmada','fcabrera@bantotal.com'],label:'bantotal',sublabel:'',everest:true},
-  {title:'[Banco Arg] Frente Contable | FPS + Acc + TAX + FinOps',date:'2026-05-26',start:'15:00',end:'15:45',attendees:['lujan.usieto','ext_rodteres','ext_mapartar','christian.galdeano','maximiliano.tulipani'],label:'fps',sublabel:'',everest:true},
-  {title:'Revision Extractos Banco Arg',date:'2026-05-26',start:'16:00',end:'16:30',attendees:['lujan.usieto','ext_frthomas','ext_analcisn','ext_mapartar','ext_andvivas'],label:'bantotal',sublabel:'',everest:true},
-  {title:'ECL - Provisiones NIF',date:'2026-05-26',start:'16:30',end:'17:00',attendees:['lujan.usieto','ext_frthomas','ext_analcisn','jose.derose','ext_lukovace'],label:'gap',sublabel:'',everest:true},
-  {title:'Revision Titulos',date:'2026-05-27',start:'09:30',end:'10:15',attendees:['lujan.usieto','asilvera@bantotal.com'],label:'retail',sublabel:'',everest:true},
-  {title:'Mapeo de tareas post-licencia',date:'2026-05-27',start:'10:15',end:'11:00',attendees:['lujan.usieto','santiago.riosmada','felipe.baena','sebastian.palopoli','jose.derose'],label:'bantotal',sublabel:'',everest:true},
-  {title:'Building Everest :: Mesa implementación AML',date:'2026-05-27',start:'11:00',end:'11:45',attendees:['lujan.usieto','felipe.baena','nicolas.battaglia','santiago.riosmada','damian.albanesi'],label:'fps',sublabel:'AML',everest:true},
-  {title:'[Banco Arg] Valoración ME',date:'2026-05-27',start:'12:00',end:'13:00',attendees:['lujan.usieto','ext_frthomas','ext_analcisn','ext_andvivas','christian.galdeano'],label:'modelos',sublabel:'FX Spot',everest:true},
-  {title:'Everest | Revisión Impuestos SAP',date:'2026-05-27',start:'14:00',end:'15:00',attendees:['lujan.usieto','ext_analcisn','ext_japlata','ext_dajoya','jose.derose'],label:'fps',sublabel:'',everest:true},
-  {title:'Banco MLA - Flujos operativos Títulos',date:'2026-05-27',start:'15:00',end:'15:45',attendees:['lujan.usieto','santiago.riosmada','felipe.baena','sebastian.palopoli'],label:'retail',sublabel:'',everest:true},
-  {title:'[Mesa núcleo] Pendientes Building Everest',date:'2026-05-27',start:'16:00',end:'16:45',attendees:['lujan.usieto','nicolas.battaglia','santiago.riosmada','damian.albanesi','felipe.baena'],label:'bantotal',sublabel:'',everest:true},
-
-  {title:'Banco status',date:'2026-05-28',start:'09:30',end:'10:30',attendees:['lujan.usieto','romina.buenaventura','jose.derose','matias.paganini'],label:'bantotal',sublabel:'Steerco',everest:true,nuevo:true},
-  {title:'Sync Modelo Contables - MBA',date:'2026-05-28',start:'10:30',end:'10:55',attendees:['lujan.usieto','leonardo.troncone','christian.galdeano','jose.derose'],label:'modelos',sublabel:'Modelos Contables',everest:true,nuevo:true},
-  {title:'Banco MLA - Flujos operativos Títulos',date:'2026-05-28',start:'11:00',end:'11:45',attendees:['lujan.usieto','santiago.riosmada','felipe.baena','sebastian.palopoli'],label:'retail',sublabel:'Títulos',everest:true,nuevo:true},
-  {title:'BKARG - Banco Sponsor',date:'2026-05-28',start:'14:00',end:'14:30',attendees:['lujan.usieto','sofia.sachinelli'],label:'bantotal',sublabel:'Banco Sponsor',everest:true,nuevo:true},
-  {title:'Retomar Analisis Everest',date:'2026-05-28',start:'14:30',end:'15:00',attendees:['lujan.usieto','luciavictoria.lopez'],label:'bantotal',sublabel:'',everest:true,nuevo:true},
-  {title:'Eventos Societarios Mes de Cierre',date:'2026-05-28',start:'15:00',end:'15:45',attendees:['lujan.usieto','matias.galvan','agostina.griselli'],label:'societario',sublabel:'Societario',everest:true,nuevo:true},
-  {title:'Contrato Dscto Cupones',date:'2026-05-28',start:'16:00',end:'16:30',attendees:['lujan.usieto','santiago.riosmada','agustina.gallo','mariadelrosario.lopez'],label:'retail',sublabel:'Descuento Cupones',everest:true,nuevo:true},
-  {title:'Revisar CeBe/Ceco Banco Arg',date:'2026-05-28',start:'16:30',end:'17:00',attendees:['lujan.usieto','nicolas.battaglia','cecilia.pinal'],label:'bantotal',sublabel:'Módulos pendientes',everest:true,nuevo:true},
-  {title:'Weekly Admin/FinOps',date:'2026-05-28',start:'16:30',end:'16:55',attendees:['lujan.usieto','leonardo.troncone'],label:'fps',sublabel:'',everest:true,nuevo:true},
-  {title:'Impuestos déb/créd',date:'2026-05-28',start:'17:00',end:'17:30',attendees:['lujan.usieto','ext_analcisn','ext_mapartar','jose.derose'],label:'fps',sublabel:'IDYC',everest:true,nuevo:true},
-  {title:'Banco MLA - Flujos operativos Títulos',date:'2026-05-29',start:'09:15',end:'10:00',attendees:['lujan.usieto','santiago.riosmada','felipe.baena','sebastian.palopoli'],label:'retail',sublabel:'Títulos',everest:true,nuevo:true},
-  {title:'Seminario BCRA - Clase 6: TI y Seguridad',date:'2026-05-29',start:'10:00',end:'13:00',attendees:['lujan.usieto','romina.buenaventura','soledadpatricia.fernandez'],label:'gap',sublabel:'Regulatorio BCRA',everest:true,nuevo:true},
-  {title:'Staff Meeting Romi',date:'2026-05-29',start:'10:30',end:'11:15',attendees:['lujan.usieto','romina.buenaventura'],label:'bantotal',sublabel:'',everest:true,nuevo:true},
-  {title:'Interco - Banking Proyects MBA',date:'2026-05-29',start:'14:30',end:'14:55',attendees:['lujan.usieto','leonardo.troncone','christian.galdeano','sacha.savichevich'],label:'bantotal',sublabel:'',everest:true,nuevo:true},
+  {title:"Banco MLA - Flujos operativos Títulos",start:"2026-05-29T09:15:00",end:"2026-05-29T10:15:00"},
+  {title:"Decisiones de parametría SAP",start:"2026-05-29T14:00:00",end:"2026-05-29T15:00:00"},
+  {title:"Retomar Análisis Everest",start:"2026-05-29T15:00:00",end:"2026-05-29T16:00:00"},
+  {title:"Revisión OT 290 (Bantotal — EVEREST-290)",start:"2026-05-29T16:00:00",end:"2026-05-29T17:00:00"},
+  {title:"Inversiones MBA",start:"2026-05-29T17:30:00",end:"2026-05-29T18:30:00"}
 ];
-
-const MEETING_NOTES = [
-  {title:'[Everest] - Bantotal & Coelsa',date:'2026-05-21',label:'bantotal',sub:'COELSA',
-   keyNotes:'Conexiones COELSA/Interbanking, SEDIP: gestión de admisión y transmisión.',
-   luActions:['Definir operativa contable SEDIP: analizar si implica creación automática de plazo fijo']},
-  {title:'Everest - Revisión de flujos y dependencias',date:'2026-05-20',label:'fps',sub:'',
-   keyNotes:'Revisión flujos contables para prehabilitación. Mapeo pago de impuestos.',
-   luActions:['Revisar y unificar flujos contables para prehabilitación','Integrar mapeo de procesos de pago de impuestos en archivo compartido']},
-  {title:'Cierre de gaps Accounting - Everest',date:'2026-05-19',label:'gap',sub:'',
-   keyNotes:'Cierre gap etapa 1. Inventario de procesos, manuales operativos, validaciones de modelos.',
-   luActions:['Enviar inventario de procesos al equipo de riesgos','Diagramar esquema integral de manuales operativos (contabilidad + controles)','Reunirse con Tere para destrabar validaciones de modelos contables','Crear hoja de cálculo para seguimiento de modelos contables']},
-  {title:'Revisar CeBe/Ceco Banco Arg',date:'2026-05-19',label:'bantotal',sub:'Módulos pendientes',
-   keyNotes:'Centros de beneficio/costo. Análisis productos bancarios etapa 1.',
-   luActions:['Reagendar sesión de seguimiento CeBe/Ceco próxima semana','Enviar archivo con productos de etapa 1']},
-  {title:'[Banco Arg] Valoración ME',date:'2026-05-19',label:'modelos',sub:'FX Spot',
-   keyNotes:'Cuarta moneda BCRA en SAP S4 Banking. No duplicar asientos revaluación. Modelo VME con Analía.',
-   luActions:[]},
-  {title:'Everest :: Mesa Building',date:'2026-05-20',label:'retail',sub:'',
-   keyNotes:'Pruebas sprint 1 antes del viernes. Dependencias: Interbanking, SAP, Bloomberg, Coelsa.',
-   luActions:[]},
-  {title:'Revision Esquemas Everest - EY',date:'2026-05-22',label:'ey',sub:'',
-   keyNotes:'Revisión semanal de esquemas contables con equipo EY (09:00 hs recurrente).',
-   luActions:[]},
-];
+const MEETING_NOTES = [];
 
 const SCHEDULED_GEMINI_ITEMS = [
   {id:360,desc:'SEDIP contable — definir operativa y si implica creación automática de plazo fijo',label:'bantotal',sub:'COELSA',tipo:'pendiente',due:null,who:'Charly / Bantotal',note:'Reunión 21 may: [Everest] - Bantotal & Coelsa. Analizar SEDIP: admisión y transmisión, ¿crea plazo fijo automático?',reunion:'[Everest] - Bantotal & Coelsa',done:false,source:'gemini',syncDate:'21 may'},
@@ -444,7 +394,8 @@ function load(){
     items=items.filter(i=>i.source!=='gmail');
     SCHEDULED_GMAIL_ITEMS.forEach(ni=>{
       const prev=prevGmail.get(ni.desc);
-      items.push({...ni,done:prev?prev.done:ni.done});
+      const reunion=prev?.reunionUserSet?prev.reunion:ni.reunion;
+      items.push({...ni,done:prev?prev.done:ni.done,reunion,reunionUserSet:prev?.reunionUserSet||false});
     });
     if(SCHEDULED_GSYNC)lastGsync=SCHEDULED_GSYNC;
     save();
@@ -456,7 +407,8 @@ function load(){
     SCHEDULED_JIRA_ITEMS.forEach(ni=>{
       const prev=prevJira.get(ni.jiraKey);
       const done=prev?prev.done:isJiraDone(ni.jiraStatus||'');
-      items.push({...ni,done});
+      const reunion=prev?.reunionUserSet?prev.reunion:ni.reunion;
+      items.push({...ni,done,reunion,reunionUserSet:prev?.reunionUserSet||false});
     });
     if(SCHEDULED_JSYNC)lastJsync=SCHEDULED_JSYNC;
     save();
@@ -467,7 +419,8 @@ function load(){
     items=items.filter(i=>i.source!=='gemini');
     SCHEDULED_GEMINI_ITEMS.forEach(ni=>{
       const prev=prevGemini.get(ni.desc);
-      items.push({...ni,done:prev?prev.done:ni.done});
+      const reunion=prev?.reunionUserSet?prev.reunion:ni.reunion;
+      items.push({...ni,done:prev?prev.done:ni.done,reunion,reunionUserSet:prev?.reunionUserSet||false});
     });
     save();
   }
@@ -655,7 +608,7 @@ function card(item){
         ${item.syncDate?`<span class="tag" style="color:var(--text-muted);background:var(--surface2)">${item.syncDate}</span>`:''}
       </div>
       ${item.note?`<div class="inote">${item.note}</div>`:''}
-      ${item.reunion&&item.source!=='gemini'?`<div class="ireunion">📅 ${item.reunion}</div>`:''}
+      ${item.reunion&&item.source!=='gemini'?`<div class="ireunion">📅 ${item.reunion} <button onclick="clearReunion(event,${item.id})" title="${item.reunionUserSet?'Quitar reunión':'Quitar sugerencia del bot'}" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:12px;padding:0 0 0 2px;vertical-align:middle;line-height:1">×</button></div>`:''}
       ${meetingHtml}
     </div>
     <div class="iright">
@@ -945,7 +898,8 @@ function saveItem(){
   const label=document.getElementById('f-label').value;
   const sub=document.getElementById('f-sub').value;
   const who=document.getElementById('f-who').value.trim()||null;
-  let reunion=document.getElementById('f-reunion').value.trim()||null;
+  const reunionRaw=document.getElementById('f-reunion').value.trim();
+  let reunion=reunionRaw||null;
   // Auto-set reunion if blank — infer from most recent matching note
   if(!reunion){
     const relNotes=MEETING_NOTES.filter(m=>m.label===label).sort((a,b)=>b.date.localeCompare(a.date));
@@ -960,17 +914,32 @@ function saveItem(){
       localStorage.setItem('ev_who_map',JSON.stringify(whoMap));
     }catch(e){}
   }
-  const item={id:eid||nid++,desc,label,sub,tipo:document.getElementById('f-tipo').value,done:document.getElementById('f-done').value==='1',due:document.getElementById('f-due').value||null,who,note:document.getElementById('f-note').value.trim()||null,reunion,source:existing?existing.source||'manual':'manual',jiraKey:existing?.jiraKey,jiraStatus:existing?.jiraStatus};
+  const item={id:eid||nid++,desc,label,sub,tipo:document.getElementById('f-tipo').value,done:document.getElementById('f-done').value==='1',due:document.getElementById('f-due').value||null,who,note:document.getElementById('f-note').value.trim()||null,reunion,reunionUserSet:!!reunionRaw,source:existing?existing.source||'manual':'manual',jiraKey:existing?.jiraKey,jiraStatus:existing?.jiraStatus};
   if(eid){const idx=items.findIndex(i=>i.id===eid);if(idx>=0)items[idx]=item;}else items.push(item);
   save();closeMod();renderAll();
 }
 function delItem(){if(!eid)return;if(!confirm('¿Eliminar?'))return;items=items.filter(i=>i.id!==eid);save();closeMod();renderAll();}
+function clearReunion(e,id){
+  e.stopPropagation();
+  const item=items.find(x=>x.id===id);if(!item)return;
+  item.reunion=null;item.reunionUserSet=false;
+  save();renderAll();
+}
 function procesarReunion(){sendPrompt('Quiero procesar las notas de una reunión del Proyecto Everest para extraer mis pendientes. Te pego las notas ahora.');}
 
+function buildReunionList(){
+  let dl=document.getElementById('reunion-opts');
+  if(!dl){dl=document.createElement('datalist');dl.id='reunion-opts';document.body.appendChild(dl);}
+  const seen=new Set();
+  [...CALENDAR_EVENTS,...MEETING_NOTES].forEach(e=>{
+    const t=e.title;
+    if(t&&!seen.has(t)){seen.add(t);const opt=document.createElement('option');opt.value=t;dl.appendChild(opt);}
+  });
+}
 function init(){
   const d=new Date();
   document.getElementById('sdate').innerHTML=d.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'})+'<br>'+d.getFullYear();
-  load();initLbls();renderAll();
+  load();initLbls();buildReunionList();renderAll();
 }
 init();
 </script>
