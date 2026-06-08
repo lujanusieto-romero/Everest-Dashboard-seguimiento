@@ -126,8 +126,8 @@
 <script>
 // ─── DATA ───────────────────────────────────────────────────────────────────
 
-const SCHEDULED_GSYNC = "02/06/2026 09:00 ART";
-const SCHEDULED_JSYNC = "02/06/2026 09:00 ART";
+const SCHEDULED_GSYNC = "08/06/2026 11:50 ART";
+const SCHEDULED_JSYNC = "08/06/2026 11:50 ART";
 
 const SCHEDULED_GMAIL_ITEMS = [
   {
@@ -139,7 +139,7 @@ const SCHEDULED_GMAIL_ITEMS = [
     label: "Modelos Contables",
     sublabel: "FPSL / Call Loan",
     done: false,
-    nuevo: true,
+    nuevo: false,
     source: "gmail",
     note: "Dani Joya compartió la matriz contable de Call Loan para configurar en FPSL. Revisar y confirmar."
   },
@@ -152,9 +152,9 @@ const SCHEDULED_GMAIL_ITEMS = [
     label: "GAP Normativo/PwC",
     sublabel: "VME / Moneda extranjera",
     done: false,
-    nuevo: true,
+    nuevo: false,
     source: "gmail",
-    note: "Ana Cisneros sigue esperando input de Lu sobre cuentas en moneda extranjera BCRA. 2do recordatorio."
+    note: "Ana Cisneros sigue esperando input de Lu sobre cuentas en moneda extranjera BCRA."
   },
   {
     id: "19dc03832fa253cd",
@@ -165,9 +165,9 @@ const SCHEDULED_GMAIL_ITEMS = [
     label: "Societario",
     sublabel: "Proveedores Arg",
     done: false,
-    nuevo: true,
+    nuevo: false,
     source: "gmail",
-    note: "Johanna respondió con preguntas específicas sobre qué datos necesita Lu. Pendiente respuesta con requerimientos concretos."
+    note: "Johanna respondió con preguntas específicas sobre qué datos necesita Lu. Pendiente respuesta."
   },
   {
     id: "19e84e4daacc95a2",
@@ -178,9 +178,9 @@ const SCHEDULED_GMAIL_ITEMS = [
     label: "Bantotal",
     sublabel: "Cadena de cierre",
     done: false,
-    nuevo: true,
+    nuevo: false,
     source: "gmail",
-    note: "Bantotal (Bomrad) solicita espacio para primer abordaje sobre cadena de cierre y su configuración. Coordinar reunión."
+    note: "Bantotal (Bomrad) solicita espacio para primer abordaje sobre cadena de cierre."
   },
   {
     id: "19e853bb4cb39748",
@@ -191,13 +191,52 @@ const SCHEDULED_GMAIL_ITEMS = [
     label: "Banco Retail",
     sublabel: "Agenda",
     done: false,
-    nuevo: true,
+    nuevo: false,
     source: "gmail",
     note: "Lucia Lopez propuso cambiar de 14:30 a 12:00. Verificar disponibilidad y confirmar."
+  },
+  {
+    id: "19e98167d53d2cc2",
+    subject: "Facturación: RG 5824 - Entidades Financieras - Novedades",
+    from: "eduardo.bevacqua@mercadolibre.com",
+    date: "07/06/2026 17:17",
+    type: "Seguimiento",
+    label: "GAP Normativo/PwC",
+    sublabel: "RG 5824 / ARCA",
+    done: false,
+    nuevo: true,
+    source: "gmail",
+    note: "ARCA publicará antes del 30/06 una RG modificatoria con cronograma de implementación por etapas. Vigencia general se mantiene el 01/07/2026. Sumaron tax.argentina al hilo."
+  },
+  {
+    id: "19e8f4a49164d3e6",
+    subject: "Definición Bancos NO BCRA",
+    from: "ext_analcisn@mercadolibre.com",
+    date: "04/06/2026 12:16",
+    type: "Seguimiento",
+    label: "FPS + FinOps + Acc Corp",
+    sublabel: "BIND / Extractos SWIFT",
+    done: false,
+    nuevo: true,
+    source: "gmail",
+    note: "Sebastian Palopoli sumó a Daiana Gonzalez y Andrea Di Masso para resolver operatoria BIND y formatos SWIFT. Pendiente respuesta de Tesorería."
   }
 ];
 
 const SCHEDULED_JIRA_ITEMS = [
+  {
+    key: "EVEREST-147",
+    summary: "Procesos Batch y Riesgos - Riesgos, implementación de procesos",
+    status: "Aprobada",
+    assignee: "Lujan Magdalena Usieto Romero",
+    type: "Seguimiento",
+    label: "GAP Normativo/PwC",
+    updated: "02/06/2026",
+    nuevo: true,
+    done: false,
+    source: "jira",
+    note: "Issue asignado a Lu. Aprobada → en seguimiento activo."
+  },
   {
     key: "EVEREST-76",
     summary: "Integraciones - Integración BT a SAP",
@@ -205,24 +244,89 @@ const SCHEDULED_JIRA_ITEMS = [
     assignee: "Jaime Plata",
     type: "Seguimiento",
     label: "Bantotal",
-    updated: "01/06/2026",
-    nuevo: true,
+    updated: "05/06/2026",
+    nuevo: false,
     done: false,
     source: "jira",
-    note: "Reunión de integración BT/SAP programada HOY 10:00."
+    note: "Integración BT/SAP en comité — requiere seguimiento."
   },
   {
-    key: "EVEREST-332",
-    summary: "Integraciones - Integración BT a SAP - Interfaz DPF",
+    key: "EVEREST-354",
+    summary: "Error al cargar documentos a carpeta digital",
     status: "Pendiente MELI",
-    assignee: "Daniela Joya",
+    assignee: "Felipe Baena",
     type: "Pendiente",
     label: "Bantotal",
-    updated: "01/06/2026",
+    updated: "03/06/2026",
     nuevo: true,
     done: false,
     source: "jira",
-    note: "Interfaz DPF pendiente de MELI. Daniela Joya asignada — posible consulta contable a Lu."
+    note: "Error funcional pendiente de resolución MELI."
+  },
+  {
+    key: "EVEREST-352",
+    summary: "Integraciones - Integración BT a SAP - Reprocesos en interfaces",
+    status: "Pendiente MELI",
+    assignee: "Luis Kovacevic",
+    type: "Pendiente",
+    label: "Bantotal",
+    updated: "03/06/2026",
+    nuevo: true,
+    done: false,
+    source: "jira",
+    note: "Reprocesos en interfaces BT↔SAP pendientes de MELI."
+  },
+  {
+    key: "EVEREST-353",
+    summary: "consultas - Servicios AML",
+    status: "Pendiente MELI",
+    assignee: "Carlos Fidel Tonguino Rosero",
+    type: "Pendiente",
+    label: "FPS + FinOps + Acc Corp",
+    updated: "02/06/2026",
+    nuevo: true,
+    done: false,
+    source: "jira",
+    note: "Consultas AML pendientes de definición MELI."
+  },
+  {
+    key: "EVEREST-319",
+    summary: "Integración contra SAP - Datos de conexión - Casos de pruebas",
+    status: "Pendiente MELI",
+    assignee: "Carlos Fidel Tonguino Rosero",
+    type: "Pendiente",
+    label: "Bantotal",
+    updated: "02/06/2026",
+    nuevo: true,
+    done: false,
+    source: "jira",
+    note: "Datos de conexión y casos de prueba SAP pendientes de MELI."
+  },
+  {
+    key: "EVEREST-335",
+    summary: "Integraciones - Integración BT a SAP - Interfaz Totales Contables",
+    status: "Pendiente MELI",
+    assignee: "Jaime Plata",
+    type: "Pendiente",
+    label: "Bantotal",
+    updated: "02/06/2026",
+    nuevo: true,
+    done: false,
+    source: "jira",
+    note: "Interfaz Totales Contables BT→SAP pendiente de MELI."
+  },
+  {
+    key: "EVEREST-85",
+    summary: "CC- Solicitar fecha de vencimiento en carga de valores por módulo",
+    status: "En prueba",
+    assignee: "Felipe Baena",
+    type: "Seguimiento",
+    label: "Modelos Contables",
+    updated: "05/06/2026",
+    nuevo: true,
+    done: false,
+    source: "jira",
+    note: "En prueba — monitorear resultado de testing."
   },
   {
     key: "EVEREST-194",
@@ -232,10 +336,36 @@ const SCHEDULED_JIRA_ITEMS = [
     type: "Seguimiento",
     label: "Modelos Contables",
     updated: "01/06/2026",
-    nuevo: true,
+    nuevo: false,
     done: false,
     source: "jira",
     note: "Plan de cuentas aprobado por Bantotal. Hito importante."
+  },
+  {
+    key: "EVEREST-289",
+    summary: "Integraciones - Integración SAP a BT",
+    status: "Aprobada",
+    assignee: "Agustin Barbe",
+    type: "Seguimiento",
+    label: "Bantotal",
+    updated: "04/06/2026",
+    nuevo: false,
+    done: false,
+    source: "jira",
+    note: ""
+  },
+  {
+    key: "EVEREST-79",
+    summary: "DPF - Agregar documentos en alta DPF",
+    status: "En prueba",
+    assignee: "Bomrad Gaston",
+    type: "Seguimiento",
+    label: "Bantotal",
+    updated: "04/06/2026",
+    nuevo: false,
+    done: false,
+    source: "jira",
+    note: ""
   },
   {
     key: "EVEREST-351",
@@ -245,36 +375,10 @@ const SCHEDULED_JIRA_ITEMS = [
     type: "Seguimiento",
     label: "FPS + FinOps + Acc Corp",
     updated: "01/06/2026",
-    nuevo: true,
-    done: false,
-    source: "jira",
-    note: "Tiempos de homologación pendientes de confirmación MELI."
-  },
-  {
-    key: "EVEREST-289",
-    summary: "Integraciones - Integración SAP a BT",
-    status: "Aprobada",
-    assignee: "Agustin Barbe",
-    type: "Seguimiento",
-    label: "Bantotal",
-    updated: "01/06/2026",
     nuevo: false,
     done: false,
     source: "jira",
-    note: ""
-  },
-  {
-    key: "EVEREST-347",
-    summary: "Integraciones - Integración BT a SAP - Sprint 2",
-    status: "Entregada al cliente",
-    assignee: "Felipe Baena",
-    type: "Seguimiento",
-    label: "Bantotal",
-    updated: "01/06/2026",
-    nuevo: true,
-    done: false,
-    source: "jira",
-    note: "Sprint 2 entregada al cliente."
+    note: "Tiempos de homologación pendientes de confirmación MELI."
   },
   {
     key: "EVEREST-306",
@@ -284,7 +388,7 @@ const SCHEDULED_JIRA_ITEMS = [
     type: "Seguimiento",
     label: "GAP Normativo/PwC",
     updated: "01/06/2026",
-    nuevo: true,
+    nuevo: false,
     done: false,
     source: "jira",
     note: "Pendiente definición MELI sobre Bloomberg."
@@ -297,10 +401,10 @@ const SCHEDULED_JIRA_ITEMS = [
     type: "Seguimiento",
     label: "Bantotal",
     updated: "01/06/2026",
-    nuevo: true,
+    nuevo: false,
     done: false,
     source: "jira",
-    note: "Bantotal quiere dar espacio para abordaje (ver email de Bomrad)."
+    note: "Bantotal quiere dar espacio para primer abordaje."
   },
   {
     key: "EVEREST-314",
@@ -310,41 +414,25 @@ const SCHEDULED_JIRA_ITEMS = [
     type: "Seguimiento",
     label: "FPS + FinOps + Acc Corp",
     updated: "01/06/2026",
-    nuevo: true,
-    done: false,
-    source: "jira",
-    note: "Notas de reunión de Interbanking de ayer (01/06)."
-  },
-  {
-    key: "EVEREST-79",
-    summary: "DPF - Agregar documentos en alta DPF",
-    status: "En prueba",
-    assignee: "Bomrad Gaston",
-    type: "Seguimiento",
-    label: "Bantotal",
-    updated: "01/06/2026",
     nuevo: false,
     done: false,
     source: "jira",
-    note: ""
+    note: "Reunión de Interbanking - configuración contable mañana 09/06."
   }
 ];
 
 const CALENDAR_EVENTS = [
-  // HOY - 02/06
-  { date: "Hoy — Mar 02/06", time: "10:00", title: "Integracion Bantotal/SAP", participants: "Felipe Baena · Bantotal (Bomrad, Cabrera, Barbe) · ext_analcisn · ext_japlata · ext_dajoya", label: "Bantotal", everest: true, conflict: false },
-  { date: "Hoy — Mar 02/06", time: "10:30", title: "Revisar CeBe/Ceco Banco Arg", participants: "Lu (org) · Nicolas Battaglia · Fernando Martin · Agustina Barbaste · Jose Perez Vivas", label: "FPS + FinOps + Acc Corp", everest: true, conflict: false },
-  { date: "Hoy — Mar 02/06", time: "11:00", title: "Inducciones BKARG (SEDESA / Títulos en garantía)", participants: "Sofia Sachinelli · Christian Galdeano · Nancy Alvarenga", label: "Modelos Contables", everest: true, conflict: false },
-  { date: "Hoy — Mar 02/06", time: "11:30", title: "Cierre de gaps Accounting - Everest", participants: "Santiago Riosmada · Felipe Baena", label: "FPS + FinOps + Acc Corp", everest: true, conflict: false },
-  { date: "Hoy — Mar 02/06", time: "12:15", title: "Interco", participants: "Christian Galdeano · Leonardo Troncone", label: "FPS + FinOps + Acc Corp", everest: true, conflict: false },
-  { date: "Hoy — Mar 02/06", time: "15:00", title: "[Banco Arg] Frente Contable | FPS + Acc + TAX + FinOps", participants: "ext_rodteres · ext_analcisn · ext_mapartar · Christian Galdeano · Jose Derose · +más", label: "FPS + FinOps + Acc Corp", everest: true, conflict: false },
-  { date: "Hoy — Mar 02/06", time: "16:00", title: "Bloque tentativo BT", participants: "Lu (block propio)", label: "Bantotal", everest: true, conflict: false },
-  // MAÑANA - 03/06
-  { date: "Mañana — Mié 03/06", time: "10:00", title: "Revisión AxI Everest - EY", participants: "Lu (org) · Julian Gomez · Leonardo Troyelli · Pablo Vazquez · Maria Dominguez (EY) · Romina Buenaventura", label: "Auditoría/EY", everest: true, conflict: false },
-  { date: "Mañana — Mié 03/06", time: "14:30", title: "Retomar Analisis Everest (Banco Retail)", participants: "Lu (org) · Lucia Lopez · Samantha Traiber", label: "Banco Retail", everest: true, conflict: false },
-  { date: "Mañana — Mié 03/06", time: "16:00", title: "[Mesa núcleo] Pendientes Building Everest", participants: "Nicolas Battaglia · Santiago Riosmada · Damian Albanesi · Felipe Baena · Carlos Tonguino · Jose Derose", label: "FPS + FinOps + Acc Corp", everest: true, conflict: true, conflictWith: "Revision FX Spot y revaluos (16:00)" },
-  { date: "Mañana — Mié 03/06", time: "16:00", title: "Revision FX Spot y revaluos ⚠️ CONFLICTO", participants: "Lu (org) · ext_analcisn · ext_dajoya · ext_japlata · ext_mapartar · Florencia Romay", label: "Modelos Contables", everest: true, conflict: true, conflictWith: "Mesa núcleo (16:00)" },
-  { date: "Mañana — Mié 03/06", time: "17:00", title: "Everest :: Mesa Building (recurrente)", participants: "Nicolas Battaglia · amplio equipo Everest (~70 personas)", label: "FPS + FinOps + Acc Corp", everest: true, conflict: false }
+  // HOY - Lun 08/06
+  { date: "Hoy — Lun 08/06", time: "10:30", title: "OT 194 - plan cuentas", participants: "Bantotal: Bomrad · Barbé · Silvera · Cabrera", label: "Bantotal", everest: true, conflict: false },
+  { date: "Hoy — Lun 08/06", time: "11:30", title: "Cadena de cierre - Módulo como tal", participants: "Bantotal: Bomrad · Santucho · Albanesi · Tonguino · Fontan · Battaglia", label: "Bantotal", everest: true, conflict: false },
+  { date: "Hoy — Lun 08/06", time: "15:00", title: "BKARG - Inducción MC Banco Sponsor", participants: "Sofia Sachinelli · Christian Galdeano · Nancy Alvarenga", label: "Modelos Contables", everest: true, conflict: false },
+  // MAÑANA - Mar 09/06
+  { date: "Mañana — Mar 09/06", time: "10:00", title: "Efectivo Mínimo - Banco MLA", participants: "Santiago Riosmada · Fiorella Tabuyo · Sebastian Palopoli · Sebastian Corredog", label: "GAP Normativo/PwC", everest: true, conflict: false },
+  { date: "Mañana — Mar 09/06", time: "11:00", title: "Revisar CeBe/Ceco Banco Arg", participants: "Lu (org) · Cecilia Pinal · Jose Perezvivas · Leonardo Troncone · Agustina Barbaste · Tomas Trujillo", label: "FPS + FinOps + Acc Corp", everest: true, conflict: false },
+  { date: "Mañana — Mar 09/06", time: "11:30", title: "Cierre de gaps Accounting - Everest", participants: "Santiago Riosmada · Felipe Baena", label: "FPS + FinOps + Acc Corp", everest: true, conflict: false },
+  { date: "Mañana — Mar 09/06", time: "12:30", title: "Config. contable Interbanking — Lu presenta mapeo de asientos", participants: "Carlos Tonguino · Damian Albanesi · Felipe Baena · Nicolas Battaglia · Jose De Rose · Bantotal (Bomrad · Chegoriansky)", label: "Bantotal", everest: true, conflict: false },
+  { date: "Mañana — Mar 09/06", time: "14:00", title: "Inducción modelos contables (FX SPOT / ON-VDF)", participants: "Christian Galdeano · Jose De Rose · Florencia Romay · Priscila Martinez", label: "Modelos Contables", everest: true, conflict: false },
+  { date: "Mañana — Mar 09/06", time: "15:00", title: "[Banco Arg] Frente Contable | FPS + Acc + TAX + FinOps", participants: "ext_rodteres (org) · ext_analcisn · ext_mapartar · ext_andvivas · Christian Galdeano · Jose De Rose · Martin Giofre · +más", label: "FPS + FinOps + Acc Corp", everest: true, conflict: false }
 ];
 
 // ─── RENDER ──────────────────────────────────────────────────────────────────
