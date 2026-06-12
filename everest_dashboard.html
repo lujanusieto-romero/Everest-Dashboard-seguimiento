@@ -337,42 +337,50 @@ const DEFAULTS = [
 ];
 
 // ── SCHEDULED TASK INJECTION — auto-actualizado por Claude (no editar a mano) ─
-// Última sync: 09/06/2026 14:05 hs ART
-const SCHEDULED_GSYNC = '09/06/2026, 14:05 hs';
+// Última sync: 12/06/2026 09:15 hs ART
+const SCHEDULED_GSYNC = '12/06/2026, 09:15 hs';
 const SCHEDULED_GMAIL_ITEMS = [
   // Items activos del sync anterior (22 may) — sin nueva actividad
   {id:310,desc:'VME - Valoración, Lineamientos Banking y Draft Inventario Proveedores',label:'modelos',sub:'',tipo:'pendiente',due:null,who:'Analía Cisneros (ext_analcisn)',note:'Docs enviados por Analía para revisar. Incluye Ejemplo de Valoración, Lineamientos Banking y Draft Inventario de Proveedores. Lu destinataria directa, sin respuesta aún.',reunion:'Reunión miércoles 27/05',done:false,source:'gmail',syncDate:'22 may'},
   {id:311,desc:'Banco Argentina - Proceso AxI (libro 0L / IFRS) — FYI',label:'fps',sub:'AxI',tipo:'seguimiento',due:null,who:'ext_analcisn · romina.buenaventura',note:'AxI en libro 0L: MBA se agrega a sociedades arg. que ejecutan AxI en SAP S/4. Conversación entre Analía y Romi.',reunion:null,done:false,source:'gmail',syncDate:'20 may'},
-  // Nuevos — sync 09/06
-  {id:380,desc:'OT 194 — Bantotal respondió sobre Descuento de Cupones (relaciones 1 y 42)',label:'modelos',sub:'Descuento de Cupones',tipo:'pendiente',due:null,who:'asilvera@bantotal.com / fcabrera@bantotal.com',note:'Bantotal respondió: Descuento de documentos usa relaciones 1 y 42. Relación 1 aplica en caso de mora. Relación 42 sería la correcta para el alta. Lu debe revisar y confirmar criterio contable.',reunion:'OT 194',done:false,source:'gmail',syncDate:'09 jun',nuevo:true},
-  {id:381,desc:'Retenciones SAP para MBA — conversación activa ext_analcisn / jose.derose',label:'fps',sub:'',tipo:'seguimiento',due:null,who:'ext_analcisn / jose.derose',note:'Ana y Jose definiendo qué impuestos aplican a MBA en SAP (Ganancias, IVA, SUSS, IIBB CABA, IIBB Bs As). Percepciones IVA/IIBB no afectan salida contable según Jose. Lu en CC.',reunion:'Frente Contable',done:false,source:'gmail',syncDate:'09 jun',nuevo:true},
-  {id:382,desc:'Inducción modelos contables FX Spot y ON/VDF — reunión jue 11/06 15:30hs',label:'modelos',sub:'FX Spot',tipo:'seguimiento',due:'2026-06-11',who:'florencia.romay / christian.galdeano',note:'Florencia Romay organiza inducción de modelos FX SPOT y ON/VDF el jueves 11/06 a las 15:30hs. Participan Lu, Christian, Jose De Rose, Priscila, Troncone.',reunion:'Induccion modelos contables',done:false,source:'gmail',syncDate:'09 jun',nuevo:true},
-  {id:383,desc:'CEBEs Banco Argentina definidos — Lu reenviió a Romi (completado)',label:'fps',sub:'',tipo:'info',due:null,who:'cecilia.pinal / nicolas.battaglia',note:'Definición de productos y CEBEs para Banco Argentina. Lu procesó la info de Tomas Trujillo y reenvió a Romina Buenaventura.',reunion:null,done:true,source:'gmail',syncDate:'09 jun',nuevo:true},
+  // Sync 09/06
+  {id:380,desc:'OT 194 — Bantotal respondió sobre Descuento de Cupones (relaciones 1 y 42)',label:'modelos',sub:'Descuento de Cupones',tipo:'pendiente',due:null,who:'asilvera@bantotal.com / fcabrera@bantotal.com',note:'Bantotal respondió: Descuento de documentos usa relaciones 1 y 42. Relación 1 aplica en caso de mora. Relación 42 sería la correcta para el alta. Lu debe revisar y confirmar criterio contable.',reunion:'OT 194',done:false,source:'gmail',syncDate:'09 jun'},
+  {id:381,desc:'Retenciones SAP para MBA — conversación activa ext_analcisn / jose.derose',label:'fps',sub:'',tipo:'seguimiento',due:null,who:'ext_analcisn / jose.derose',note:'Ana y Jose definiendo qué impuestos aplican a MBA en SAP (Ganancias, IVA, SUSS, IIBB CABA, IIBB Bs As). Percepciones IVA/IIBB no afectan salida contable según Jose. Lu en CC.',reunion:'Frente Contable',done:false,source:'gmail',syncDate:'09 jun'},
+  {id:382,desc:'Inducción modelos FX Spot y ON/VDF — realizada jue 11/06, reunión FX Spot hoy 15:30',label:'modelos',sub:'FX Spot',tipo:'seguimiento',due:null,who:'christian.galdeano / ext_japlata / ext_dajoya',note:'Inducción de modelos FX SPOT y ON/VDF realizada el 11/06. Hoy 12/06 a las 15:30 reunión FX Spot-FPSL con Christian, Jaime Plata y Dani Joya para avanzar configuración.',reunion:'FX Spot - FPSL (hoy 15:30)',done:false,source:'gmail',syncDate:'09 jun'},
+  {id:383,desc:'CEBEs Banco Argentina definidos — Lu reenviió a Romi (completado)',label:'fps',sub:'',tipo:'info',due:null,who:'cecilia.pinal / nicolas.battaglia',note:'Definición de productos y CEBEs para Banco Argentina. Lu procesó la info de Tomas Trujillo y reenvió a Romina Buenaventura.',reunion:null,done:true,source:'gmail',syncDate:'09 jun'},
+  // Nuevos — sync 12/06
+  {id:401,desc:'Modelo BCRA acordado — Leonardo Troncone pregunta sobre punto 4 (espera respuesta Lu)',label:'modelos',sub:'Extracto BCRA',tipo:'pendiente',due:null,who:'ext_analcisn / leonardo.troncone',note:'Analia compartió minuta: modelo espejo BT-SAP para extracto BCRA acordado. Lu respondió pts 2 y 3 (consulta a Compliance + IT Governance). Leonardo respondió después (18:05 11/06) proponiéndole 15 min para ver el punto 4. Lu debe responder.',reunion:'Revisión Extracto BCRA',done:false,source:'gmail',syncDate:'12 jun',nuevo:true},
+  {id:402,desc:'Anulación interfaz SAP→Bantotal — Andi Vivas pide decisión: Opción A (nativa BT) vs Opción B ⭐',label:'bantotal',sub:'Integración SAP',tipo:'decision',due:null,who:'ext_andvivas',note:'Andi (ext_andvivas) consulta cómo manejar anulaciones en la interfaz SAP→BT. Opción A: anulación nativa Bantotal. Opción B: a definir. Lu destinataria directa, email starred, sin respuesta. Requiere decisión técnica-contable.',reunion:null,done:false,source:'gmail',syncDate:'12 jun',nuevo:true},
+  {id:403,desc:'Cuenta técnica 990001 (saldo cero BCRA) — Andi respondió con contexto, Lu debe confirmar',label:'bantotal',sub:'Plan de cuentas',tipo:'pendiente',due:null,who:'ext_andvivas',note:'Andi preguntó a Lu por mapeo de cuenta 990001 del plan MLIB. Lu respondió con preguntas (es la cuenta puente de FPSL?). Andi aclaró: se usa en FI GL en casi todos los escenarios contables, netea posiciones por CeBe. Se contabiliza desde SAP Corp. Último sender: Andi — Lu debe responder.',reunion:null,done:false,source:'gmail',syncDate:'12 jun',nuevo:true},
+  {id:404,desc:'Integración SAP — Martin Giofre envió respuesta consolidada FPS a Nico Battaglia (10/06)',label:'bantotal',sub:'Integración SAP',tipo:'seguimiento',due:null,who:'martin.giofre / nicolas.battaglia',note:'Martin consolidó respuesta de FPS por los 3 puntos solicitados por Nico (Battaglia). Daniela Joya (Bantotal) aclaró que el modelo planteado no detiene el desarrollo. Lu en CC, sin acción inmediata requerida.',reunion:null,done:false,source:'gmail',syncDate:'12 jun',nuevo:true},
+  {id:405,desc:'Listado proveedores Argentina — Christian siguió a Joha Schwarzhopf, esperando respuesta',label:'fps',sub:'Apertura sociedad SAP',tipo:'seguimiento',due:null,who:'christian.galdeano / johanna.schwarzhopf',note:'Lu solicitó lista de proveedores para extensión de MBA en SAP. Joha pidió aclaraciones el 01/06, Lu respondió el 02/06. Christian Galdeano hizo follow-up el 09/06 a Joha. Esperando respuesta de P2P.',reunion:null,done:false,source:'gmail',syncDate:'12 jun',nuevo:true},
 ];
 
-const SCHEDULED_JSYNC = '09/06/2026, 14:05 hs';
+const SCHEDULED_JSYNC = '12/06/2026, 09:15 hs';
 const SCHEDULED_JIRA_ITEMS = [
-  {id:390,desc:'EVEREST-360 · CCA — Retraso definiciones integración SAP ⚠️ HIGHEST',label:'bantotal',sub:'Integración SAP',tipo:'pendiente',due:null,who:'(sin asignar)',note:'Estado: Pendiente MELI. Prioridad HIGHEST. Actualizado HOY 09/06. SAP→BT: cambio de procesamiento uno-a-uno a por lote solicitado el 9-6-26. CCA activado por retraso en definiciones. Impacto en plazos del proyecto.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-360',jiraStatus:'Pendiente MELI',nuevo:true},
-  {id:391,desc:'EVEREST-359 · Descuento documentos — Relación 1 vs Relación 42',label:'modelos',sub:'Descuento de Cupones',tipo:'pendiente',due:null,who:'Felipe Baena',note:'Estado: Pendiente MELI. Relación 1 usada en descuento de documentos es conceptualmente incorrecta (aplica en mora). Debe usarse relación 42. Requiere validación contable.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-359',jiraStatus:'Pendiente MELI',nuevo:true},
-  {id:392,desc:'EVEREST-76 · Integración BT a SAP',label:'bantotal',sub:'Integración SAP',tipo:'decision',due:null,who:'ext_japlata (Jaime Plata)',note:'Estado: Comité. Requiere decisión. EVEREST-76 en comité. Vinculado con EVEREST-360.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-76',jiraStatus:'Comité'},
-  {id:393,desc:'EVEREST-289 · Integraciones — Integración SAP a BT',label:'bantotal',sub:'Integración SAP',tipo:'seguimiento',due:null,who:'Bomrad Gaston',note:'Estado: Aprobada. En curso. Actualizado: 08/06.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-289',jiraStatus:'Aprobada'},
-  {id:394,desc:'EVEREST-194 · Contabilidad — Plan de cuentas',label:'fps',sub:'Plan de cuentas',tipo:'seguimiento',due:null,who:'Bomrad Gaston',note:'Estado: Aprobada. En curso. Actualizado: 08/06.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-194',jiraStatus:'Aprobada'},
-  {id:395,desc:'EVEREST-169 · Descuento de Cupones — instalación del módulo',label:'modelos',sub:'Descuento de Cupones',tipo:'seguimiento',due:null,who:'Felipe Baena',note:'Estado: En construcción. Módulo en desarrollo. Actualizado: 08/06.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-169',jiraStatus:'En construcción'},
-  {id:396,desc:'EVEREST-81 · DPF — Certificados Depósito a Plazo Fijo',label:'bantotal',sub:'',tipo:'seguimiento',due:null,who:'Felipe Baena',note:'Estado: En construcción. Actualizado: 08/06.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-81',jiraStatus:'En construcción'},
+  // HIGHEST / críticos
+  {id:390,desc:'EVEREST-360 · CCA — Retraso definiciones integración SAP ⚠️ HIGHEST',label:'bantotal',sub:'Integración SAP',tipo:'pendiente',due:null,who:'(sin asignar)',note:'Estado: Pendiente MELI. Prioridad HIGHEST. SAP→BT: cambio de procesamiento uno-a-uno a por lote. CCA activado por retraso en definiciones. FPS consolidó respuesta vía email 10/06.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-360',jiraStatus:'Pendiente MELI'},
+  {id:411,desc:'EVEREST-339 · ¿Qué acción tomar si el servicio de screening da error? ⚠️ HIGHEST',label:'bantotal',sub:'Integración SAP',tipo:'decision',due:null,who:'Federico Santucho',note:'Estado: Pendiente MELI. Prioridad HIGHEST. Actualizado 11/06. Definición de comportamiento del sistema ante error en servicio de screening AML. Requiere posición de MELI.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-339',jiraStatus:'Pendiente MELI',nuevo:true},
+  {id:412,desc:'EVEREST-351 · CCA — Tiempos comprometidos homologación sprint 1 ⚠️ HIGH',label:'bantotal',sub:'',tipo:'pendiente',due:null,who:'Nicolas Battaglia',note:'Estado: Pendiente MELI. Prioridad HIGH. Actualizado 11/06. CCA sobre tiempos comprometidos para homologación del sprint 1. Impacta calendario de entrega.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-351',jiraStatus:'Pendiente MELI',nuevo:true},
+  // Activos
+  {id:391,desc:'EVEREST-359 · Descuento documentos — Relación 1 vs Relación 42 (ahora Pendiente DLYA)',label:'modelos',sub:'Descuento de Cupones',tipo:'seguimiento',due:null,who:'Adriana Silvera (Bantotal)',note:'Estado: Pendiente DLYA (cambio desde sync anterior — Bantotal tiene el balón). Relación 1 usada incorrectamente. Debe usarse relación 42. Actualizado 10/06.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-359',jiraStatus:'Pendiente DLYA'},
+  {id:413,desc:'EVEREST-194 · Contabilidad — Plan de cuentas (asignado a Lu)',label:'fps',sub:'Plan de cuentas',tipo:'seguimiento',due:null,who:'Lujan Magdalena Usieto',note:'Estado: Aprobada. Actualizado 10/06. ASIGNADO A LU. Avanzando en plan de cuentas contabilidad MBA. Reunión CEBE\'s MBA hoy 09:15.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-194',jiraStatus:'Aprobada',nuevo:true},
+  {id:414,desc:'EVEREST-361 · Status ambiente Banco Sponsor',label:'retail',sub:'',tipo:'seguimiento',due:null,who:'(sin asignar)',note:'Estado: Pendiente MELI. Actualizado 09/06. Seguimiento del estado del ambiente del banco sponsor necesario para pruebas.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-361',jiraStatus:'Pendiente MELI',nuevo:true},
+  {id:392,desc:'EVEREST-76 · Integración BT a SAP',label:'bantotal',sub:'Integración SAP',tipo:'decision',due:null,who:'Jaime Plata (ext_japlata)',note:'Estado: Comité. Requiere decisión. Vinculado con EVEREST-360.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-76',jiraStatus:'Comité'},
+  {id:393,desc:'EVEREST-289 · Integraciones — Integración SAP a BT',label:'bantotal',sub:'Integración SAP',tipo:'seguimiento',due:null,who:'Bomrad Gaston',note:'Estado: Aprobada. Actualizado 11/06.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-289',jiraStatus:'Aprobada'},
+  {id:415,desc:'EVEREST-335 · Integraciones BT→SAP — Interfaz Totales Contables',label:'bantotal',sub:'Integración SAP',tipo:'seguimiento',due:null,who:'Jaime Plata',note:'Estado: Pendiente MELI. Actualizado 10/06. Interfaz de totales contables BT→SAP pendiente de definiciones MELI.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-335',jiraStatus:'Pendiente MELI',nuevo:true},
+  {id:395,desc:'EVEREST-169 · Descuento de Cupones — instalación del módulo',label:'modelos',sub:'Descuento de Cupones',tipo:'seguimiento',due:null,who:'Felipe Baena',note:'Estado: En construcción. Módulo en desarrollo. Actualizado 09/06.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-169',jiraStatus:'En construcción'},
+  {id:396,desc:'EVEREST-81 · DPF — Certificados Depósito a Plazo Fijo',label:'bantotal',sub:'',tipo:'seguimiento',due:null,who:'Felipe Baena',note:'Estado: En construcción. Actualizado 09/06.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-81',jiraStatus:'En construcción'},
+  {id:416,desc:'EVEREST-301 · Acceso Base de datos MELI — permisos lectura/escritura',label:'bantotal',sub:'',tipo:'seguimiento',due:null,who:'Bomrad Gaston',note:'Estado: Pendiente MELI. Actualizado 09/06. Bantotal requiere permisos sobre DB MELI.',reunion:null,done:false,source:'jira',jiraKey:'EVEREST-301',jiraStatus:'Pendiente MELI'},
 ];
 
 const CALENDAR_EVENTS = [
-  // HOY — martes 09/06
-  {title:'Efectivo Mínimo - Banco MLA',date:'2026-06-09',start:'10:00',end:'10:45',attendees:['lujan.usieto','santiago.riosmada','fiorelladelvalle.tabuyo','sebastian.palopoli','belen.iraolagoitia'],label:'fps',sublabel:'',everest:true},
-  {title:'Cierre de gaps Accounting - Everest',date:'2026-06-09',start:'11:30',end:'12:15',attendees:['lujan.usieto','santiago.riosmada','felipe.baena'],label:'gap',sublabel:'',everest:true},
-  {title:'Definición OT — Configuración contable Interbanking (Banco Argentina)',date:'2026-06-09',start:'12:30',end:'13:30',attendees:['lujan.usieto','carlos.tonguino','gbomrad@bantotal.com','fchegoriansky@bantotal.com','damian.albanesi'],label:'bantotal',sublabel:'COELSA',everest:true},
-  {title:'[Banco Arg] Frente Contable | FPS + Acc + TAX + FinOps',date:'2026-06-09',start:'15:00',end:'15:45',attendees:['lujan.usieto','ext_rodteres','ext_mapartar','ext_frthomas','christian.galdeano','martin.giofre','ext_analcisn','romina.buenaventura','jose.derose','nicolas.battaglia'],label:'fps',sublabel:'',everest:true},
-  {title:'Balance Argentina',date:'2026-06-09',start:'16:00',end:'16:30',attendees:['lujan.usieto','julieta.gesurmino','fiorelladelvalle.tabuyo'],label:'fps',sublabel:'',everest:true},
-  {title:'Revisión Propuesta Extracto',date:'2026-06-09',start:'16:30',end:'17:00',attendees:['lujan.usieto','ext_analcisn','christian.galdeano','ext_dajoya','ext_mapartar','leonardo.troncone'],label:'bantotal',sublabel:'Conciliaciones bancarias',everest:true},
-  // MAÑANA — miércoles 10/06
-  {title:'[Pruebas Bantotal Sprint 1 y 2] — OT 194 Plan de cuentas + OT 195 Parametrización',date:'2026-06-10',start:'11:00',end:'13:00',attendees:['lujan.usieto','felipe.baena','gbomrad@bantotal.com','fchegoriansky@bantotal.com'],label:'bantotal',sublabel:'',everest:true},
-  {title:'Retomar Análisis Everest',date:'2026-06-10',start:'14:30',end:'15:00',attendees:['lujan.usieto','samantha.traiber','luciavictoria.lopez'],label:'fps',sublabel:'',everest:true},
-  {title:'[Mesa núcleo] Pendientes Building Everest',date:'2026-06-10',start:'16:00',end:'16:45',attendees:['lujan.usieto','nicolas.battaglia','santiago.riosmada','damian.albanesi','felipe.baena','carlos.tonguino','jose.derose'],label:'retail',sublabel:'',everest:true},
+  // HOY — viernes 12/06
+  {title:'CEBE\'s MBA',date:'2026-06-12',start:'09:15',end:'09:45',attendees:['lujan.usieto','jose.perezvivas','cecilia.pinal','agustina.barbaste','tomas.trujillo','egleisby.rojas','sofia.sachinelli','fernando.fmartin'],label:'fps',sublabel:'CEBEs',everest:true},
+  {title:'Seminario BCRA — Clase 8: Régimen informativo y NIIF',date:'2026-06-12',start:'10:00',end:'13:00',attendees:['lujan.usieto','romina.buenaventura','soledadpatricia.fernandez','santiago.riosmada','sebastian.palopoli'],label:'fps',sublabel:'BCRA',everest:true},
+  {title:'Integración SAP - Bantotal',date:'2026-06-12',start:'11:00',end:'11:45',attendees:['ext_analcisn','ext_andvivas','ext_dajoya','ext_japlata','felipe.baena','nicolas.battaglia','gbomrad@bantotal.com','fcabrera@bantotal.com'],label:'bantotal',sublabel:'Integración SAP',everest:true,declined:true},
+  {title:'Revisión Procesos AxI',date:'2026-06-12',start:'14:45',end:'15:30',attendees:['lujan.usieto','ext_andvivas','ext_mapartar'],label:'fps',sublabel:'AxI',everest:true},
+  {title:'FX Spot - FPSL',date:'2026-06-12',start:'15:30',end:'16:00',attendees:['lujan.usieto','christian.galdeano','ext_dajoya','ext_japlata'],label:'modelos',sublabel:'FX Spot',everest:true},
 ];
 
 // ── MEETING NOTES (minutas Gemini) ─────────────────────────────────────────
@@ -885,75 +893,4 @@ function applyMeetContext(title,date){
   // Append to note (don't overwrite)
   const MS=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
   const [,pm,pd]=date.split('-');
-  const dateStr=`${parseInt(pd)} ${MS[parseInt(pm)-1]}`;
-  const existing=document.getElementById('f-note').value.trim();
-  const parts=[`[Reunión ${dateStr}: ${title}]`];
-  if(note.keyNotes)parts.push(note.keyNotes);
-  if(note.luActions&&note.luActions.length)parts.push('Accionables: '+note.luActions.join('; '));
-  const newNote=parts.join('\n');
-  document.getElementById('f-note').value=existing?(existing+'\n---\n'+newNote):newNote;
-  // Suggest who from who_map
-  const label=document.getElementById('f-label').value;
-  const sub=document.getElementById('f-sub').value;
-  if(!document.getElementById('f-who').value){
-    const whoMap=JSON.parse(localStorage.getItem('ev_who_map')||'{}');
-    const suggested=whoMap[label+'|'+sub]||whoMap[label+'|']||'';
-    if(suggested)document.getElementById('f-who').value=suggested;
-  }
-  showBanner('✓ Contexto de minuta aplicado al ítem','ok');
-}
-
-function openModal(){
-  eid=null;
-  document.getElementById('mtitle').textContent='Nuevo ítem';
-  document.getElementById('bdel').style.display='none';
-  fillMod({label:LABELS[0].id});
-  document.getElementById('mbd').classList.add('open');
-}
-function openEdit(id){
-  const item=items.find(x=>x.id===id);if(!item)return;
-  eid=id;
-  document.getElementById('mtitle').textContent='Editar ítem';
-  document.getElementById('bdel').style.display='block';
-  fillMod(item);
-  document.getElementById('mbd').classList.add('open');
-}
-function closeMod(){document.getElementById('mbd').classList.remove('open');}
-function closeBd(e){if(e.target===document.getElementById('mbd'))closeMod();}
-function saveItem(){
-  const desc=document.getElementById('f-desc').value.trim();if(!desc){document.getElementById('f-desc').focus();return;}
-  const existing=eid?items.find(i=>i.id===eid):null;
-  const label=document.getElementById('f-label').value;
-  const sub=document.getElementById('f-sub').value;
-  const who=document.getElementById('f-who').value.trim()||null;
-  let reunion=document.getElementById('f-reunion').value.trim()||null;
-  // Auto-set reunion if blank — infer from most recent matching note
-  if(!reunion){
-    const relNotes=MEETING_NOTES.filter(m=>m.label===label).sort((a,b)=>b.date.localeCompare(a.date));
-    const match=sub?relNotes.find(m=>m.sub&&m.sub.toLowerCase().includes(sub.toLowerCase()))||relNotes[0]:relNotes[0];
-    if(match)reunion=match.title;
-  }
-  // Learn contraparte: save who for this label+sub combo
-  if(who){
-    try{
-      const whoMap=JSON.parse(localStorage.getItem('ev_who_map')||'{}');
-      whoMap[label+'|'+sub]=who;
-      localStorage.setItem('ev_who_map',JSON.stringify(whoMap));
-    }catch(e){}
-  }
-  const item={id:eid||nid++,desc,label,sub,tipo:document.getElementById('f-tipo').value,done:document.getElementById('f-done').value==='1',due:document.getElementById('f-due').value||null,who,note:document.getElementById('f-note').value.trim()||null,reunion,source:existing?existing.source||'manual':'manual',jiraKey:existing?.jiraKey,jiraStatus:existing?.jiraStatus};
-  if(eid){const idx=items.findIndex(i=>i.id===eid);if(idx>=0)items[idx]=item;}else items.push(item);
-  save();closeMod();renderAll();
-}
-function delItem(){if(!eid)return;if(!confirm('¿Eliminar?'))return;items=items.filter(i=>i.id!==eid);save();closeMod();renderAll();}
-function procesarReunion(){sendPrompt('Quiero procesar las notas de una reunión del Proyecto Everest para extraer mis pendientes. Te pego las notas ahora.');}
-
-function init(){
-  const d=new Date();
-  document.getElementById('sdate').innerHTML=d.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'})+'<br>'+d.getFullYear();
-  load();initLbls();renderAll();
-}
-init();
-</script>
-</body>
-</html>
+  co
