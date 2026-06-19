@@ -206,13 +206,27 @@
 <script>
 // ─── DATA ───────────────────────────────────────────────────────────────────
 
-const SCHEDULED_GSYNC = '⚠️ Invalidado — reconectar';
-const SCHEDULED_JSYNC = '18/06/2026 10:09 BsAs';
+const SCHEDULED_GSYNC = '⚠️ Invalidado — reconectar Gmail';
+const SCHEDULED_JSYNC = '19/06/2026 sync BsAs';
 
 const SCHEDULED_JIRA_ITEMS = [
   {
+    key: 'EVEREST-339',
+    summary: 'Acción en caso de error del servicio de screening',
+    status: 'Pendiente MELI',
+    type: 'pendiente',
+    priority: 'Highest',
+    assignee: 'Federico Santucho (Bantotal)',
+    updated: '2026-06-18',
+    label: 'Bantotal',
+    sublabel: 'Integraciones',
+    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-339',
+    nuevo: true,
+    description: 'Bantotal espera alineación sobre formato request_id (req-bt-xxx vs scr-bt-xxx). Santucho preguntó ayer si Albanesi/Bomrad revisaron la consulta.'
+  },
+  {
     key: 'EVEREST-361',
-    summary: 'status ambiente Banco Sponsor',
+    summary: 'Status ambiente Banco Sponsor',
     status: 'Pendiente MELI',
     type: 'pendiente',
     priority: 'Medium',
@@ -221,8 +235,7 @@ const SCHEDULED_JIRA_ITEMS = [
     label: 'Bantotal',
     sublabel: 'Ambiente',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-361',
-    nuevo: true,
-    description: 'Verificar instalación Tomcat, Java25, Oracle schemas y LDAP en servidor Bantotal'
+    description: '18/06: Albanesi confirmó procSerBTV4 estable. Carpetas archivosbt impactadas el 17/06. Pendiente: Bantotal (Santucho/Bomrad) debe confirmar que el servicio es accesible.'
   },
   {
     key: 'EVEREST-76',
@@ -235,7 +248,6 @@ const SCHEDULED_JIRA_ITEMS = [
     label: 'Bantotal',
     sublabel: 'Integraciones',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-76',
-    nuevo: true,
     description: 'Decisión abierta en Comité — prioridad Alta'
   },
   {
@@ -245,12 +257,11 @@ const SCHEDULED_JIRA_ITEMS = [
     type: 'decision',
     priority: 'Medium',
     assignee: 'Jose De Rose',
-    updated: '2026-06-16',
+    updated: '2026-06-18',
     label: 'Modelos Contables',
     sublabel: 'Contabilidad',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-165',
-    nuevo: true,
-    description: 'Decisión abierta en Comité'
+    description: '18/06: Jose De Rose devolvió documentos con comentarios y control de cambios. Sigue gestionando padrones IIBB (sin acceso como agente aún).'
   },
   {
     key: 'EVEREST-289',
@@ -258,12 +269,26 @@ const SCHEDULED_JIRA_ITEMS = [
     status: 'Aprobada',
     type: 'seguimiento',
     priority: 'Medium',
-    assignee: 'Andres Vivas (ext_andvivas)',
+    assignee: 'Agustin Barbe (Bantotal)',
     updated: '2026-06-18',
     label: 'Bantotal',
     sublabel: 'Integraciones',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-289',
-    nuevo: true
+    description: '18/06: Lu propuso reunión 15min con Ana/Agus para resolver control de fecha valor (no se puede desactivar globalmente en Bantotal). Nueva versión spec publicada el 17/06.'
+  },
+  {
+    key: 'EVEREST-169',
+    summary: 'Descuento de Cupones - instalación del módulo',
+    status: 'En prueba',
+    type: 'seguimiento',
+    priority: 'Medium',
+    assignee: 'Felipe Baena',
+    updated: '2026-06-18',
+    label: 'Bantotal',
+    sublabel: 'Módulos',
+    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-169',
+    nuevo: true,
+    description: '18/06: Sprint 3 entregado al cliente (envío N°41600063 completo — Federico Santucho). Ambiente disponible para pruebas funcionales.'
   },
   {
     key: 'EVEREST-174',
@@ -276,7 +301,7 @@ const SCHEDULED_JIRA_ITEMS = [
     label: 'Bantotal',
     sublabel: 'Banco Sponsor',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-174',
-    nuevo: true
+    description: 'En construcción'
   },
   {
     key: 'EVEREST-77',
@@ -289,79 +314,24 @@ const SCHEDULED_JIRA_ITEMS = [
     label: 'Modelos Contables',
     sublabel: 'Contrapartes',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-77',
-    nuevo: true
+    description: 'En construcción'
   }
 ];
 
 const CALENDAR_EVENTS = [
-  // HOY
+  // HOY 19/06
   {
     date: 'today',
-    time: '11:00–11:30',
-    summary: 'Seguimiento Construcción Bantotal:MP',
-    organizer: 'nicolas.battaglia',
-    attendees: 'N. Battaglia, D. Albanesi, F. Baena, G. Bomrad (Bantotal)',
-    label: 'Bantotal',
-    everest: true
-  },
-  {
-    date: 'today',
-    time: '12:00–12:55',
-    summary: 'Conciliación Descuento de Cupones - MBA',
-    organizer: 'leonardo.troncone',
-    attendees: 'L. Troncone, N. Alvarenga, G. Baglivo, S. Riosmada, F. Baena, R. Buenaventura',
-    label: 'Modelos Contables',
-    everest: true
-  },
-  {
-    date: 'today',
-    time: '14:30–15:00',
-    summary: 'Asientos Conci BCRA',
-    organizer: 'lujan.usieto (organizadora)',
-    attendees: 'L. Troncone',
-    label: 'GAP Normativo/PwC',
-    everest: true
-  },
-  {
-    date: 'today',
-    time: '15:00–15:45',
-    summary: 'Revisión Procesos AxI',
-    organizer: 'lujan.usieto (organizadora)',
-    attendees: 'ext_andvivas, ext_mapartar, ext_analcisn',
-    label: 'FPS + FinOps + Acc Corp',
-    everest: true
-  },
-  {
-    date: 'today',
-    time: '16:00–17:00',
-    summary: 'Licencia Bancaria MLA :: Monthly Update',
-    organizer: 'nicolas.battaglia',
-    attendees: 'Mesa amplia — N. Battaglia, ext_rodteres, L. Troncone, R. Buenaventura y +60 más',
-    label: 'Banco Retail',
-    everest: true
-  },
-  {
-    date: 'today',
-    time: '16:00–16:45',
-    summary: 'Integración SAP - Bantotal',
-    organizer: 'felipe.baena',
-    attendees: 'F. Baena, ext_analcisn, ext_mapartar, ext_rodteres, fcabrera@bantotal.com, fsantucho, gbomrad',
-    label: 'Bantotal',
-    everest: true,
-    note: '⚠️ Overlap con Licencia Bancaria (16:00–17:00)'
-  },
-  // MAÑANA
-  {
-    date: 'tomorrow',
     time: '09:30–10:00',
     summary: 'Revisión Entendimiento Reportes/Pedidos',
     organizer: 'ext_analcisn',
-    attendees: 'ext_analcisn, ext_mapartar, C. Galdeano, ext_rodteres, R. Buenaventura, L. Troncone',
+    attendees: 'A. Cisneros, M. Partar, C. Galdeano, R. Teres, R. Buenaventura, L. Troncone',
     label: 'Modelos Contables',
-    everest: true
+    everest: true,
+    note: '(ya realizada)'
   },
   {
-    date: 'tomorrow',
+    date: 'today',
     time: '10:00–13:00',
     summary: 'Seminario BCRA — Clase 9: NIIF',
     organizer: 'lujan.usieto (organizadora)',
@@ -370,7 +340,7 @@ const CALENDAR_EVENTS = [
     everest: true
   },
   {
-    date: 'tomorrow',
+    date: 'today',
     time: '16:00–16:25',
     summary: 'Modelo Extracto BCRA - Flujo y Conciliacion',
     organizer: 'leonardo.troncone',
@@ -379,14 +349,25 @@ const CALENDAR_EVENTS = [
     everest: true
   },
   {
-    date: 'tomorrow',
+    date: 'today',
     time: '16:30–16:55',
     summary: 'Weekly - Admin/FinOps',
     organizer: 'leonardo.troncone',
     attendees: 'L. Troncone',
     label: 'FPS + FinOps + Acc Corp',
     everest: true
+  },
+  {
+    date: 'today',
+    time: '17:00–17:30',
+    summary: 'Asientos Conci BCRA',
+    organizer: 'lujan.usieto (organizadora)',
+    attendees: 'L. Troncone',
+    label: 'Modelos Contables',
+    everest: true,
+    nuevo: true
   }
+  // SIN REUNIONES EVEREST MAÑANA 20/06
 ];
 
 // ─── RENDER ──────────────────────────────────────────────────────────────────
