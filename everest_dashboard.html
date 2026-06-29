@@ -110,9 +110,9 @@
 <header>
   <div class="logo">🏔 <span>Everest</span> Dashboard</div>
   <div class="sync-info">
-    <div>📧 Gmail: <strong id="gsync">⚠️ Conector invalidado</strong></div>
-    <div>📋 Jira: <strong id="jsync">18/06/2026 10:09</strong></div>
-    <div>📅 Calendar: <strong>18/06/2026</strong></div>
+    <div>📧 Gmail: <strong id="gsync">⚠️ Sin conector Gmail</strong></div>
+    <div>📋 Jira: <strong id="jsync">29/06/2026 11:20</strong></div>
+    <div>📅 Calendar: <strong>29/06/2026</strong></div>
   </div>
 </header>
 
@@ -129,7 +129,7 @@
   <!-- Stats -->
   <div class="stats">
     <div class="stat red">
-      <div class="stat-num" id="cnt-pending">1</div>
+      <div class="stat-num" id="cnt-pending">2</div>
       <div class="stat-label">🔴 Requieren acción</div>
     </div>
     <div class="stat yellow">
@@ -137,27 +137,27 @@
       <div class="stat-label">🟡 Decisiones abiertas</div>
     </div>
     <div class="stat blue">
-      <div class="stat-num" id="cnt-tracking">3</div>
+      <div class="stat-num" id="cnt-tracking">10</div>
       <div class="stat-label">⚙️ En seguimiento</div>
     </div>
     <div class="stat green">
-      <div class="stat-num" id="cnt-meetings">6</div>
-      <div class="stat-label">📅 Reuniones hoy</div>
+      <div class="stat-num" id="cnt-meetings">3</div>
+      <div class="stat-label">📅 Reuniones mañana</div>
     </div>
   </div>
 
   <!-- Calendar -->
   <div class="card" style="margin-bottom:18px">
     <div class="card-header">
-      <div class="card-title">📅 Agenda Everest — 18 y 19 de Junio</div>
+      <div class="card-title">📅 Agenda Everest — 29 y 30 de Junio</div>
     </div>
     <div class="card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
       <div>
-        <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">HOY — Jueves 18/06</div>
+        <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">HOY — Lunes 29/06</div>
         <div id="cal-today"></div>
       </div>
       <div>
-        <div style="font-size:11px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">MAÑANA — Viernes 19/06</div>
+        <div style="font-size:11px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">MAÑANA — Martes 30/06</div>
         <div id="cal-tomorrow"></div>
       </div>
     </div>
@@ -206,8 +206,8 @@
 <script>
 // ─── DATA ───────────────────────────────────────────────────────────────────
 
-const SCHEDULED_GSYNC = '⚠️ Invalidado — reconectar Gmail';
-const SCHEDULED_JSYNC = '19/06/2026 sync BsAs';
+const SCHEDULED_GSYNC = '⚠️ Sin conector Gmail (reconectar en Config)';
+const SCHEDULED_JSYNC = '29/06/2026 sync BsAs';
 
 const SCHEDULED_JIRA_ITEMS = [
   {
@@ -315,59 +315,113 @@ const SCHEDULED_JIRA_ITEMS = [
     sublabel: 'Contrapartes',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-77',
     description: 'En construcción'
+  },
+  // ── NUEVOS 29/06 ──────────────────────────────────────────────────────────
+  {
+    key: 'EVEREST-196',
+    summary: 'Contabilidad - Consulta de asientos',
+    status: 'En prueba',
+    type: 'seguimiento',
+    priority: 'Medium',
+    assignee: 'Felipe Baena',
+    updated: '2026-06-28',
+    label: 'Modelos Contables',
+    sublabel: 'Contabilidad',
+    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-196',
+    nuevo: true,
+    description: '28/06: Bantotal entregó Sprint 1 con documentación técnica y matriz de validación. Lu aprobó la especificación el 20/04. Pendiente validación funcional por MELI.'
+  },
+  {
+    key: 'EVEREST-197',
+    summary: 'Contabilidad - Consulta de mayor de saldos',
+    status: 'En prueba',
+    type: 'seguimiento',
+    priority: 'Medium',
+    assignee: 'Felipe Baena',
+    updated: '2026-06-28',
+    label: 'Modelos Contables',
+    sublabel: 'Contabilidad',
+    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-197',
+    nuevo: true,
+    description: '28/06: Bantotal entregó Sprint 1. Lu fue activa en el spec (validación de revalúo ME, lógica D/H, cotizaciones). Pendiente validación funcional por MELI.'
+  },
+  {
+    key: 'EVEREST-290',
+    summary: 'Procesos Batch y Riesgos - Contabilización previsión NIIF (ECL)',
+    status: 'Aprobada',
+    type: 'seguimiento',
+    priority: 'Medium',
+    assignee: 'Lujan Usieto (owner)',
+    updated: '2026-06-26',
+    label: 'Modelos Contables',
+    sublabel: 'ECL / NIIF',
+    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-290',
+    nuevo: true,
+    description: 'Asignada a Lu. Status Aprobada — en proceso de desarrollo.'
+  },
+  {
+    key: 'EVEREST-194',
+    summary: 'Contabilidad - Plan de cuentas',
+    status: 'Implementación',
+    type: 'seguimiento',
+    priority: 'Medium',
+    assignee: 'Lujan Usieto (owner)',
+    updated: '2026-06-23',
+    label: 'Modelos Contables',
+    sublabel: 'Plan de Cuentas',
+    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-194',
+    nuevo: true,
+    description: 'Asignada a Lu. Parametrización del plan de cuentas. En fase de implementación.'
+  },
+  {
+    key: 'EVEREST-377',
+    summary: 'Integraciones - Integración SAP a BT - Sprint 4',
+    status: 'Entregada al cliente',
+    type: 'seguimiento',
+    priority: 'Medium',
+    assignee: 'Luis Kovacevic',
+    updated: '2026-06-29',
+    label: 'Bantotal',
+    sublabel: 'Integraciones',
+    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-377',
+    nuevo: true,
+    description: '29/06: Jaime Plata reasignó el seguimiento de esta interfaz SAP→BT a Kova y su equipo (previo: Bantotal). Sprint 4 entregado el 26/06 (envío N°41600094).'
   }
 ];
 
 const CALENDAR_EVENTS = [
-  // HOY 19/06
+  // HOY 29/06 — Sin reuniones Everest
+  // MAÑANA 30/06
   {
-    date: 'today',
-    time: '09:30–10:00',
-    summary: 'Revisión Entendimiento Reportes/Pedidos',
-    organizer: 'ext_analcisn',
-    attendees: 'A. Cisneros, M. Partar, C. Galdeano, R. Teres, R. Buenaventura, L. Troncone',
-    label: 'Modelos Contables',
-    everest: true,
-    note: '(ya realizada)'
-  },
-  {
-    date: 'today',
-    time: '10:00–13:00',
-    summary: 'Seminario BCRA — Clase 9: NIIF',
-    organizer: 'lujan.usieto (organizadora)',
-    attendees: 'R. Buenaventura, S. Fernandez, S. Riosmada, S. Palopoli',
-    label: 'GAP Normativo/PwC',
-    everest: true
-  },
-  {
-    date: 'today',
-    time: '16:00–16:25',
-    summary: 'Modelo Extracto BCRA - Flujo y Conciliacion',
-    organizer: 'leonardo.troncone',
-    attendees: 'L. Troncone, C. Galdeano',
-    label: 'Modelos Contables',
-    everest: true
-  },
-  {
-    date: 'today',
-    time: '16:30–16:55',
-    summary: 'Weekly - Admin/FinOps',
-    organizer: 'leonardo.troncone',
-    attendees: 'L. Troncone',
-    label: 'FPS + FinOps + Acc Corp',
-    everest: true
-  },
-  {
-    date: 'today',
-    time: '17:00–17:30',
-    summary: 'Asientos Conci BCRA',
-    organizer: 'lujan.usieto (organizadora)',
-    attendees: 'L. Troncone',
+    date: 'tomorrow',
+    time: '10:30–11:30',
+    summary: 'Política Valuación Everest',
+    organizer: 'F. Tabuyo',
+    attendees: 'Fiorella Tabuyo, Sebastian Palopoli, Lu Usieto',
     label: 'Modelos Contables',
     everest: true,
     nuevo: true
+  },
+  {
+    date: 'tomorrow',
+    time: '11:30–12:15',
+    summary: 'Cierre de gaps Accounting - Everest',
+    organizer: 'S. Riosmada',
+    attendees: 'Santiago Riosmada, Felipe Baena (opc), Lu Usieto',
+    label: 'Modelos Contables',
+    everest: true,
+    nuevo: true
+  },
+  {
+    date: 'tomorrow',
+    time: '15:00–15:45',
+    summary: '[Banco Arg] Frente Contable | FPS + Acc + TAX + FinOps',
+    organizer: 'R. Teres (ext_rodteres)',
+    attendees: 'M. Partar, C. Galdeano, F. Thomas, M. Giofre, A. Vivas, R. Buenaventura, J. De Rose, A. Cisneros, L. Troncone + más',
+    label: 'FPS + FinOps + Acc Corp',
+    everest: true,
+    nuevo: true
   }
-  // SIN REUNIONES EVEREST MAÑANA 20/06
 ];
 
 // ─── RENDER ──────────────────────────────────────────────────────────────────
@@ -378,60 +432,3 @@ document.getElementById('jsync').textContent = SCHEDULED_JSYNC;
 function statusColor(type) {
   if (type === 'pendiente') return 'red';
   if (type === 'decision') return 'yellow';
-  if (type === 'seguimiento') return 'blue';
-  return 'blue';
-}
-
-function renderJiraItem(item) {
-  const col = statusColor(item.type);
-  return `<div class="item ${col}">
-    <div class="item-header">
-      <div class="item-title">
-        <a href="${item.url}" target="_blank" class="jira-link">${item.key}</a>
-        ${item.nuevo ? '<span class="badge new">NUEVO</span>' : ''}
-      </div>
-      <span class="badge ${col}">${item.status}</span>
-    </div>
-    <div style="font-size:13px;margin:4px 0 3px">${item.summary}</div>
-    ${item.description ? `<div class="item-meta">${item.description}</div>` : ''}
-    <div class="item-meta" style="margin-top:4px">
-      <span class="lbl">${item.label}</span>
-      ${item.priority === 'High' ? '<span class="badge red">Alta prioridad</span>' : ''}
-      ${item.assignee ? `· ${item.assignee}` : '· <em>sin asignado</em>'}
-      · Upd: ${item.updated}
-    </div>
-  </div>`;
-}
-
-function renderCalItem(ev, cls) {
-  return `<div class="cal-item ${cls}">
-    <div class="cal-time">${ev.time}</div>
-    <div class="cal-name">${ev.summary}</div>
-    <div class="cal-attendees">${ev.attendees}</div>
-    <div style="margin-top:4px"><span class="lbl">${ev.label}</span>${ev.note ? `<span style="font-size:11px;color:var(--yellow)"> ${ev.note}</span>` : ''}</div>
-  </div>`;
-}
-
-// Jira tabs
-['all','pendiente','decision','seguimiento'].forEach(tab => {
-  const items = tab === 'all' ? SCHEDULED_JIRA_ITEMS : SCHEDULED_JIRA_ITEMS.filter(i => i.type === tab);
-  const html = items.length ? items.map(renderJiraItem).join('') : '<div class="empty">Sin ítems en esta categoría</div>';
-  document.getElementById('jira-' + tab).innerHTML = html;
-});
-
-// Calendar
-const todayEl = document.getElementById('cal-today');
-const tomEl = document.getElementById('cal-tomorrow');
-CALENDAR_EVENTS.filter(e => e.date === 'today').forEach(e => { todayEl.innerHTML += renderCalItem(e,''); });
-CALENDAR_EVENTS.filter(e => e.date === 'tomorrow').forEach(e => { tomEl.innerHTML += renderCalItem(e,'tomorrow'); });
-
-// Tab switcher
-function showTab(group, tabId, el) {
-  document.querySelectorAll('#' + group + '-all, #' + group + '-pendiente, #' + group + '-decision, #' + group + '-seguimiento').forEach(p => p.classList.remove('active'));
-  document.getElementById(group + '-' + tabId).classList.add('active');
-  el.closest('.card-body').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-}
-</script>
-</body>
-</html>
