@@ -112,7 +112,7 @@
   <div class="sync-info">
     <div>📧 Gmail: <strong id="gsync">⚠️ Sin conector Gmail</strong></div>
     <div>📋 Jira: <strong id="jsync">29/06/2026 11:20</strong></div>
-    <div>📅 Calendar: <strong>29/06/2026</strong></div>
+    <div>📅 Calendar: <strong>30/06/2026</strong></div>
   </div>
 </header>
 
@@ -141,7 +141,7 @@
       <div class="stat-label">⚙️ En seguimiento</div>
     </div>
     <div class="stat green">
-      <div class="stat-num" id="cnt-meetings">3</div>
+      <div class="stat-num" id="cnt-meetings">8</div>
       <div class="stat-label">📅 Reuniones mañana</div>
     </div>
   </div>
@@ -149,15 +149,15 @@
   <!-- Calendar -->
   <div class="card" style="margin-bottom:18px">
     <div class="card-header">
-      <div class="card-title">📅 Agenda Everest — 29 y 30 de Junio</div>
+      <div class="card-title">📅 Agenda Everest — 30 de Junio y 1 de Julio</div>
     </div>
     <div class="card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
       <div>
-        <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">HOY — Lunes 29/06</div>
+        <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">HOY — Martes 30/06</div>
         <div id="cal-today"></div>
       </div>
       <div>
-        <div style="font-size:11px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">MAÑANA — Martes 30/06</div>
+        <div style="font-size:11px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">MAÑANA — Miércoles 01/07</div>
         <div id="cal-tomorrow"></div>
       </div>
     </div>
@@ -207,7 +207,7 @@
 // ─── DATA ───────────────────────────────────────────────────────────────────
 
 const SCHEDULED_GSYNC = '⚠️ Sin conector Gmail (reconectar en Config)';
-const SCHEDULED_JSYNC = '29/06/2026 sync BsAs';
+const SCHEDULED_JSYNC = '30/06/2026 09:09 BsAs';
 
 const SCHEDULED_JIRA_ITEMS = [
   {
@@ -287,7 +287,6 @@ const SCHEDULED_JIRA_ITEMS = [
     label: 'Bantotal',
     sublabel: 'Módulos',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-169',
-    nuevo: true,
     description: '18/06: Sprint 3 entregado al cliente (envío N°41600063 completo — Federico Santucho). Ambiente disponible para pruebas funcionales.'
   },
   {
@@ -328,7 +327,6 @@ const SCHEDULED_JIRA_ITEMS = [
     label: 'Modelos Contables',
     sublabel: 'Contabilidad',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-196',
-    nuevo: true,
     description: '28/06: Bantotal entregó Sprint 1 con documentación técnica y matriz de validación. Lu aprobó la especificación el 20/04. Pendiente validación funcional por MELI.'
   },
   {
@@ -342,7 +340,6 @@ const SCHEDULED_JIRA_ITEMS = [
     label: 'Modelos Contables',
     sublabel: 'Contabilidad',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-197',
-    nuevo: true,
     description: '28/06: Bantotal entregó Sprint 1. Lu fue activa en el spec (validación de revalúo ME, lógica D/H, cotizaciones). Pendiente validación funcional por MELI.'
   },
   {
@@ -356,7 +353,6 @@ const SCHEDULED_JIRA_ITEMS = [
     label: 'Modelos Contables',
     sublabel: 'ECL / NIIF',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-290',
-    nuevo: true,
     description: 'Asignada a Lu. Status Aprobada — en proceso de desarrollo.'
   },
   {
@@ -370,7 +366,6 @@ const SCHEDULED_JIRA_ITEMS = [
     label: 'Modelos Contables',
     sublabel: 'Plan de Cuentas',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-194',
-    nuevo: true,
     description: 'Asignada a Lu. Parametrización del plan de cuentas. En fase de implementación.'
   },
   {
@@ -384,41 +379,136 @@ const SCHEDULED_JIRA_ITEMS = [
     label: 'Bantotal',
     sublabel: 'Integraciones',
     url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-377',
-    nuevo: true,
     description: '29/06: Jaime Plata reasignó el seguimiento de esta interfaz SAP→BT a Kova y su equipo (previo: Bantotal). Sprint 4 entregado el 26/06 (envío N°41600094).'
-  }
+  },
+  // ── NUEVOS 30/06 ──────────────────────────────────────────────────────────
+  {
+    key: 'EVEREST-81',
+    summary: 'DPF - Certificados DPF',
+    status: 'En construcción',
+    type: 'seguimiento',
+    priority: 'Medium',
+    assignee: 'Felipe Baena',
+    updated: '2026-06-29',
+    label: 'Modelos Contables',
+    sublabel: 'DPF',
+    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-81',
+    nuevo: true,
+    description: '29/06: En construcción. Módulo de Depósitos a Plazo Fijo - Certificados DPF.'
+  },
+  {
+    key: 'EVEREST-379',
+    summary: 'Sprint 1 - Integraciones SAP a BT',
+    status: 'Entregada al cliente',
+    type: 'seguimiento',
+    priority: 'Medium',
+    assignee: 'Felipe Baena',
+    updated: '2026-06-28',
+    label: 'Bantotal',
+    sublabel: 'Integraciones',
+    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-379',
+    nuevo: true,
+    description: '28/06: Sprint 1 entregado al cliente. Pendiente validación MELI.'
+  },
 ];
 
 const CALENDAR_EVENTS = [
-  // HOY 29/06 — Sin reuniones Everest
-  // MAÑANA 30/06
+  // HOY 30/06
   {
-    date: 'tomorrow',
+    date: 'today',
     time: '10:30–11:30',
     summary: 'Política Valuación Everest',
     organizer: 'F. Tabuyo',
     attendees: 'Fiorella Tabuyo, Sebastian Palopoli, Lu Usieto',
     label: 'Modelos Contables',
+    everest: true
+  },
+  {
+    date: 'today',
+    time: '11:30–12:15',
+    summary: 'Cierre de gaps Accounting - Everest',
+    organizer: 'S. Riosmada',
+    attendees: 'Santiago Riosmada, Felipe Baena (opc), Lu Usieto',
+    label: 'Modelos Contables',
+    everest: true
+  },
+  {
+    date: 'today',
+    time: '15:00–15:45',
+    summary: '[Banco Arg] Frente Contable | FPS + Acc + TAX + FinOps',
+    organizer: 'R. Teres (ext_rodteres)',
+    attendees: 'M. Partar, C. Galdeano, F. Thomas, M. Giofre, A. Vivas, R. Buenaventura, J. De Rose, A. Cisneros, L. Troncone + más',
+    label: 'FPS + FinOps + Acc Corp',
+    everest: true
+  },
+  // MAÑANA 01/07
+  {
+    date: 'tomorrow',
+    time: '10:00–10:45',
+    summary: 'Mesa de implementación - Procesos de Auditoría',
+    organizer: 'F. Baena',
+    attendees: 'Felipe Baena, Lu Usieto, N. Battaglia, D. Albanesi, G. Baglivo + más',
+    label: 'Auditoría/EY',
     everest: true,
     nuevo: true
   },
   {
     date: 'tomorrow',
-    time: '11:30–12:15',
-    summary: 'Cierre de gaps Accounting - Everest',
+    time: '11:00–11:30',
+    summary: 'Extractos BCRA en SAP Banking',
+    organizer: 'ext_rodteres',
+    attendees: 'R. Teres, Lu Usieto, F. Baena, N. Battaglia, M. Giofre, S. Riosmada, F. Bouilly (SAP)',
+    label: 'GAP Normativo/PwC',
+    everest: true,
+    nuevo: true
+  },
+  {
+    date: 'tomorrow',
+    time: '12:00–12:45',
+    summary: '⚠️ Actos post-licencia - Status check',
     organizer: 'S. Riosmada',
-    attendees: 'Santiago Riosmada, Felipe Baena (opc), Lu Usieto',
+    attendees: 'S. Riosmada, Lu Usieto, M. Tulipani, A. Gallo, I. Bosch, B. Iraolagoitia, S. Maselli, J. De Rose + más',
+    label: 'Banco Retail',
+    everest: true,
+    nuevo: true
+  },
+  {
+    date: 'tomorrow',
+    time: '14:30–15:00',
+    summary: 'Retomar Analisis Everest',
+    organizer: 'Lu Usieto',
+    attendees: 'Lu Usieto (org), Lucia Lopez, Paola Abrahan, Samantha Traiber (opc)',
     label: 'Modelos Contables',
     everest: true,
     nuevo: true
   },
   {
     date: 'tomorrow',
-    time: '15:00–15:45',
-    summary: '[Banco Arg] Frente Contable | FPS + Acc + TAX + FinOps',
-    organizer: 'R. Teres (ext_rodteres)',
-    attendees: 'M. Partar, C. Galdeano, F. Thomas, M. Giofre, A. Vivas, R. Buenaventura, J. De Rose, A. Cisneros, L. Troncone + más',
+    time: '15:30–16:00',
+    summary: 'Facturación BK-MBA | recurrente Acc-FPS',
+    organizer: 'ext_rodteres',
+    attendees: 'R. Teres, Lu Usieto, J. Valentino, L. Monti, N. Rodriguez Murguiondo + más',
     label: 'FPS + FinOps + Acc Corp',
+    everest: true,
+    nuevo: true
+  },
+  {
+    date: 'tomorrow',
+    time: '16:00–16:45',
+    summary: '[Mesa núcleo] Pendientes Building Everest',
+    organizer: 'N. Battaglia',
+    attendees: 'N. Battaglia, Lu Usieto, S. Riosmada, F. Baena, J. De Rose',
+    label: 'Banco Retail',
+    everest: true,
+    nuevo: true
+  },
+  {
+    date: 'tomorrow',
+    time: '17:00–18:00',
+    summary: 'Everest :: Mesa Building',
+    organizer: 'N. Battaglia',
+    attendees: 'N. Battaglia, Lu Usieto, S. Riosmada, F. Baena, C. Galdeano, M. Giofre + equipo amplio',
+    label: 'Banco Retail',
     everest: true,
     nuevo: true
   }
