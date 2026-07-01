@@ -3,522 +3,729 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🏔 Everest Dashboard</title>
+<title>🏔 Everest — Dashboard de Seguimiento</title>
 <style>
   :root {
     --bg: #0f1117;
-    --card: #1a1d27;
-    --card2: #22263a;
-    --border: #2e3250;
-    --accent: #4f8ef7;
-    --accent2: #7c5ef7;
-    --red: #e74c4c;
-    --yellow: #f5a623;
-    --green: #27c27c;
-    --blue: #4f8ef7;
-    --text: #e8eaf0;
-    --muted: #7b82a0;
-    --badge-new: #f5a623;
+    --surface: #1a1d27;
+    --surface2: #242736;
+    --border: #2e3147;
+    --text: #e2e8f0;
+    --text-muted: #8892a4;
+    --accent: #6366f1;
+    --accent2: #818cf8;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --orange: #f97316;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; min-height: 100vh; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+  .header {
+    background: linear-gradient(135deg, #1e2035 0%, #161926 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .header-title { font-size: 22px; font-weight: 700; color: var(--text); }
+  .header-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .header-right { display: flex; gap: 12px; align-items: center; }
+  .sync-badge {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+  }
+  .sync-badge span { color: var(--green); font-weight: 600; }
+  .main { max-width: 1400px; margin: 0 auto; padding: 24px 32px; }
 
-  header { background: linear-gradient(135deg, #1a1d27 0%, #22263a 100%); border-bottom: 1px solid var(--border); padding: 18px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-  .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-  .logo span { color: var(--accent); }
-  .sync-info { font-size: 12px; color: var(--muted); text-align: right; }
-  .sync-info strong { color: var(--text); }
-
-  .main { max-width: 1400px; margin: 0 auto; padding: 24px 20px; }
-
-  /* Alert banner */
-  .alert-banner { background: rgba(231,76,76,0.12); border: 1px solid rgba(231,76,76,0.4); border-radius: 10px; padding: 12px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-  .alert-banner .icon { font-size: 18px; }
-  .alert-banner a { color: var(--red); font-weight: 600; text-decoration: underline; }
-
-  /* Stats row */
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
-  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
-  .stat-num { font-size: 32px; font-weight: 700; line-height: 1; }
-  .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
-  .stat.red .stat-num { color: var(--red); }
-  .stat.yellow .stat-num { color: var(--yellow); }
-  .stat.green .stat-num { color: var(--green); }
-  .stat.blue .stat-num { color: var(--blue); }
+  /* Stats bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .stat-icon { font-size: 24px; }
+  .stat-count { font-size: 28px; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+  .stat-card.red .stat-count { color: var(--red); }
+  .stat-card.yellow .stat-count { color: var(--yellow); }
+  .stat-card.green .stat-count { color: var(--green); }
+  .stat-card.blue .stat-count { color: var(--blue); }
 
   /* Grid layout */
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
-  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .full-width { grid-column: 1 / -1; }
 
   /* Cards */
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .card-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .card-title { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 7px; }
-  .card-count { background: var(--card2); border-radius: 20px; padding: 2px 9px; font-size: 11px; color: var(--muted); }
-  .card-body { padding: 14px 18px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface2);
+  }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .card-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .card-body { padding: 4px 0; }
 
   /* Items */
-  .item { padding: 11px 14px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid transparent; background: var(--card2); position: relative; }
-  .item:last-child { margin-bottom: 0; }
-  .item.red { border-left-color: var(--red); }
-  .item.yellow { border-left-color: var(--yellow); }
-  .item.green { border-left-color: var(--green); }
-  .item.blue { border-left-color: var(--blue); }
-  .item-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-  .item-title { font-weight: 600; font-size: 13px; flex: 1; }
-  .item-meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
-  .badge { display: inline-block; padding: 2px 7px; border-radius: 20px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-  .badge.red { background: rgba(231,76,76,0.2); color: var(--red); }
-  .badge.yellow { background: rgba(245,166,35,0.2); color: var(--yellow); }
-  .badge.green { background: rgba(39,194,124,0.2); color: var(--green); }
-  .badge.blue { background: rgba(79,142,247,0.2); color: var(--blue); }
-  .badge.purple { background: rgba(124,94,247,0.2); color: var(--accent2); }
-  .badge.new { background: var(--badge-new); color: #000; margin-left: 5px; }
+  .item {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .item:last-child { border-bottom: none; }
+  .item:hover { background: var(--surface2); }
+  .item-header { display: flex; align-items: flex-start; gap: 10px; justify-content: space-between; }
+  .item-title { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; line-height: 1.4; }
+  .item-sub { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
+  .item-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; align-items: center; }
 
-  /* Calendar */
-  .cal-item { padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; background: var(--card2); border-left: 3px solid var(--accent); }
-  .cal-item.tomorrow { border-left-color: var(--accent2); opacity: 0.85; }
-  .cal-time { font-size: 12px; font-weight: 700; color: var(--accent); }
-  .cal-item.tomorrow .cal-time { color: var(--accent2); }
-  .cal-name { font-size: 13px; font-weight: 600; margin: 2px 0; }
-  .cal-attendees { font-size: 11px; color: var(--muted); }
+  /* Badges */
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .badge-red { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+  .badge-yellow { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+  .badge-green { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+  .badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+  .badge-purple { background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+  .badge-gray { background: rgba(255,255,255,0.06); color: var(--text-muted); border: 1px solid var(--border); }
+  .badge-orange { background: rgba(249,115,22,0.15); color: #fb923c; border: 1px solid rgba(249,115,22,0.3); }
+  .badge-new { background: rgba(99,102,241,0.2); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.4); animation: pulse-badge 2s infinite; }
 
-  /* Tab system */
-  .tabs { display: flex; gap: 8px; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
-  .tab { padding: 8px 14px; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+  @keyframes pulse-badge {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
 
-  /* Label pill */
-  .lbl { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; background: rgba(79,142,247,0.12); color: var(--accent); margin-right: 4px; }
+  /* Priority dot */
+  .priority-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .priority-highest { background: var(--red); box-shadow: 0 0 6px var(--red); }
+  .priority-high { background: var(--orange); }
+  .priority-medium { background: var(--yellow); }
+  .priority-low { background: var(--blue); }
 
-  .empty { color: var(--muted); font-size: 13px; text-align: center; padding: 20px; }
-  .jira-link { color: var(--accent); font-size: 11px; text-decoration: none; }
-  .jira-link:hover { text-decoration: underline; }
+  /* Calendar events */
+  .cal-event {
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .cal-event:last-child { border-bottom: none; }
+  .cal-time {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent2);
+    min-width: 52px;
+    padding-top: 1px;
+    font-variant-numeric: tabular-nums;
+  }
+  .cal-content { flex: 1; }
+  .cal-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
+  .cal-participants { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .cal-meta { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .today-label { color: var(--green); font-size: 11px; font-weight: 600; }
+  .tomorrow-label { color: var(--yellow); font-size: 11px; font-weight: 600; }
 
-  .warning-box { background: rgba(245,166,35,0.08); border: 1px solid rgba(245,166,35,0.3); border-radius: 8px; padding: 12px 14px; font-size: 12px; color: var(--yellow); margin-bottom: 16px; }
+  /* Day separator */
+  .day-sep {
+    padding: 8px 18px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: var(--bg);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
 
-  @media (max-width: 900px) {
-    .stats { grid-template-columns: repeat(2,1fr); }
-    .grid2, .grid3 { grid-template-columns: 1fr; }
+  /* Jira status */
+  .status-nuevo { color: #93c5fd; }
+  .status-comite { color: #fbbf24; }
+  .status-aprobada { color: #34d399; }
+  .status-desarrollo { color: #a78bfa; }
+  .status-prueba { color: #fb923c; }
+  .status-done { color: #4ade80; }
+
+  /* Empty state */
+  .empty { padding: 24px 18px; text-align: center; color: var(--text-muted); font-size: 12px; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--text-muted);
+    font-size: 11px;
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+  }
+  .footer a { color: var(--accent2); text-decoration: none; }
+
+  /* Tabs */
+  .tab-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border); }
+  .tab {
+    padding: 10px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+  }
+  .tab.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+  .tab:hover:not(.active) { color: var(--text); }
+
+  /* Warning banner */
+  .warning-banner {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: #fbbf24;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">🏔 <span>Everest</span> Dashboard</div>
-  <div class="sync-info">
-    <div>📧 Gmail: <strong id="gsync">⚠️ Sin conector Gmail</strong></div>
-    <div>📋 Jira: <strong id="jsync">29/06/2026 11:20</strong></div>
-    <div>📅 Calendar: <strong>30/06/2026</strong></div>
+<div class="header">
+  <div class="header-left">
+    <div style="font-size:32px">🏔</div>
+    <div>
+      <div class="header-title">Everest — Dashboard de Seguimiento</div>
+      <div class="header-sub">Mercado Pago Banco S.A. · Referente: Lujan M. Usieto Romero</div>
+    </div>
   </div>
-</header>
+  <div class="header-right">
+    <div class="sync-badge">Jira <span id="jsync-time">—</span></div>
+    <div class="sync-badge">Calendar <span id="gsync-time">—</span></div>
+    <div class="sync-badge" style="color:var(--text-muted)">Gmail <span style="color:#f87171">sin conector</span></div>
+  </div>
+</div>
 
 <div class="main">
 
-  <div class="alert-banner">
-    <div class="icon">⚠️</div>
-    <div>
-      <strong>Gmail desconectado</strong> — El conector de Gmail fue invalidado y no pudo sincronizarse en este ciclo.
-      <a href="https://claude.ai" target="_blank">Reconectarlo en Configuración</a> para que el próximo sync incluya emails.
-    </div>
+  <div class="warning-banner">
+    ⚠️ <strong>Gmail no disponible en este sync</strong> — El conector de Gmail no está activo. Los ítems de seguimiento por email deben revisarse manualmente.
   </div>
 
-  <!-- Stats -->
-  <div class="stats">
-    <div class="stat red">
-      <div class="stat-num" id="cnt-pending">2</div>
-      <div class="stat-label">🔴 Requieren acción</div>
-    </div>
-    <div class="stat yellow">
-      <div class="stat-num" id="cnt-decision">2</div>
-      <div class="stat-label">🟡 Decisiones abiertas</div>
-    </div>
-    <div class="stat blue">
-      <div class="stat-num" id="cnt-tracking">10</div>
-      <div class="stat-label">⚙️ En seguimiento</div>
-    </div>
-    <div class="stat green">
-      <div class="stat-num" id="cnt-meetings">8</div>
-      <div class="stat-label">📅 Reuniones mañana</div>
-    </div>
-  </div>
-
-  <!-- Calendar -->
-  <div class="card" style="margin-bottom:18px">
-    <div class="card-header">
-      <div class="card-title">📅 Agenda Everest — 30 de Junio y 1 de Julio</div>
-    </div>
-    <div class="card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stat-card red">
+      <div class="stat-icon">🔴</div>
       <div>
-        <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">HOY — Martes 30/06</div>
-        <div id="cal-today"></div>
+        <div class="stat-count" id="count-accion">3</div>
+        <div class="stat-label">Requieren acción</div>
       </div>
+    </div>
+    <div class="stat-card yellow">
+      <div class="stat-icon">🟡</div>
       <div>
-        <div style="font-size:11px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">MAÑANA — Miércoles 01/07</div>
-        <div id="cal-tomorrow"></div>
+        <div class="stat-count" id="count-novedades">4</div>
+        <div class="stat-label">Novedades Jira</div>
+      </div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-icon">📅</div>
+      <div>
+        <div class="stat-count" id="count-reuniones">12</div>
+        <div class="stat-label">Reuniones (hoy+mañana)</div>
+      </div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-icon">✅</div>
+      <div>
+        <div class="stat-count" id="count-cerrados">0</div>
+        <div class="stat-label">Cerrados histórico</div>
       </div>
     </div>
   </div>
 
-  <!-- Jira + Gmail -->
-  <div class="grid2">
-    <!-- Jira -->
+  <div class="grid">
+
+    <!-- JIRA Issues -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">📋 Jira — Issues Activos</div>
-        <span class="card-count" id="jira-count">6 issues</span>
+        <div class="card-title">🎫 Issues Jira activos</div>
+        <div class="card-count" id="jira-count">6 ítems</div>
       </div>
-      <div class="card-body">
-        <div class="tabs">
-          <div class="tab active" onclick="showTab('jira','all',this)">Todos</div>
-          <div class="tab" onclick="showTab('jira','pendiente',this)">🔴 Pendiente</div>
-          <div class="tab" onclick="showTab('jira','decision',this)">🟡 Decisión</div>
-          <div class="tab" onclick="showTab('jira','seguimiento',this)">⚙️ Seguimiento</div>
-        </div>
-        <div id="jira-all" class="tab-panel active"></div>
-        <div id="jira-pendiente" class="tab-panel"></div>
-        <div id="jira-decision" class="tab-panel"></div>
-        <div id="jira-seguimiento" class="tab-panel"></div>
+      <div class="card-body" id="jira-container"></div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📅 Agenda Everest (hoy + mañana)</div>
+        <div class="card-count" id="cal-count">12 reuniones</div>
+      </div>
+      <div class="card-body" id="cal-container"></div>
+    </div>
+
+    <!-- Gmail placeholder -->
+    <div class="card full-width">
+      <div class="card-header">
+        <div class="card-title">📧 Threads Gmail</div>
+        <div class="card-count">sin conector</div>
+      </div>
+      <div class="empty">
+        Gmail no disponible en este sync. Conectar el conector de Gmail para habilitar seguimiento automático de emails.<br>
+        Los ítems manuales agregados desde el dashboard se conservan.
       </div>
     </div>
 
-    <!-- Gmail -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">📧 Gmail — Threads</div>
-        <span class="card-count">⚠️ Sin datos</span>
-      </div>
-      <div class="card-body">
-        <div class="warning-box">
-          ⚠️ El conector de Gmail fue invalidado y no pudo consultarse en este ciclo de sincronización.<br><br>
-          Reconectá Gmail desde <strong>Configuración → Conectores</strong> para que el próximo sync incluya los emails de Bantotal, EY, PwC y consultores del proyecto.
-        </div>
-        <div class="empty">Sin datos de email disponibles</div>
-      </div>
-    </div>
   </div>
 
 </div>
 
-<script>
-// ─── DATA ───────────────────────────────────────────────────────────────────
+<div class="footer">
+  🏔 Everest Dashboard · Generado automáticamente · <a href="https://lujanusieto-romero.github.io/Everest-Dashboard-seguimiento/everest_dashboard.html" target="_blank">Ver versión pública</a>
+</div>
 
-const SCHEDULED_GSYNC = '⚠️ Sin conector Gmail (reconectar en Config)';
-const SCHEDULED_JSYNC = '30/06/2026 09:09 BsAs';
+<script>
+// ────────────────────────────────────────────────
+// DATA — actualizada por sync automático
+// ────────────────────────────────────────────────
+
+const SCHEDULED_GSYNC = "2026-07-01T09:00:00-03:00";
+const SCHEDULED_JSYNC = "2026-07-01T09:00:00-03:00";
 
 const SCHEDULED_JIRA_ITEMS = [
   {
-    key: 'EVEREST-339',
-    summary: 'Acción en caso de error del servicio de screening',
-    status: 'Pendiente MELI',
-    type: 'pendiente',
-    priority: 'Highest',
-    assignee: 'Federico Santucho (Bantotal)',
-    updated: '2026-06-18',
-    label: 'Bantotal',
-    sublabel: 'Integraciones',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-339',
-    nuevo: true,
-    description: 'Bantotal espera alineación sobre formato request_id (req-bt-xxx vs scr-bt-xxx). Santucho preguntó ayer si Albanesi/Bomrad revisaron la consulta.'
-  },
-  {
-    key: 'EVEREST-361',
-    summary: 'Status ambiente Banco Sponsor',
-    status: 'Pendiente MELI',
-    type: 'pendiente',
-    priority: 'Medium',
+    key: "EVEREST-380",
+    summary: "Incidente: BTCuentasCorrientes.ObtenerAcuerdos no responde",
+    status: "Nuevo",
+    priority: "Highest",
     assignee: null,
-    updated: '2026-06-18',
-    label: 'Bantotal',
-    sublabel: 'Ambiente',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-361',
-    description: '18/06: Albanesi confirmó procSerBTV4 estable. Carpetas archivosbt impactadas el 17/06. Pendiente: Bantotal (Santucho/Bomrad) debe confirmar que el servicio es accesible.'
-  },
-  {
-    key: 'EVEREST-76',
-    summary: 'Integraciones - Integración BT a SAP',
-    status: 'Comité',
-    type: 'decision',
-    priority: 'High',
-    assignee: 'Jaime Plata (ext_japlata)',
-    updated: '2026-06-16',
-    label: 'Bantotal',
-    sublabel: 'Integraciones',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-76',
-    description: 'Decisión abierta en Comité — prioridad Alta'
-  },
-  {
-    key: 'EVEREST-165',
-    summary: 'Contabilidad - Sistema de impuestos',
-    status: 'Comité',
-    type: 'decision',
-    priority: 'Medium',
-    assignee: 'Jose De Rose',
-    updated: '2026-06-18',
-    label: 'Modelos Contables',
-    sublabel: 'Contabilidad',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-165',
-    description: '18/06: Jose De Rose devolvió documentos con comentarios y control de cambios. Sigue gestionando padrones IIBB (sin acceso como agente aún).'
-  },
-  {
-    key: 'EVEREST-289',
-    summary: 'Integraciones - Integración SAP a BT',
-    status: 'Aprobada',
-    type: 'seguimiento',
-    priority: 'Medium',
-    assignee: 'Agustin Barbe (Bantotal)',
-    updated: '2026-06-18',
-    label: 'Bantotal',
-    sublabel: 'Integraciones',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-289',
-    description: '18/06: Lu propuso reunión 15min con Ana/Agus para resolver control de fecha valor (no se puede desactivar globalmente en Bantotal). Nueva versión spec publicada el 17/06.'
-  },
-  {
-    key: 'EVEREST-169',
-    summary: 'Descuento de Cupones - instalación del módulo',
-    status: 'En prueba',
-    type: 'seguimiento',
-    priority: 'Medium',
-    assignee: 'Felipe Baena',
-    updated: '2026-06-18',
-    label: 'Bantotal',
-    sublabel: 'Módulos',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-169',
-    description: '18/06: Sprint 3 entregado al cliente (envío N°41600063 completo — Federico Santucho). Ambiente disponible para pruebas funcionales.'
-  },
-  {
-    key: 'EVEREST-174',
-    summary: 'Banco Sponsor',
-    status: 'En construcción',
-    type: 'seguimiento',
-    priority: 'Medium',
-    assignee: 'Bomrad Gaston (Bantotal)',
-    updated: '2026-06-16',
-    label: 'Bantotal',
-    sublabel: 'Banco Sponsor',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-174',
-    description: 'En construcción'
-  },
-  {
-    key: 'EVEREST-77',
-    summary: 'Contrapartes - Parametrización módulo',
-    status: 'En construcción',
-    type: 'seguimiento',
-    priority: 'Medium',
-    assignee: 'Bomrad Gaston (Bantotal)',
-    updated: '2026-06-16',
-    label: 'Modelos Contables',
-    sublabel: 'Contrapartes',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-77',
-    description: 'En construcción'
-  },
-  // ── NUEVOS 29/06 ──────────────────────────────────────────────────────────
-  {
-    key: 'EVEREST-196',
-    summary: 'Contabilidad - Consulta de asientos',
-    status: 'En prueba',
-    type: 'seguimiento',
-    priority: 'Medium',
-    assignee: 'Felipe Baena',
-    updated: '2026-06-28',
-    label: 'Modelos Contables',
-    sublabel: 'Contabilidad',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-196',
-    description: '28/06: Bantotal entregó Sprint 1 con documentación técnica y matriz de validación. Lu aprobó la especificación el 20/04. Pendiente validación funcional por MELI.'
-  },
-  {
-    key: 'EVEREST-197',
-    summary: 'Contabilidad - Consulta de mayor de saldos',
-    status: 'En prueba',
-    type: 'seguimiento',
-    priority: 'Medium',
-    assignee: 'Felipe Baena',
-    updated: '2026-06-28',
-    label: 'Modelos Contables',
-    sublabel: 'Contabilidad',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-197',
-    description: '28/06: Bantotal entregó Sprint 1. Lu fue activa en el spec (validación de revalúo ME, lógica D/H, cotizaciones). Pendiente validación funcional por MELI.'
-  },
-  {
-    key: 'EVEREST-290',
-    summary: 'Procesos Batch y Riesgos - Contabilización previsión NIIF (ECL)',
-    status: 'Aprobada',
-    type: 'seguimiento',
-    priority: 'Medium',
-    assignee: 'Lujan Usieto (owner)',
-    updated: '2026-06-26',
-    label: 'Modelos Contables',
-    sublabel: 'ECL / NIIF',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-290',
-    description: 'Asignada a Lu. Status Aprobada — en proceso de desarrollo.'
-  },
-  {
-    key: 'EVEREST-194',
-    summary: 'Contabilidad - Plan de cuentas',
-    status: 'Implementación',
-    type: 'seguimiento',
-    priority: 'Medium',
-    assignee: 'Lujan Usieto (owner)',
-    updated: '2026-06-23',
-    label: 'Modelos Contables',
-    sublabel: 'Plan de Cuentas',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-194',
-    description: 'Asignada a Lu. Parametrización del plan de cuentas. En fase de implementación.'
-  },
-  {
-    key: 'EVEREST-377',
-    summary: 'Integraciones - Integración SAP a BT - Sprint 4',
-    status: 'Entregada al cliente',
-    type: 'seguimiento',
-    priority: 'Medium',
-    assignee: 'Luis Kovacevic',
-    updated: '2026-06-29',
-    label: 'Bantotal',
-    sublabel: 'Integraciones',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-377',
-    description: '29/06: Jaime Plata reasignó el seguimiento de esta interfaz SAP→BT a Kova y su equipo (previo: Bantotal). Sprint 4 entregado el 26/06 (envío N°41600094).'
-  },
-  // ── NUEVOS 30/06 ──────────────────────────────────────────────────────────
-  {
-    key: 'EVEREST-81',
-    summary: 'DPF - Certificados DPF',
-    status: 'En construcción',
-    type: 'seguimiento',
-    priority: 'Medium',
-    assignee: 'Felipe Baena',
-    updated: '2026-06-29',
-    label: 'Modelos Contables',
-    sublabel: 'DPF',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-81',
+    updated: "2026-06-30",
+    label: "Bantotal",
+    tipo: "Incidente",
+    accion: true,
     nuevo: true,
-    description: '29/06: En construcción. Módulo de Depósitos a Plazo Fijo - Certificados DPF.'
+    url: "https://mercadolibre-everest.atlassian.net/browse/EVEREST-380",
+    notas: "Endpoint crítico para traspasos entre terceros no disponible. Sin asignar, prioridad máxima."
   },
   {
-    key: 'EVEREST-379',
-    summary: 'Sprint 1 - Integraciones SAP a BT',
-    status: 'Entregada al cliente',
-    type: 'seguimiento',
-    priority: 'Medium',
-    assignee: 'Felipe Baena',
-    updated: '2026-06-28',
-    label: 'Bantotal',
-    sublabel: 'Integraciones',
-    url: 'https://mercadolibre-everest.atlassian.net/browse/EVEREST-379',
+    key: "EVEREST-381",
+    summary: "Reclasificación y rendición de impuestos",
+    status: "Nuevo",
+    priority: "Medium",
+    assignee: null,
+    updated: "2026-06-30",
+    label: "Modelos Contables",
+    tipo: "OT",
+    accion: true,
     nuevo: true,
-    description: '28/06: Sprint 1 entregado al cliente. Pendiente validación MELI.'
-  },
-];
-
-const CALENDAR_EVENTS = [
-  // HOY 30/06
-  {
-    date: 'today',
-    time: '10:30–11:30',
-    summary: 'Política Valuación Everest',
-    organizer: 'F. Tabuyo',
-    attendees: 'Fiorella Tabuyo, Sebastian Palopoli, Lu Usieto',
-    label: 'Modelos Contables',
-    everest: true
+    url: "https://mercadolibre-everest.atlassian.net/browse/EVEREST-381",
+    notas: "OT creada el 30/06 por Bomrad Gaston. Sin asignar — definir owner."
   },
   {
-    date: 'today',
-    time: '11:30–12:15',
-    summary: 'Cierre de gaps Accounting - Everest',
-    organizer: 'S. Riosmada',
-    attendees: 'Santiago Riosmada, Felipe Baena (opc), Lu Usieto',
-    label: 'Modelos Contables',
-    everest: true
+    key: "EVEREST-165",
+    summary: "Contabilidad — Sistema de impuestos (SIRCREB/IIBB)",
+    status: "Comité",
+    priority: "Medium",
+    assignee: "Jose De Rose",
+    updated: "2026-06-30",
+    label: "Modelos Contables",
+    tipo: "OT",
+    accion: true,
+    nuevo: false,
+    url: "https://mercadolibre-everest.atlassian.net/browse/EVEREST-165",
+    notas: "Activa discusión padrones SIRCREB. Betina Rojas esperando validación final de Jose De Rose."
   },
   {
-    date: 'today',
-    time: '15:00–15:45',
-    summary: '[Banco Arg] Frente Contable | FPS + Acc + TAX + FinOps',
-    organizer: 'R. Teres (ext_rodteres)',
-    attendees: 'M. Partar, C. Galdeano, F. Thomas, M. Giofre, A. Vivas, R. Buenaventura, J. De Rose, A. Cisneros, L. Troncone + más',
-    label: 'FPS + FinOps + Acc Corp',
-    everest: true
-  },
-  // MAÑANA 01/07
-  {
-    date: 'tomorrow',
-    time: '10:00–10:45',
-    summary: 'Mesa de implementación - Procesos de Auditoría',
-    organizer: 'F. Baena',
-    attendees: 'Felipe Baena, Lu Usieto, N. Battaglia, D. Albanesi, G. Baglivo + más',
-    label: 'Auditoría/EY',
-    everest: true,
-    nuevo: true
+    key: "EVEREST-290",
+    summary: "Contabilización previsión NIIF (ECL) — Procesos Batch",
+    status: "Aprobada",
+    priority: "Medium",
+    assignee: "Lujan Usieto (vos)",
+    updated: "2026-06-26",
+    label: "Modelos Contables",
+    tipo: "OT",
+    accion: false,
+    nuevo: false,
+    url: "https://mercadolibre-everest.atlassian.net/browse/EVEREST-290",
+    notas: "Asignado a Lu. Especificación v2 creada el 30/06. Reunión de revisión agendada mañana 02/07 15:00."
   },
   {
-    date: 'tomorrow',
-    time: '11:00–11:30',
-    summary: 'Extractos BCRA en SAP Banking',
-    organizer: 'ext_rodteres',
-    attendees: 'R. Teres, Lu Usieto, F. Baena, N. Battaglia, M. Giofre, S. Riosmada, F. Bouilly (SAP)',
-    label: 'GAP Normativo/PwC',
-    everest: true,
-    nuevo: true
+    key: "EVEREST-187",
+    summary: "TITOFIN — Código 80XXX custodia (fuera de Caja de Valores)",
+    status: "En prueba",
+    priority: "Medium",
+    assignee: "Felipe Baena",
+    updated: "2026-06-30",
+    label: "Bantotal",
+    tipo: "OT",
+    accion: false,
+    nuevo: false,
+    url: "https://mercadolibre-everest.atlassian.net/browse/EVEREST-187",
+    notas: "Sprint 4 entregado. Soledad Fernandez solicitó habilitar módulos BT para usuarios sofernandez, mdesanti, jandragnes."
   },
   {
-    date: 'tomorrow',
-    time: '12:00–12:45',
-    summary: '⚠️ Actos post-licencia - Status check',
-    organizer: 'S. Riosmada',
-    attendees: 'S. Riosmada, Lu Usieto, M. Tulipani, A. Gallo, I. Bosch, B. Iraolagoitia, S. Maselli, J. De Rose + más',
-    label: 'Banco Retail',
-    everest: true,
-    nuevo: true
-  },
-  {
-    date: 'tomorrow',
-    time: '14:30–15:00',
-    summary: 'Retomar Analisis Everest',
-    organizer: 'Lu Usieto',
-    attendees: 'Lu Usieto (org), Lucia Lopez, Paola Abrahan, Samantha Traiber (opc)',
-    label: 'Modelos Contables',
-    everest: true,
-    nuevo: true
-  },
-  {
-    date: 'tomorrow',
-    time: '15:30–16:00',
-    summary: 'Facturación BK-MBA | recurrente Acc-FPS',
-    organizer: 'ext_rodteres',
-    attendees: 'R. Teres, Lu Usieto, J. Valentino, L. Monti, N. Rodriguez Murguiondo + más',
-    label: 'FPS + FinOps + Acc Corp',
-    everest: true,
-    nuevo: true
-  },
-  {
-    date: 'tomorrow',
-    time: '16:00–16:45',
-    summary: '[Mesa núcleo] Pendientes Building Everest',
-    organizer: 'N. Battaglia',
-    attendees: 'N. Battaglia, Lu Usieto, S. Riosmada, F. Baena, J. De Rose',
-    label: 'Banco Retail',
-    everest: true,
-    nuevo: true
-  },
-  {
-    date: 'tomorrow',
-    time: '17:00–18:00',
-    summary: 'Everest :: Mesa Building',
-    organizer: 'N. Battaglia',
-    attendees: 'N. Battaglia, Lu Usieto, S. Riosmada, F. Baena, C. Galdeano, M. Giofre + equipo amplio',
-    label: 'Banco Retail',
-    everest: true,
-    nuevo: true
+    key: "EVEREST-81",
+    summary: "DPF — Certificados de Plazo Fijo",
+    status: "En construcción",
+    priority: "Medium",
+    assignee: "Felipe Baena",
+    updated: "2026-06-29",
+    label: "Bantotal",
+    tipo: "OT",
+    accion: false,
+    nuevo: false,
+    url: "https://mercadolibre-everest.atlassian.net/browse/EVEREST-81",
+    notas: "Prueba funcional realizada el 29/06 con errores en flujo de constitución de DPF. Hallazgos enviados por email."
   }
 ];
 
-// ─── RENDER ──────────────────────────────────────────────────────────────────
+const SCHEDULED_GMAIL_ITEMS = [
+  // Gmail no disponible en este sync
+];
 
-document.getElementById('gsync').textContent = SCHEDULED_GSYNC;
-document.getElementById('jsync').textContent = SCHEDULED_JSYNC;
+const CALENDAR_EVENTS = [
+  // HOY — 01/07/2026
+  {
+    date: "2026-07-01",
+    time: "10:00",
+    end: "10:45",
+    summary: "Mesa de implementación — Procesos de Auditoría",
+    organizer: "felipe.baena@mercadolibre.com",
+    participants: "Felipe Baena, Damian Albanesi, Bruno Garcia, Nayla Dicomo, Jose De Rose",
+    label: "Auditoría/EY",
+    sublabel: "Preparación auditoría BCRA",
+    everest: true,
+    day: "hoy"
+  },
+  {
+    date: "2026-07-01",
+    time: "11:00",
+    end: "11:30",
+    summary: "Extractos BCRA en SAP Banking",
+    organizer: "ext_rodteres@mercadolibre.com",
+    participants: "ext_rodteres, ext_analcisn, ext_fabouill, Hernan Lopez, Lu, Martin Giofre",
+    label: "Bantotal",
+    sublabel: "Puesta en común opción extractos BCRA",
+    everest: true,
+    day: "hoy"
+  },
+  {
+    date: "2026-07-01",
+    time: "11:30",
+    end: "12:00",
+    summary: "Controles contables salida en vivo anticipada",
+    organizer: "christian.galdeano@mercadolibre.com",
+    participants: "Christian Galdeano, Jose De Rose, Nancy Alvarenga, Gimena Salazar, Lu",
+    label: "Modelos Contables",
+    sublabel: "Revisión controles previo a go-live",
+    everest: true,
+    day: "hoy"
+  },
+  {
+    date: "2026-07-01",
+    time: "12:00",
+    end: "12:45",
+    summary: "Actos post-licencia — Status check",
+    organizer: "santiago.riosmada@mercadolibre.com",
+    participants: "Santiago Riosmada, Nicolas Battaglia, Felipe Baena, Jose De Rose, Lu + equipo",
+    label: "GAP Normativo/PwC",
+    sublabel: "Revisión actos regulatorios post-licencia bancaria",
+    everest: true,
+    day: "hoy"
+  },
+  {
+    date: "2026-07-01",
+    time: "12:30",
+    end: "13:00",
+    summary: "Casos no felices — MBA",
+    organizer: "jose.perezvivas@mercadolibre.com",
+    participants: "Maximiliano Tulipani, Jose Perezvivas, Leonardo Troncone, Lu",
+    label: "Bantotal",
+    sublabel: "Análisis casos de error / excepción MBA",
+    everest: true,
+    day: "hoy"
+  },
+  {
+    date: "2026-07-01",
+    time: "14:30",
+    end: "15:00",
+    summary: "Retomar Análisis Everest",
+    organizer: "lujan.usieto@mercadolibre.com",
+    participants: "Lucía Victoria López, Paola Abrahan, Lu (organizer)",
+    label: "Modelos Contables",
+    sublabel: "Retomar conversaciones sobre Banco Arg y nuevos requerimientos",
+    everest: true,
+    day: "hoy"
+  },
+  {
+    date: "2026-07-01",
+    time: "15:30",
+    end: "16:00",
+    summary: "Facturación BK-MBA | recurrente Acc-FPS",
+    organizer: "ext_rodteres@mercadolibre.com",
+    participants: "ext_analcisn, ext_dajoya, ext_marctron, Jose De Rose, Lucas Monti, Natalia Rodriguez, Lu",
+    label: "FPS + FinOps + Acc Corp",
+    sublabel: "Seguimiento proceso de facturación Banco Argentina",
+    everest: true,
+    day: "hoy"
+  },
+  // MAÑANA — 02/07/2026
+  {
+    date: "2026-07-02",
+    time: "10:00",
+    end: "11:00",
+    summary: "Manual operativo: SPPI, decisión de carteras",
+    organizer: "lujan.usieto@mercadolibre.com",
+    participants: "Sebastian Palopoli, Lu (organizer)",
+    label: "Modelos Contables",
+    sublabel: "Redacción manual operativo clasificación de activos financieros",
+    everest: true,
+    day: "mañana"
+  },
+  {
+    date: "2026-07-02",
+    time: "11:00",
+    end: "11:30",
+    summary: "Seguimiento Construcción Bantotal:MP",
+    organizer: "nicolas.battaglia@mercadolibre.com",
+    participants: "Nicolas Battaglia, Damian Albanesi, Felipe Baena, Carlos Tonguino, gbomrad@bantotal.com, Lu",
+    label: "Bantotal",
+    sublabel: "Seguimiento semanal construcción Bantotal Mercado Pago",
+    everest: true,
+    day: "mañana"
+  },
+  {
+    date: "2026-07-02",
+    time: "15:00",
+    end: "15:45",
+    summary: "Revisión Integración ECL con Bantotal (EVEREST-290)",
+    organizer: "lujan.usieto@mercadolibre.com",
+    participants: "Lu (organizer), icaraballo@bantotal.com, Federico Palmieri, Thiago Fernandes, abarbe@bantotal.com",
+    label: "Modelos Contables",
+    sublabel: "Diseño integración ECL → Bantotal. Revisar tabla pág 4 de spec EVEREST-290 v2",
+    everest: true,
+    day: "mañana"
+  },
+  {
+    date: "2026-07-02",
+    time: "16:00",
+    end: "16:45",
+    summary: "Integración SAP — Bantotal",
+    organizer: "felipe.baena@mercadolibre.com",
+    participants: "ext_analcisn, ext_dajoya, ext_mapartar, Felipe Baena, ext_rodteres, Lu, Jose De Rose, Bantotal team",
+    label: "Bantotal",
+    sublabel: "Reunión semanal recurrente integración SAP-Bantotal",
+    everest: true,
+    day: "mañana"
+  }
+];
 
-function statusColor(type) {
-  if (type === 'pendiente') return 'red';
-  if (type === 'decision') return 'yellow';
+// ────────────────────────────────────────────────
+// RENDER
+// ────────────────────────────────────────────────
+
+function getLabelClass(label) {
+  const map = {
+    'Bantotal': 'badge-blue',
+    'Modelos Contables': 'badge-purple',
+    'FPS + FinOps + Acc Corp': 'badge-orange',
+    'GAP Normativo/PwC': 'badge-yellow',
+    'Auditoría/EY': 'badge-green',
+    'Societario': 'badge-gray',
+    'Incidente': 'badge-red',
+    'OT': 'badge-gray'
+  };
+  return map[label] || 'badge-gray';
+}
+
+function getStatusClass(status) {
+  const map = {
+    'Nuevo': 'status-nuevo',
+    'Comité': 'status-comite',
+    'Aprobada': 'status-aprobada',
+    'En desarrollo': 'status-desarrollo',
+    'En construcción': 'status-desarrollo',
+    'En prueba': 'status-prueba',
+    'Done': 'status-done',
+    'Cerrado': 'status-done'
+  };
+  return map[status] || '';
+}
+
+function getPriorityClass(priority) {
+  const map = {
+    'Highest': 'priority-highest',
+    'High': 'priority-high',
+    'Medium': 'priority-medium',
+    'Low': 'priority-low'
+  };
+  return map[priority] || 'priority-medium';
+}
+
+// Render Jira items
+function renderJira() {
+  const container = document.getElementById('jira-container');
+  const items = SCHEDULED_JIRA_ITEMS.filter(i => !i.cerrado);
+
+  if (items.length === 0) {
+    container.innerHTML = '<div class="empty">No hay issues activos.</div>';
+    return;
+  }
+
+  document.getElementById('jira-count').textContent = `${items.length} ítems`;
+
+  // Sort: accion first, then by nuevo
+  items.sort((a, b) => {
+    if (a.accion && !b.accion) return -1;
+    if (!a.accion && b.accion) return 1;
+    if (a.priority === 'Highest' && b.priority !== 'Highest') return -1;
+    if (a.priority !== 'Highest' && b.priority === 'Highest') return 1;
+    return 0;
+  });
+
+  container.innerHTML = items.map(item => `
+    <div class="item" onclick="window.open('${item.url}', '_blank')">
+      <div class="item-header">
+        <div class="priority-dot ${getPriorityClass(item.priority)}"></div>
+        <div class="item-title">${item.summary}</div>
+      </div>
+      <div class="item-sub">${item.notas || ''}</div>
+      <div class="item-meta">
+        <span class="badge badge-gray">${item.key}</span>
+        <span class="badge ${getLabelClass(item.label)}">${item.label}</span>
+        <span class="badge badge-gray ${getStatusClass(item.status)}">${item.status}</span>
+        ${item.assignee ? `<span class="badge badge-gray">👤 ${item.assignee}</span>` : `<span class="badge badge-red">⚠ Sin asignar</span>`}
+        ${item.accion ? `<span class="badge badge-red">🔴 Acción requerida</span>` : ''}
+        ${item.nuevo ? `<span class="badge badge-new">✨ Nuevo</span>` : ''}
+        <span class="badge badge-gray">${item.updated}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Render Calendar events
+function renderCalendar() {
+  const container = document.getElementById('cal-container');
+  const hoy = CALENDAR_EVENTS.filter(e => e.day === 'hoy' && e.everest);
+  const manana = CALENDAR_EVENTS.filter(e => e.day === 'mañana' && e.everest);
+
+  let html = '';
+
+  if (hoy.length > 0) {
+    html += `<div class="day-sep">📅 Hoy — Miércoles 1 de Julio</div>`;
+    html += hoy.map(e => `
+      <div class="cal-event">
+        <div class="cal-time">${e.time}<br><span style="font-size:10px;color:var(--text-muted)">${e.end}</span></div>
+        <div class="cal-content">
+          <div class="cal-title">${e.summary}</div>
+          <div class="cal-participants">👥 ${e.participants}</div>
+          <div class="cal-meta">
+            <span class="badge ${getLabelClass(e.label)}">${e.label}</span>
+            <span class="badge badge-gray">${e.sublabel}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  if (manana.length > 0) {
+    html += `<div class="day-sep">📅 Mañana — Jueves 2 de Julio</div>`;
+    html += manana.map(e => `
+      <div class="cal-event">
+        <div class="cal-time">${e.time}<br><span style="font-size:10px;color:var(--text-muted)">${e.end}</span></div>
+        <div class="cal-content">
+          <div class="cal-title">${e.summary}</div>
+          <div class="cal-participants">👥 ${e.participants}</div>
+          <div class="cal-meta">
+            <span class="badge ${getLabelClass(e.label)}">${e.label}</span>
+            <span class="badge badge-gray">${e.sublabel}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  if (!html) html = '<div class="empty">Sin reuniones Everest en las próximas 48hs.</div>';
+  container.innerHTML = html;
+  document.getElementById('cal-count').textContent = `${hoy.length + manana.length} reuniones`;
+}
+
+// Render sync times
+function renderSyncTimes() {
+  function fmt(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  }
+  document.getElementById('jsync-time').textContent = fmt(SCHEDULED_JSYNC);
+  document.getElementById('gsync-time').textContent = fmt(SCHEDULED_GSYNC);
+}
+
+// Init
+renderJira();
+renderCalendar();
+renderSyncTimes();
+</script>
+</body>
+</html>
